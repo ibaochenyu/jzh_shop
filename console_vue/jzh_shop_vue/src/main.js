@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+
 //new Vue({ ... })：创建一个新的 Vue 实例。
 new Vue({
   //el: '#app'：指定 Vue 实例挂载的 DOM 元素。这意味着 Vue 实例将管理这个元素及其子元素。
