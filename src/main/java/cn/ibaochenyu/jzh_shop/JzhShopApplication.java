@@ -12,6 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //@SpringBootApplication(scanBasePackages = {
 //        "cn.ibaochenyu.jzh_shop.toolkit",
 //})
+
+//@MapperScan是mybatis的
 @MapperScan("cn.ibaochenyu.jzh_shop.dao.mapper")
 
 public class JzhShopApplication {
