@@ -17,5 +17,22 @@ const routes = [
         component: Home
     }
 ];
-export default routes;
+
 // https://blog.csdn.net/jpgzhu/article/details/109065133
+const router = new VueRouter({
+    mode: "history",
+    routes
+});
+
+// export default routes;
+// // https://blog.csdn.net/jpgzhu/article/details/109065133
+
+
+export { routes }
+
+export default router
+
+new Vue({
+    router,
+    render: h => h(App)
+}).$mount("#app");

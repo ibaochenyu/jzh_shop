@@ -1,6 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+//Can’t resolve ‘vue-router’
+//npm install vue-router
+
+
+import VueRouter from "vue-router";
+// import routes from "./router";
+
+Vue.use(VueRouter);
+
+Vue.config.productionTip = false;
+
 
 //new Vue({ ... })：创建一个新的 Vue 实例。
 new Vue({
