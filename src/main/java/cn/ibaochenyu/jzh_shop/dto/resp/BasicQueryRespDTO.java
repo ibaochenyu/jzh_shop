@@ -23,6 +23,8 @@ public class BasicQueryRespDTO {
 //   private int sex;
    private String homeAddress;
 
+   private Date date;
+
     ////////
 //    private int id;
 //    private String workId;

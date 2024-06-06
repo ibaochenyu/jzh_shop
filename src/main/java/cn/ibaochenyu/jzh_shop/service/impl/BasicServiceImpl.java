@@ -54,12 +54,12 @@ public class BasicServiceImpl implements BasicService {
 
     //DO直接映射表
     //DTO类似于DO改变后的数据传输对象
-    @Override
+    @Override//http://localhost:8080/queryV1
     public BasicQueryRespDTO dateQuery(@RequestParam(value = "mid") String mid){
         LambdaQueryWrapper<BasicDO> queryWrapper = Wrappers.lambdaQuery(BasicDO.class)
                 .eq(BasicDO::getId, mid);
         BasicDO basicDO=basicMapper.selectOne(queryWrapper);
         return BeanUtil.convert(basicDO, BasicQueryRespDTO.class);
+    }//时间成员，Date类型，Sat Jun 22 19:00:43 CST 2024
 
-    }
 }

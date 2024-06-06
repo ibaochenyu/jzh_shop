@@ -20,7 +20,8 @@ class JzhShopApplicationTests {
     void 利用dozer进行对象转换() {
         BasicDO source = new BasicDO();
         Class<cn.ibaochenyu.jzh_shop.dto.resp.BasicQueryRespDTO> clazz = BasicQueryRespDTO.class;
-        source.setId(1);
+        //source.setId(1);
+        source.setId(1L);
         source.setWorkId(3);
         source.setName("黄小鑫");
         source.setSex(1);
@@ -28,6 +29,7 @@ class JzhShopApplicationTests {
         BasicQueryRespDTO temp=Optional.ofNullable(source)
                 .map(each -> BEAN_MAPPER_BUILDER.map(each, clazz))
                 .orElse(null);
+
         int a=2;
 
     }

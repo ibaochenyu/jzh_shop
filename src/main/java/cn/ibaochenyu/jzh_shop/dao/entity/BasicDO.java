@@ -14,12 +14,12 @@ import lombok.Data;
 //BasicMapper extends BaseMapper<BasicDO>->     (BasicMapper.selectOne)
 //public interface BasicService extends IService<BasicDO>
 
-
+import java.util.Date;
 
 @Data
 @TableName("t_basic")
 public class BasicDO {
-    private int id;
+    private Long id;//java中用Long，mysql中用bigint
 
     private int workId;
     private String name;
@@ -28,4 +28,26 @@ public class BasicDO {
     //如果此处string错打字为int
     //com.mysql.cj.exceptions.DataConversionException: Cannot determine value type from string '黄小鑫的家'
     private String homeAddress;
+
+    //https://www.cnblogs.com/zendwang/p/mybatis-jdbctype-date.html
+//    1） DATETIME
+//    显示格式：yyyy-MM-dd HH:mm:ss
+//    时间范围:[ '1000-01-01 00:00:00'到'9999-12-31 23:59:59']
+//
+//            2） DATE
+//    显示格式：yyyy-MM-dd
+//    时间范围：['1000-01-01'到'9999-12-31']
+//
+//            3） TIMESTAMP
+//    显示格式：yyyy-MM-dd HH:mm:ss
+//    时间范围:[ '1970-01-01 00:00:00'到'2037-12-31 23:59:59']
+//
+//            （JAVA没有DateTime这个类，Date类能够同时表示日期和时间），java.util.Date实际上是能够表示MySQL的三种字段类型：
+//            3.1 date
+//3.2 datetime
+//3.3 timestamp
+
+    ////所以我这里mysql里头用的是datetime类型，java用的是Date
+    private Date date;
+
 }
