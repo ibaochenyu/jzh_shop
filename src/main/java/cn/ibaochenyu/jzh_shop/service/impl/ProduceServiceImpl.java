@@ -45,8 +45,8 @@ public class ProduceServiceImpl implements ProduceService {
 
 //        https://blog.csdn.net/weixin_44866272/article/details/116750423
         LambdaQueryWrapper<ProduceDO> queryWrapper = Wrappers.lambdaQuery(ProduceDO.class)
-//                .ge(ProduceDO::getProduce_date, temp)//大于今天
-//                .le(ProduceDO::getProduce_date, tomorrow)//小于明天
+                .ge(ProduceDO::getProduceDate, temp)//大于今天
+                .le(ProduceDO::getProduceDate, tomorrow)//小于明天
                 .eq(ProduceDO::getTruthItemId, truth_item_id)
                 .eq(ProduceDO::getTruthWorkerId, truth_worker_id);
         ProduceDO produceDO=produceMapper.selectOne(queryWrapper);
