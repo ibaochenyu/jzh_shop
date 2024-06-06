@@ -1,7 +1,8 @@
+import Home from "../views/Home/index.vue";
+import About from "../views/About/index.vue";
 
-import Home from "../components/Home";
-import About from "../components/About";
-
+// import VueRouter from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     {
@@ -19,19 +20,14 @@ const routes = [
         component: Home
     }
 ];
-
-const router = new VueRouter({
-    mode: "history",
+// const router = new VueRouter({
+//     mode: "history",
+//     routes
+// })
+const router = createRouter({
+    history: createWebHistory(),
     routes
-});
-
-
-
+})
 export { routes }
 
 export default router
-
-
-// export default routes;
-//
-// // https://blog.csdn.net/jpgzhu/article/details/109065133
