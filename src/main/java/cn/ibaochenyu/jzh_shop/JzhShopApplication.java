@@ -3,7 +3,7 @@ package cn.ibaochenyu.jzh_shop;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
 
 @SpringBootApplication
@@ -15,7 +15,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 //@MapperScan是mybatis的
 @MapperScan("cn.ibaochenyu.jzh_shop.dao.mapper")
-
 public class JzhShopApplication {
 
     public static void main(String[] args) {

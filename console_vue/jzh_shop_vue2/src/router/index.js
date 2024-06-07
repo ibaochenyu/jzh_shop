@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Home from "../components/Home";
 import About from "../components/About";
+import HotSearch from "../views/modules/shop/hotSearch.vue";
 import Router from 'vue-router'
 
 Vue.use(Router)
@@ -14,6 +15,11 @@ const routes = [
         path: "/about",
         name: "about",
         component: About
+    },
+    {
+        path: "/hotSearch",
+        name: "hotSearch",
+        component: HotSearch
     },
     {
         path: "/",

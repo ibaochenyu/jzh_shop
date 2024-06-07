@@ -25,7 +25,7 @@ public class ProduceServiceImpl implements ProduceService {
     private final ProduceMapper produceMapper;
 
 
-//http://localhost:8080/getOneProduce?produce_date=2020-05-07&truth_item_id=82002&truth_worker_id=1
+//http://localhost:8081/getOneProduce?produce_date=2020-05-07&truth_item_id=82002&truth_worker_id=1
     @Override
     public ProduceQueryRespDTO getOneProduce(Date produce_date,int truth_item_id, int truth_worker_id){
 

@@ -1,0 +1,2 @@
+npm install @smallwei/avue@2.8.27
+npm install element-ui@2.15.7
