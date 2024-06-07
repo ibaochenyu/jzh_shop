@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "@smallwei/avue": "^3.4.4",
+    "@types/qs": "^6.9.15",
+    "axios": "^1.7.2",
     "element-plus": "^2.7.4",
+    "qs": "^6.12.1",
     "vue": "^3.4.21",
     "vue-router": "^4.0.13"
   },
