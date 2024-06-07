@@ -26,33 +26,36 @@ public class RequestFilter implements Filter {
 
 
 
-//    @Override
-//    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-//
-//        HttpServletResponse response = (HttpServletResponse) servletResponse;
-//        HttpServletRequest request = (HttpServletRequest) servletRequest;
-//
-//        // 此处 setHeader、addHeader 方法都可用。但 addHeader时写多个会报错：“...,but only one is allowed”
-//        response.setHeader("Access-Control-Allow-Origin", "*");
-////        response.addHeader("Access-Control-Allow-Origin", request.getHeader("origin"));
-//        // 解决预请求（发送2次请求），此问题也可在 nginx 中作相似设置解决。
-//        response.setHeader("Access-Control-Allow-Headers", "x-requested-with,Cache-Control,Pragma,Content-Type,Token, Content-Type");
-//        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-//        response.setHeader("Access-Control-Max-Age", "3600");
-//        response.setHeader("Access-Control-Allow-Credentials", "true");
-//        String method = request.getMethod();
-//        if (method.equalsIgnoreCase("OPTIONS")) {
-//            servletResponse.getOutputStream().write("Success".getBytes("utf-8"));
-//        } else {
-//            filterChain.doFilter(servletRequest, servletResponse);
-//        }
-//    }
-@Override//这个函数大部分看懂了
-public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-    HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-    int a=3;;
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
-}
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+        // 此处 setHeader、addHeader 方法都可用。但 addHeader时写多个会报错：“...,but only one is allowed”
+        //response.setHeader("Access-Control-Allow-Origin", "*");
+        //https://blog.csdn.net/Loya0813/article/details/83862586
+        response.setHeader("Access-Control-Allow-Origin",request.getHeader("origin"));
+//        response.addHeader("Access-Control-Allow-Origin", request.getHeader("origin"));
+        // 解决预请求（发送2次请求），此问题也可在 nginx 中作相似设置解决。
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with,Cache-Control,Pragma,Content-Type,Token, Content-Type");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        String method = request.getMethod();
+        if (method.equalsIgnoreCase("OPTIONS")) {
+            servletResponse.getOutputStream().write("Success".getBytes("utf-8"));
+        } else {
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
+    }
+
+//@Override//这个函数大部分看懂了
+//public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+//    HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+//    int a=3;;
+//
+//}
 
 //    @Override
 //    public void destroy() {
