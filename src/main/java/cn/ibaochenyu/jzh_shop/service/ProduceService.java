@@ -6,5 +6,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface ProduceService {
-    List<ProduceQueryRespDTO> getOneProduce(Date produce_date, int truth_item_id, int truth_worker_id);
+    List<ProduceQueryRespDTO> getOneProduce(Date produce_date, Integer truth_item_id, Integer truth_worker_id);
 }

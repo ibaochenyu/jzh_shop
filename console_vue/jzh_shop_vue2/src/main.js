@@ -13,12 +13,12 @@ import router from './router'
 
 
 ////////////
-import ElementUI from 'element-ui'
-//import '@/element-ui-theme/style.css'
-//import '../src/element-ui-theme/style.css'
-import 'element-ui/lib/theme-chalk/index.css';
-import Avue from '@smallwei/avue'             // api: https://avue.top
+import Avue from '@smallwei/avue'      //hotSearch的</avue-crud>标签有用到       // api: https://avue.top
 import '@smallwei/avue/lib/index.css'
+
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css';
+
 Vue.use(Avue)
 Vue.use(ElementUI)
 
@@ -42,5 +42,4 @@ new Vue({
   router,
   ////render: h => h(App)：render 函数用来渲染一个 Vue 组件，这里使用的是箭头函数的简写形式。h 是一个函数，用来生成虚拟 DOM（VNode），它将 App 组件渲染为虚拟 DOM。
   render: h => h(App)
-
 })

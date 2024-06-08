@@ -25,14 +25,14 @@
                    :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </template>
 
-      <template slot-scope="scope"
-                slot="status">
-        <el-tag v-if="scope.row.status === 0"
-                size="small"
-                type="danger">未启用</el-tag>
-        <el-tag v-else
-                size="small">启用</el-tag>
-      </template>
+<!--      <template slot-scope="scope"-->
+<!--                slot="status">-->
+<!--        <el-tag v-if="scope.row.status === 0"-->
+<!--                size="small"-->
+<!--                type="danger">未启用</el-tag>-->
+<!--        <el-tag v-else-->
+<!--                size="small">启用</el-tag>-->
+<!--      </template>-->
 
       <template slot-scope="scope"
                 slot="menu">
@@ -52,10 +52,10 @@
 
     </avue-crud>
 
-    <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible"
-                   ref="addOrUpdate"
-                   @refreshDataList="getDataList"></add-or-update>
+<!--    &lt;!&ndash; 弹窗, 新增 / 修改 &ndash;&gt;-->
+<!--    <add-or-update v-if="addOrUpdateVisible"-->
+<!--                   ref="addOrUpdate"-->
+<!--                   @refreshDataList="getDataList"></add-or-update>-->
   </div>
 </template>
 
@@ -66,7 +66,7 @@ import AddOrUpdate from './hotSearch-add-or-update'
 export default {
   data () {
     return {
-      dataForm: {
+      dataForm: {//???
 
       },
       dataList: [],

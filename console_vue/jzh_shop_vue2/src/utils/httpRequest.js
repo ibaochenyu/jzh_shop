@@ -130,7 +130,8 @@ const http = axios.create({
  * 请求地址处理
  * @param {*} actionName action方法名称
  */
-http.adornUrl = (actionName) => {
+http.adornUrl = (actionName) => {//adorn 美/ əˈdɔːrn / v.装饰；使生色
+
   // 非生产环境 && 开启代理, 接口前缀统一使用[/proxyApi/]前缀做代理拦截!
   //return (process.env.NODE_ENV !== 'production' && process.env.OPEN_PROXY ? '/proxyApi' : process.env.VUE_APP_BASE_API) + actionName
   //mall4j
@@ -162,7 +163,7 @@ http.adornParams = (params = {}, openDefultParams = true) => {
  *  json: 'application/json; charset=utf-8'
  *  form: 'application/x-www-form-urlencoded; charset=utf-8'
  */
-http.adornData = (data = {}, openDefultdata = true, contentType = 'json') => {
+http.adornData = (data = {}, openDefultdata = true, contentType = 'json') => {//???
   var defaults = {
     't': new Date().getTime()
   }
