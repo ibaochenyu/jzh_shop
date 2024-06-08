@@ -79,7 +79,8 @@ public class SysLogAspect {
         sysLogService.save(tableOneElement);
 
         log.info("执行around完毕。当时函数：{}",methodName);//slf4j后，是log.info,不是logger
-
+//        log.error("执行around完毕。当时函数：{}",methodName);//slf4j后，是log.info,不是logger
+//
         return result;
 
     }
