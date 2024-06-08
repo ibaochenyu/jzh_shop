@@ -11,6 +11,12 @@
                @refresh-change="refreshChange"
                >
 <!--               @selection-change="selectionChange">-->
+<!--      <div>-->
+<!--        <span>内容1</span>-->
+<!--        <el-divider></el-divider>-->
+<!--        <span>内容2</span>-->
+<!--      </div>-->
+<!--      <hr class="my-divider" />-->
       <template slot="menuLeft">
 <!--        <el-button v-if="isAuth('admin:hotSearch:save')"-->
         <el-button v-if="true"
@@ -24,6 +30,8 @@
                    @click.stop="deleteHandle"
                    :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </template>
+
+
 
 <!--      <template slot-scope="scope"-->
 <!--                slot="status">-->
