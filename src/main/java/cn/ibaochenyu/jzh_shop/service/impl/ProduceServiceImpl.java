@@ -7,7 +7,9 @@ import cn.ibaochenyu.jzh_shop.dto.resp.ProduceQueryRespDTO;
 import cn.ibaochenyu.jzh_shop.service.ProduceService;
 import cn.ibaochenyu.jzh_shop.toolkit.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,7 @@ public class ProduceServiceImpl implements ProduceService {
 
 
 
-    @Override
+    @Override//铁路写法
     public List<ProduceQueryRespDTO> getOneProduce(Date produce_date,Integer truth_item_id, Integer truth_worker_id){
 
 
@@ -59,13 +61,16 @@ public class ProduceServiceImpl implements ProduceService {
         if (truth_worker_id != null) {
             queryWrapper.eq(ProduceDO::getTruthWorkerId, truth_worker_id);
         }
-
-
+//        queryWrapper.orderByDesc(ProduceDO::getTruthItemId);
+//current默认1，size默认10。则以size=10切分一份，current为1则展示第一份
+        Page<ProduceDO> pageTemp = new Page<>(5, 3);//current,size
+        IPage<ProduceDO> ipage=produceMapper.selectPage(pageTemp,queryWrapper);
 
         //ProduceDO produceDO=produceMapper.selectOne(queryWrapper);
-        List<ProduceDO> produceDOList=produceMapper.selectList(queryWrapper);
+        List<ProduceDO> produceDOList=produceMapper.selectList(queryWrapper);//为什么默认以id为排序？
+
         //return BeanUtil.convert(produceDO, ProduceQueryRespDTO.class);
         List<ProduceQueryRespDTO> ProduceQueryRespDTOList=BeanUtil.convert(produceDOList, ProduceQueryRespDTO.class);
         return ProduceQueryRespDTOList;
-    }
+    }//看看如何改进，让这里的东西
 }
