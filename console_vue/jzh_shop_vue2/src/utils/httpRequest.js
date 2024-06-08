@@ -152,6 +152,8 @@ http.adornParams = (params = {}, openDefultParams = true) => {
   //   't': new Date().getTime()
   // }
   // return openDefultParams ? merge(defaults, params) : params
+  //return params
+  // var temp=merge(defaults, params)
   return params
 }
 

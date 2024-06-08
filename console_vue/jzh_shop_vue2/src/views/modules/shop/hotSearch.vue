@@ -72,8 +72,10 @@ export default {
       dataList: [],
       page: {
         total: 0, // 总页数
-        currentPage: 1, // 当前页数
-        pageSize: 10 // 每页显示多少条
+        // currentPage: 1, // 当前页数
+        // pageSize: 10 // 每页显示多少条
+        currentPage: 5, // 当前页数
+        pageSize: 3 // 每页显示多少条
       },
       dataListLoading: false,
       dataListSelections: [],
@@ -95,16 +97,16 @@ export default {
 
         method: 'get',
         params: this.$http.adornParams(Object.assign({
-          // current: page ? page.currentPage : 1,
-          // size: page ? page.pageSize : 20
+          current: page ? page.currentPage : 5,
+          size: page ? page.pageSize : 3
         }, params))
       }).then(({ data }) => {
-        // this.page.total = data.total
-        // this.page.pageSize = data.size
-        // this.page.currentPage = data.current
-        this.page.total = 2
-        this.page.pageSize = 10
-        this.page.currentPage = 1
+        this.page.total = data.total
+        this.page.pageSize = data.size
+        this.page.currentPage = data.current
+        // this.page.total = 2
+        // this.page.pageSize = 10
+        // this.page.currentPage = 1
 
         //this.dataList = data.records
         this.dataList = data.data

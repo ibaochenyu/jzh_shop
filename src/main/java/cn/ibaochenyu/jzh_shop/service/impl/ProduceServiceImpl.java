@@ -1,5 +1,6 @@
 package cn.ibaochenyu.jzh_shop.service.impl;
 
+import cn.ibaochenyu.jzh_shop.PageParam;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
 
 import cn.ibaochenyu.jzh_shop.dao.mapper.ProduceMapper;
@@ -30,7 +31,7 @@ public class ProduceServiceImpl implements ProduceService {
 
 
     @Override//铁路写法
-    public List<ProduceQueryRespDTO> getOneProduce(Date produce_date,Integer truth_item_id, Integer truth_worker_id){
+    public List<ProduceQueryRespDTO> getOneProduce(Date produce_date, Integer truth_item_id, Integer truth_worker_id, PageParam<ProduceDO> page){
 
 
 
@@ -63,11 +64,14 @@ public class ProduceServiceImpl implements ProduceService {
         }
 //        queryWrapper.orderByDesc(ProduceDO::getTruthItemId);
 //current默认1，size默认10。则以size=10切分一份，current为1则展示第一份
-        Page<ProduceDO> pageTemp = new Page<>(5, 3);//current,size
-        IPage<ProduceDO> ipage=produceMapper.selectPage(pageTemp,queryWrapper);
+
+//        Page<ProduceDO> pageTemp = new Page<>(5, 3);//current,size
+        Page<ProduceDO> pageTemp=page;
+        IPage<ProduceDO> ipage=produceMapper.selectPage(pageTemp,queryWrapper);//返回ipage
 
         //ProduceDO produceDO=produceMapper.selectOne(queryWrapper);
-        List<ProduceDO> produceDOList=produceMapper.selectList(queryWrapper);//为什么默认以id为排序？
+        //这里或许没用了。因为本身PageParam<ProduceDO> page已经筛选出你想要的数据了。
+        List<ProduceDO> produceDOList=produceMapper.selectList(queryWrapper);//为什么默认以id为排序？ //返回25。没有分页的结果
 
         //return BeanUtil.convert(produceDO, ProduceQueryRespDTO.class);
         List<ProduceQueryRespDTO> ProduceQueryRespDTOList=BeanUtil.convert(produceDOList, ProduceQueryRespDTO.class);

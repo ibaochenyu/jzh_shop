@@ -80,6 +80,28 @@
         </dependency>
         <!-- NoClassDefFoundError: javax/xml/bind/JAXBException end -->
 
+<!--        https://blog.csdn.net/qq_27480007/article/details/132656505-->
+        <!-- 引入swagger -->
+<!--        <dependency>-->
+<!--            <groupId>io.springfox</groupId>-->
+<!--            <artifactId>springfox-swagger2</artifactId>-->
+<!--            <version>2.9.2</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.springfox</groupId>-->
+<!--            <artifactId>springfox-swagger-ui</artifactId>-->
+<!--            <version>2.9.2</version>-->
+<!--        </dependency>-->
+        <!-- Schema和ParameterObject引入openapi就好了 -->
+        <!-- knife4j是集成swagger2和openapi3的增强解决方案 -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <!--      新增-->
+            <version>4.3.0</version>
+        </dependency>
+
+
 
 
     </dependencies>
