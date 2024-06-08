@@ -101,6 +101,12 @@
             <version>4.3.0</version>
         </dependency>
 
+<!--        切面编程：@Aspect有使用-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
 
 
 

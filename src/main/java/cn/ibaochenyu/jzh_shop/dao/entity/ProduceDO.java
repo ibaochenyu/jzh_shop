@@ -14,6 +14,7 @@ public class ProduceDO {
 
 //    @JsonFormat(pattern = "yyyy-MM-dd")
     //private Date produce_date;
+    //java是Date类型。对应mysql不是Date，而是DateTime
     private Date produceDate;
 
     private int truthItemId;

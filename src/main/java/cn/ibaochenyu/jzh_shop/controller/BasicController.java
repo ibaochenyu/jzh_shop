@@ -4,17 +4,17 @@ import cn.ibaochenyu.jzh_shop.PageParam;
 import cn.ibaochenyu.jzh_shop.Result;
 import cn.ibaochenyu.jzh_shop.Results;
 import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
+import cn.ibaochenyu.jzh_shop.annotation.SysLogMyAnnotation;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.BasicQueryRespDTO;
 import cn.ibaochenyu.jzh_shop.dto.resp.ProduceQueryRespDTO;
 import cn.ibaochenyu.jzh_shop.service.BasicService;
 import cn.ibaochenyu.jzh_shop.service.ProduceService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -36,6 +36,7 @@ import java.util.List;
 //@RequiredArgsConstructor是Lombok的一个注解，简化了我们对@Autowired书写
 //添加上去，否则private final BasicService basicService;报错
 @RequiredArgsConstructor
+@RequestMapping("/produceHandle")
 public class BasicController {
 
     private final BasicService basicService;
@@ -63,11 +64,12 @@ public class BasicController {
 
 
 
-
-@RequestMapping("/getOneProduceRtResult") //传入在前端的文本要写2020-05-07
+    @SysLogMyAnnotation(mvalue="请求searchPageResult")
+@RequestMapping("/searchPageResult") //传入在前端的文本要写2020-05-07
 //public ServerResponseEntity<List<ProduceQueryRespDTO>> getOneProduceRtResult(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
 //                                                                       @RequestParam(name="truth_item_id", defaultValue = "82002") int truth_item_id,
 //                                                                       @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
+//参考：public ServerResponseEntity<IPage<HotSearch>> page(HotSearch hotSearch,PageParam<HotSearch> page){
 public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestParam(name="produceDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date produceDate,
                                                                               @RequestParam(name="truthItemId", required = false) Integer truthItemId,
                                                                               @RequestParam(name="truthWorkerId", required = false) Integer truthWorkerId,
@@ -75,6 +77,36 @@ public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestPara
     IPage<ProduceDO> rt=produceService.getOneProduce(produceDate,truthItemId,truthWorkerId,page);
     return ServerResponseEntity.success(rt);
 }
+
+    @RequestMapping("/getOneProduceInfo/{id}")
+    //参考public ServerResponseEntity<HotSearch> info(@PathVariable("id") Long id){
+    public ServerResponseEntity<ProduceDO> getOneProduceInfo(@PathVariable("id") Long id) {
+        ProduceDO rt=produceService.getOneProduceInfo(id);
+        return ServerResponseEntity.success(rt);
+    }
+
+    @SysLogMyAnnotation(mvalue="saveProduce")
+    @PostMapping//RequestBody???
+    public ServerResponseEntity<Void> save(@RequestBody ProduceDO produceDO) {
+        //int rt=produceService.save(produceDO);
+        //能不能返回一个插入的值呢？？？
+        produceService.save(produceDO);
+        return ServerResponseEntity.success();
+    }
+
+    @SysLogMyAnnotation(mvalue="updateProduce")
+    @PutMapping
+    public ServerResponseEntity<Void> update(@RequestBody ProduceDO produceDO) {
+        produceService.update(produceDO);
+        return ServerResponseEntity.success();
+    }
+
+    @SysLogMyAnnotation(mvalue="deleteProduce")
+    @DeleteMapping
+    public ServerResponseEntity<Void> delete(@RequestBody ProduceDO produceDO) {
+        produceService.delete(produceDO);
+        return ServerResponseEntity.success();
+    }
 
 
     ////////

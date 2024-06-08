@@ -148,6 +148,8 @@ http.adornUrl = (actionName) => {//adorn 美/ əˈdɔːrn / v.装饰；使生色
  * @param {*} openDefultParams 是否开启默认参数?
  */
 http.adornParams = (params = {}, openDefultParams = true) => {
+  //不添加额外的时间了，所以这里取消了
+
   // var defaults = {
   //   't': new Date().getTime()
   // }

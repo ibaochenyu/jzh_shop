@@ -11,12 +11,7 @@
                @refresh-change="refreshChange"
                >
 <!--               @selection-change="selectionChange">-->
-<!--      <div>-->
-<!--        <span>内容1</span>-->
-<!--        <el-divider></el-divider>-->
-<!--        <span>内容2</span>-->
-<!--      </div>-->
-<!--      <hr class="my-divider" />-->
+
       <template slot="menuLeft">
 <!--        <el-button v-if="isAuth('admin:hotSearch:save')"-->
         <el-button v-if="true"
@@ -60,15 +55,14 @@
 
     </avue-crud>
 
-<!--    &lt;!&ndash; 弹窗, 新增 / 修改 &ndash;&gt;-->
-<!--    <add-or-update v-if="addOrUpdateVisible"-->
-<!--                   ref="addOrUpdate"-->
-<!--                   @refreshDataList="getDataList"></add-or-update>-->
+    <!-- 弹窗, 新增 / 修改 -->
+    <add-or-update v-if="addOrUpdateVisible"
+                   ref="addOrUpdate"
+                   @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
 
 <script>
-//import { tableOption } from '@/crud/shop/hotSearch'
 import { tableOption } from '../../../crud/shop/hotSearch'
 import AddOrUpdate from './hotSearch-add-or-update'
 export default {
@@ -101,7 +95,7 @@ export default {
       this.$http({
         //url: this.$http.adornUrl('/admin/hotSearch/page'),
         //url: this.$http.adornUrl('/getOneProduce'),
-        url: this.$http.adornUrl('/getOneProduceRtResult'),
+        url: this.$http.adornUrl('/produceHandle/searchPageResult'),
 //https://blog.csdn.net/weixin_43299180/article/details/112882498
 //         const target = { a: 1, b: 2 };
 //         const source1 = { b: 4, c: 5 };
@@ -129,6 +123,13 @@ export default {
         if (done) {
           done()
         }
+      })
+    },
+    // 新增 / 修改
+    addOrUpdateHandle (id) {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.addOrUpdate.init(id)
       })
     },
 

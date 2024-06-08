@@ -79,4 +79,47 @@ public class ProduceServiceImpl implements ProduceService {
         //return ProduceQueryRespDTOList;
         return ipage;
     }//看看如何改进，让这里的东西
+
+    @Override
+    public ProduceDO getOneProduceInfo(Long id) {
+        //return produceMapper.getProduceId(id);
+
+        //没有这种写法
+        //produceMapper.selectByProduceId()
+
+//        id主键是有这种写法的
+        ProduceDO rt= produceMapper.selectById(id);
+        return rt;
+    }
+
+    @Override
+    public void save(ProduceDO produceDO) {
+        int rt=produceMapper.insert(produceDO);//如果是unique健，则直接被吞咽，不会进入下面的systemout.
+//### Error updating database.  Cause: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '111-222-333' for key 't_produce.测试冲突'
+        System.out.println("produceMapper.save"+   (""+produceDO.getId())  );
+        System.out.println("rt:"+   (""+rt)  );
+    }
+
+    @Override
+    public void update(ProduceDO produceDO) {
+        int rt=produceMapper.updateById(produceDO);
+        System.out.println("produceMapper.update"+   (""+produceDO.getId())  );
+        System.out.println("rt:"+   (""+rt)  );
+    }
+
+    @Override
+    public void delete(ProduceDO produceDO) {
+        int rt=produceMapper.deleteById(produceDO);
+        System.out.println("produceMapper.delete"+   (""+produceDO.getId())  );
+        System.out.println("rt:"+   (""+rt)  );
+
+    }
 }
+
+//插入unique索引，chrome调试器中返回：
+//        {
+//        "timestamp": "2024-06-08T14:18:11.137+00:00",
+//        "status": 500,
+//        "error": "Internal Server Error",
+//        "path": "/produceHandle"
+//        }

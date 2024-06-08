@@ -12,4 +12,12 @@ import java.util.List;
 public interface ProduceService {
 //public interface ProduceService extends IService<ProduceDO> {
 IPage<ProduceDO> getOneProduce(Date produce_date, Integer truth_item_id, Integer truth_worker_id, PageParam<ProduceDO> page);
+
+    ProduceDO getOneProduceInfo(Long id);
+
+    void save(ProduceDO produceDO);
+
+    void update(ProduceDO produceDO);
+
+    void delete(ProduceDO produceDO);
 }
