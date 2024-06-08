@@ -108,8 +108,7 @@ export default {
         // this.page.pageSize = 10
         // this.page.currentPage = 1
 
-        //this.dataList = data.records
-        this.dataList = data.data
+        this.dataList = data.records
 
         this.dataListLoading = false
         if (done) {

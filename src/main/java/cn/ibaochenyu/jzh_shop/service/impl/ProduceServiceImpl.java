@@ -31,7 +31,7 @@ public class ProduceServiceImpl implements ProduceService {
 
 
     @Override//铁路写法
-    public List<ProduceQueryRespDTO> getOneProduce(Date produce_date, Integer truth_item_id, Integer truth_worker_id, PageParam<ProduceDO> page){
+    public IPage<ProduceDO> getOneProduce(Date produce_date, Integer truth_item_id, Integer truth_worker_id, PageParam<ProduceDO> page){
 
 
 
@@ -75,6 +75,8 @@ public class ProduceServiceImpl implements ProduceService {
 
         //return BeanUtil.convert(produceDO, ProduceQueryRespDTO.class);
         List<ProduceQueryRespDTO> ProduceQueryRespDTOList=BeanUtil.convert(produceDOList, ProduceQueryRespDTO.class);
-        return ProduceQueryRespDTOList;
+
+        //return ProduceQueryRespDTOList;
+        return ipage;
     }//看看如何改进，让这里的东西
 }
