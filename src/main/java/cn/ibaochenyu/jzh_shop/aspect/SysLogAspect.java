@@ -5,6 +5,7 @@ import cn.ibaochenyu.jzh_shop.dao.entity.SysLogDO;
 import cn.ibaochenyu.jzh_shop.service.SysLogService;
 import com.baomidou.mybatisplus.core.toolkit.SystemClock;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,15 +14,23 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Aspect
 //Autowired members must be defined in valid Spring bean (@Component|@Service|...)
 //因此这里得加@Component
 @Component
+@Slf4j
+//SLF4J，即简单日志门面（Simple Logging Facade for Java），不是具体的日志解决方案，
+//Log4j是Apache的一个开源项目，通过使用Log4j，我们可以控制日志信息输送的目的地是控制台、文件、GUI组件，甚至是套接口服务器、NT的事件记录器、UNIX Syslog守护进程等；
+//mall4j用的是log4j
 public class SysLogAspect {
 
     @Autowired//貌似是返回已经有的一个sysLogService就行
     private SysLogService sysLogService;
 
+//    Logger logger = LoggerFactory.getLogger(getClass().getName());
     @Around("@annotation(sysLogMyAnnotation)")
     public Object around(ProceedingJoinPoint joinPoint, SysLogMyAnnotation sysLogMyAnnotation) throws Throwable {
         long beginTime = SystemClock.now();
@@ -68,6 +77,8 @@ public class SysLogAspect {
         tableOneElement.setOperatorArgv(params);
 
         sysLogService.save(tableOneElement);
+
+        log.info("执行around完毕。当时函数：{}",methodName);//slf4j后，是log.info,不是logger
 
         return result;
 
