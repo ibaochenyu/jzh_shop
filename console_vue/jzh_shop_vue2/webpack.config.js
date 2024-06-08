@@ -37,6 +37,12 @@ module.exports = {
         options: {
           name: '[name].[ext]?[hash]'
         }
+      },
+      {
+        //https://blog.csdn.net/qq1377399077/article/details/87694167
+        //本人项目采用webpack打包工具，由于webpack打包工具是将浏览器不能直接运行的拓展语言（Scss，TypeScript等），将其打包为合适的格式以供浏览器解析，所以.ttf格式的文件未被打包导致浏览器不能解析
+        test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+        loader: 'file-loader'
       }
     ]
   },

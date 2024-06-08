@@ -28,30 +28,35 @@ export const tableOption = {
       search: true
     },
     {
-      label: '录入时间',
-      prop: 'recDate',
-      sortable: true
-    },
-    {
-      label: '顺序',
-      prop: 'seq',
-      sortable: true
-    },
-    {
-      label: '启用状态',
-      prop: 'status',
-      type: 'select',
-      slot: true,
-      search: true,
-      dicData: [
-        {
-          label: '未启用',
-          value: 0
-        }, {
-          label: '启用',
-          value: 1
-        }
-      ]
+      label: '生产数量',
+      prop: 'produce_count',
+      search: true
     }
+    // {
+    //   label: '录入时间',
+    //   prop: 'recDate',
+    //   sortable: true
+    // }
+    // {
+    //   label: '顺序',
+    //   prop: 'seq',
+    //   sortable: true
+    // },
+    // {
+    //   label: '启用状态',
+    //   prop: 'status',
+    //   type: 'select',
+    //   slot: true,
+    //   search: true,
+    //   dicData: [
+    //     {
+    //       label: '未启用',
+    //       value: 0
+    //     }, {
+    //       label: '启用',
+    //       value: 1
+    //     }
+    //   ]
+    // }
   ]
 }

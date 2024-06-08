@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.List;
 
 //无法map，可能是文件位置和package的原因
 
@@ -40,7 +41,7 @@ public class BasicController {
 
     @RequestMapping("/getOneProduce")
     //public ProduceQueryRespDTO getOneProduce(Date produce_date, int truth_item_id, int truth_worker_id) {
-    public ProduceQueryRespDTO getOneProduce(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
+    public List<ProduceQueryRespDTO> getOneProduce(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
                                              @RequestParam(name="truth_item_id", defaultValue = "82002") int truth_item_id,
                                              @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
         //return produceService.getOneProduce(produce_date,truth_item_id,truth_worker_id);
@@ -54,13 +55,20 @@ public class BasicController {
 //        ProduceQueryRespDTO rt=produceService.getOneProduce(produce_date,truth_item_id,truth_worker_id);
 //        return Results.success(rt);
 //    }
-    @RequestMapping("/getOneProduceRtResult")
-    public ServerResponseEntity<ProduceQueryRespDTO> getOneProduceRtResult(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
-                                                                           @RequestParam(name="truth_item_id", defaultValue = "82002") int truth_item_id,
-                                                                           @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
-        ProduceQueryRespDTO rt=produceService.getOneProduce(produce_date,truth_item_id,truth_worker_id);
-        return ServerResponseEntity.success(rt);
-    }
+//    @RequestMapping("/getOneProduceRtResult")
+//    public ServerResponseEntity<ProduceQueryRespDTO> getOneProduceRtResult(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
+//                                                                           @RequestParam(name="truth_item_id", defaultValue = "82002") int truth_item_id,
+//                                                                           @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
+//        ProduceQueryRespDTO rt=produceService.getOneProduce(produce_date,truth_item_id,truth_worker_id);
+//        return ServerResponseEntity.success(rt);
+//    }
+@RequestMapping("/getOneProduceRtResult")
+public ServerResponseEntity<List<ProduceQueryRespDTO>> getOneProduceRtResult(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
+                                                                       @RequestParam(name="truth_item_id", defaultValue = "82002") int truth_item_id,
+                                                                       @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
+    List<ProduceQueryRespDTO> rt=produceService.getOneProduce(produce_date,truth_item_id,truth_worker_id);
+    return ServerResponseEntity.success(rt);
+}
 
 
     ////////

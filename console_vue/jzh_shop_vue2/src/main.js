@@ -15,7 +15,8 @@ import router from './router'
 ////////////
 import ElementUI from 'element-ui'
 //import '@/element-ui-theme/style.css'
-// import '@/element-ui-theme/style.css'
+//import '../src/element-ui-theme/style.css'
+import 'element-ui/lib/theme-chalk/index.css';
 import Avue from '@smallwei/avue'             // api: https://avue.top
 import '@smallwei/avue/lib/index.css'
 Vue.use(Avue)

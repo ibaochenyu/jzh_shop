@@ -9,7 +9,8 @@
                @search-change="searchChange"
                @on-load="getDataList"
                @refresh-change="refreshChange"
-               @selection-change="selectionChange">
+               >
+<!--               @selection-change="selectionChange">-->
       <template slot="menuLeft">
 <!--        <el-button v-if="isAuth('admin:hotSearch:save')"-->
         <el-button v-if="true"
@@ -98,57 +99,26 @@ export default {
           // size: page ? page.pageSize : 20
         }, params))
       }).then(({ data }) => {
-        this.page.total = data.total
-        this.page.pageSize = data.size
-        this.page.currentPage = data.current
+        // this.page.total = data.total
+        // this.page.pageSize = data.size
+        // this.page.currentPage = data.current
+        this.page.total = 2
+        this.page.pageSize = 10
+        this.page.currentPage = 1
+
         //this.dataList = data.records
-        this.dataList = data
+        this.dataList = data.data
+
         this.dataListLoading = false
         if (done) {
           done()
         }
       })
     },
-    // 多选回调
-    selectionChange (list) {
-      this.dataListSelections = list
-    },
-    // 新增 / 修改
-    addOrUpdateHandle (id) {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id)
-      })
-    },
+
     // 点击查询
     searchChange (params, done) {
       this.getDataList(this.page, params, done)
-    },
-    // 删除
-    deleteHandle (row, index) {
-      var ids = row.hotSearchId ? [row.hotSearchId] : this.dataListSelections.map(item => {
-        return item.hotSearchId
-      })
-      this.$confirm(`确定进行[${row.hotSearchId ? '删除' : '批量删除'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/admin/hotSearch'),
-          method: 'delete',
-          data: this.$http.adornData(ids, false)
-        }).then(({ data }) => {
-          this.$message({
-            message: '操作成功',
-            type: 'success',
-            duration: 1500,
-            onClose: () => {
-              this.getDataList()
-            }
-          })
-        })
-      }).catch(() => { })
     },
     refreshChange () {
       this.getDataList(this.page)

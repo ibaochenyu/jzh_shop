@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class ProduceServiceImpl implements ProduceService {
 
 //http://localhost:8081/getOneProduce?produce_date=2020-05-07&truth_item_id=82002&truth_worker_id=1
     @Override
-    public ProduceQueryRespDTO getOneProduce(Date produce_date,int truth_item_id, int truth_worker_id){
+    public List<ProduceQueryRespDTO> getOneProduce(Date produce_date,int truth_item_id, int truth_worker_id){
 
         Date temp=produce_date;
         temp.setHours(0);
@@ -49,7 +50,10 @@ public class ProduceServiceImpl implements ProduceService {
                 .le(ProduceDO::getProduceDate, tomorrow)//小于明天
                 .eq(ProduceDO::getTruthItemId, truth_item_id)
                 .eq(ProduceDO::getTruthWorkerId, truth_worker_id);
-        ProduceDO produceDO=produceMapper.selectOne(queryWrapper);
-        return BeanUtil.convert(produceDO, ProduceQueryRespDTO.class);
+        //ProduceDO produceDO=produceMapper.selectOne(queryWrapper);
+        List<ProduceDO> produceDOList=produceMapper.selectList(queryWrapper);
+        //return BeanUtil.convert(produceDO, ProduceQueryRespDTO.class);
+        List<ProduceQueryRespDTO> ProduceQueryRespDTOList=BeanUtil.convert(produceDOList, ProduceQueryRespDTO.class);
+        return ProduceQueryRespDTOList;
     }
 }
