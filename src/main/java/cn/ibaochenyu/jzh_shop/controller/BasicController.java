@@ -64,15 +64,15 @@ public class BasicController {
 
 
 
-@RequestMapping("/getOneProduceRtResult")
+@RequestMapping("/getOneProduceRtResult") //传入在前端的文本要写2020-05-07
 //public ServerResponseEntity<List<ProduceQueryRespDTO>> getOneProduceRtResult(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
 //                                                                       @RequestParam(name="truth_item_id", defaultValue = "82002") int truth_item_id,
 //                                                                       @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
-public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestParam(name="produce_date", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
-                                                                              @RequestParam(name="truth_item_id", required = false) Integer truth_item_id,
-                                                                              @RequestParam(name="truth_worker_id", required = false) Integer truth_worker_id,
+public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestParam(name="produceDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date produceDate,
+                                                                              @RequestParam(name="truthItemId", required = false) Integer truthItemId,
+                                                                              @RequestParam(name="truthWorkerId", required = false) Integer truthWorkerId,
                                                                               PageParam<ProduceDO> page) {
-    IPage<ProduceDO> rt=produceService.getOneProduce(produce_date,truth_item_id,truth_worker_id,page);
+    IPage<ProduceDO> rt=produceService.getOneProduce(produceDate,truthItemId,truthWorkerId,page);
     return ServerResponseEntity.success(rt);
 }
 

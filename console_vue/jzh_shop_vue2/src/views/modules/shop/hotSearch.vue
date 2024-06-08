@@ -74,8 +74,8 @@ export default {
         total: 0, // 总页数
         // currentPage: 1, // 当前页数
         // pageSize: 10 // 每页显示多少条
-        currentPage: 5, // 当前页数
-        pageSize: 3 // 每页显示多少条
+        currentPage: 1, // 当前页数
+        pageSize: 10 // 每页显示多少条
       },
       dataListLoading: false,
       dataListSelections: [],
@@ -94,11 +94,18 @@ export default {
         //url: this.$http.adornUrl('/admin/hotSearch/page'),
         //url: this.$http.adornUrl('/getOneProduce'),
         url: this.$http.adornUrl('/getOneProduceRtResult'),
+//https://blog.csdn.net/weixin_43299180/article/details/112882498
+//         const target = { a: 1, b: 2 };
+//         const source1 = { b: 4, c: 5 };
+//         const source2 = { b: 6, c: 7 };
+//         const obj = Object.assign(target,source1,source2);
+//         console.log(obj); // (a: 1, b: 6, c: 7)
+//         源对象属性与目标对象属性不同，则会被拷贝到目标对象中；
 
         method: 'get',
-        params: this.$http.adornParams(Object.assign({
-          current: page ? page.currentPage : 5,
-          size: page ? page.pageSize : 3
+        params: this.$http.adornParams(Object.assign({  //{"current": 3,"size": 10,"truthItemId": "82002"}
+          current: page ? page.currentPage : 1,
+          size: page ? page.pageSize : 10
         }, params))
       }).then(({ data }) => {
         this.page.total = data.total
