@@ -38,7 +38,6 @@ import java.util.List;
 //添加上去，否则private final BasicService basicService;报错
 @RequiredArgsConstructor
 @RequestMapping("/produceHandle")
-@CrossOrigin
 public class BasicController {
 
     private final BasicService basicService;
@@ -66,7 +65,7 @@ public class BasicController {
 
 
 
-    @SysLogMyAnnotation(mvalue="请求searchPageResult")
+//    @SysLogMyAnnotation(mvalue="请求searchPageResult")
 @RequestMapping("/searchPageResult") //传入在前端的文本要写2020-05-07
 //public ServerResponseEntity<List<ProduceQueryRespDTO>> getOneProduceRtResult(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
 //                                                                       @RequestParam(name="truth_item_id", defaultValue = "82002") int truth_item_id,
@@ -87,7 +86,7 @@ public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestPara
         return ServerResponseEntity.success(rt);
     }
 
-    @SysLogMyAnnotation(mvalue="saveProduce")
+//    @SysLogMyAnnotation(mvalue="saveProduce")
     @PostMapping//RequestBody???
     public ServerResponseEntity<Void> save(@RequestBody ProduceDO produceDO) {
         //int rt=produceService.save(produceDO);
@@ -96,7 +95,7 @@ public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestPara
         return ServerResponseEntity.success();
     }
 
-    @SysLogMyAnnotation(mvalue="updateProduce")
+//    @SysLogMyAnnotation(mvalue="updateProduce")
     @PutMapping
     public ServerResponseEntity<Void> update(@RequestBody ProduceDO produceDO) {
         produceService.update(produceDO);
@@ -104,11 +103,14 @@ public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestPara
     }
 
 //    @SysLogMyAnnotation(mvalue="deleteProduce")
-    @DeleteMapping("/testDelete")
-    //public ServerResponseEntity<Void> delete(@RequestBody List<Long> ids) {
-    public ServerResponseEntity<Void> delete(@RequestBody Long[] ids) {
-        List<Long> temp= Arrays.asList(ids);
-        produceService.delete(temp);
+    //@DeleteMapping("/testDelete")
+    @PutMapping("/testDelete")//神坑：为什么一@DeleteMapping+@RequestBody就开始变慢了？如果这里写deleteMapping，前端不会慢；一写@delete，前端就变慢
+    public ServerResponseEntity<Void> delete(@RequestBody List<Long> ids) {//这个问题和前端有关。因为postman是正常发送的
+//    public ServerResponseEntity<Void> delete2(@RequestBody Long ids) {
+//        List<Long> temp= Arrays.asList(ids);
+
+        produceService.delete(ids);
+        //produceService.deleteOneId(ids);
         return ServerResponseEntity.success();
     }//不知道为什么delete很久后才来？？？
 

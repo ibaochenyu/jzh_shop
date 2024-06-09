@@ -5,7 +5,8 @@ import { Message } from 'element-ui'//否则无法提示错误窗口
 //bcy：构造const的http，之后会导出这个http
 //idea中js调试，配置的参数 --remote-allow-origins=*
 const http = axios.create({
-  timeout: 1000 * 30,
+  //timeout: 1000 * 30,
+  timeout: 1000 * 120,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json; charset=utf-8'
@@ -14,9 +15,9 @@ const http = axios.create({
 
 
 
-// /**
-//  * 请求拦截
-//  */
+/**
+ * 请求拦截
+ */
 // http.interceptors.request.use(config => {
 //   config.headers['Authorization'] = Vue.cookie.get('Authorization') // 请求头带上token
 //   return config
@@ -33,12 +34,14 @@ http.interceptors.response.use(response => {//阻拦的关键：http.interceptor
     return response
   }
 
+
   const res = response.data
   return res
   // 00000 请求成功
   // if (res.code === '00000') {
   //   return res
   // }
+})
   // // // A00001 用于直接显示提示用户的错误,内容由输入决定
   // // if (res.code === 'A00001') {
   // //   Message({
@@ -86,7 +89,7 @@ http.interceptors.response.use(response => {//阻拦的关键：http.interceptor
   //     customClass: 'element-error-message-zindex'
   //   })
   // }
-}
+// }
 // , error => {
   // switch (error.response.status) {
   //   case 400:
@@ -128,7 +131,7 @@ http.interceptors.response.use(response => {//阻拦的关键：http.interceptor
   // }
   // return Promise.reject(error)
 // }
-)
+// )
 
 /**
  * 请求地址处理

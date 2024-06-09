@@ -145,12 +145,12 @@ export default {
     },
     // 删除
     deleteHandle (row, index) {
-      var ids = row.id ? [row.hotSearchId] : this.dataListSelections.map(item => {
+      var ids = row.id ? [row.id] : this.dataListSelections.map(item => {
         return item.id
       })
       // ids=ids[0]
       // console.log("可能要删除的id是："+ids[0]);
-      this.$confirm(`确定进行[${row.hotSearchId ? '删除' : '批量删除'}]操作?`, '提示', {
+      this.$confirm(`确定进行[${row.id ? '删除' : '批量删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -160,7 +160,7 @@ export default {
 
           //url: this.$http.adornUrl('/produceHandle/'+ids[0]),
 
-          method: 'DELETE',
+          method: 'PUT',
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {
           this.$message({
