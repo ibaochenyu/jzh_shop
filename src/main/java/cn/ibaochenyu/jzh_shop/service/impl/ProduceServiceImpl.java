@@ -111,7 +111,7 @@ public class ProduceServiceImpl implements ProduceService {
         ////
         int rt;
         rt = produceMapper.insert(produceDO);//此处如果插入的东西遇到uniqueIndex阻碍，会自动throw，并被全局捕获
-        System.out.println("produceMapper.save"+   (""+produceDO.getProduceId())  );
+        System.out.println("produceMapper.save"+   (""+produceDO.getId())  );
         System.out.println("rt:"+   (""+rt)  );
 
 
@@ -120,14 +120,14 @@ public class ProduceServiceImpl implements ProduceService {
     @Override
     public void update(ProduceDO produceDO) {
         int rt=produceMapper.updateById(produceDO);
-        System.out.println("produceMapper.update"+   (""+produceDO.getProduceId())  );
+        System.out.println("produceMapper.update"+   (""+produceDO.getId())  );
         System.out.println("rt:"+   (""+rt)  );
     }
 
     @Override
     public void delete(ProduceDO produceDO) {
         int rt=produceMapper.deleteById(produceDO);
-        System.out.println("produceMapper.delete"+   (""+produceDO.getProduceId())  );
+        System.out.println("produceMapper.delete"+   (""+produceDO.getId())  );
         System.out.println("rt:"+   (""+rt)  );
 
     }
