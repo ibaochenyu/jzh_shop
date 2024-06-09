@@ -19,5 +19,7 @@ IPage<ProduceDO> getOneProduce(Date produce_date, Integer truth_item_id, Integer
 
     void update(ProduceDO produceDO);
 
-    void delete(ProduceDO produceDO);
+    void delete(List<Long> ids);
+
+    void deleteOneId(Long id) ;
 }

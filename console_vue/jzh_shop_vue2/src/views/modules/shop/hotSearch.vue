@@ -9,9 +9,10 @@
                @search-change="searchChange"
                @on-load="getDataList"
                @refresh-change="refreshChange"
-               >
-<!--               @selection-change="selectionChange">-->
 
+               @selection-change="selectionChange">
+    >
+<!--      selectionChange自定义的函数，当选择的条目改变时候，会触发这个函数-->
       <template slot="menuLeft">
 <!--        <el-button v-if="isAuth('admin:hotSearch:save')"-->
         <el-button v-if="true"
@@ -126,6 +127,10 @@ export default {
         }
       })
     },
+    // 多选回调
+    selectionChange (list) {
+      this.dataListSelections = list
+    },
     // 新增 / 修改
     addOrUpdateHandle (id) {
       this.addOrUpdateVisible = true
@@ -138,9 +143,77 @@ export default {
     searchChange (params, done) {
       this.getDataList(this.page, params, done)
     },
+    // 删除
+    deleteHandle (row, index) {
+      var ids = row.id ? [row.hotSearchId] : this.dataListSelections.map(item => {
+        return item.id
+      })
+      // ids=ids[0]
+      // console.log("可能要删除的id是："+ids[0]);
+      this.$confirm(`确定进行[${row.hotSearchId ? '删除' : '批量删除'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/produceHandle/testDelete'),
+
+          //url: this.$http.adornUrl('/produceHandle/'+ids[0]),
+
+          method: 'DELETE',
+          data: this.$http.adornData(ids, false)
+        }).then(({ data }) => {
+          this.$message({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.getDataList()
+            }
+          })
+        })
+      }).catch(() => { })
+    },
     refreshChange () {
       this.getDataList(this.page)
     }
   }
 }
 </script>
+
+<!--let和var区别-->
+<!--//////-->
+<!--{-->
+<!--let name= 'lulu',age= 18;-->
+<!--console.log(name); //lulu-->
+<!--}-->
+<!--console.log(name); //name is not defined-->
+<!--let存在块作用域特性，变量只在块域中有效-->
+
+<!--//////-->
+<!--使用 var 定义的代码，声明会被提升到前面，赋值还在原位置-->
+
+<!--代码A-->
+<!--console.log(a); //undefined-->
+<!--var a = 1;-->
+<!--console.log(a);  //1-->
+
+<!--代码B（等价于代码A，因为变量提升：解析器会先解析代码，然后把声明的变量的声明提升到最前-->
+<!--var a;-->
+<!--console.log(a); //undefined-->
+<!--a = 1;-->
+<!--console.log(a);  //1-->
+
+<!--////-->
+<!--var name = "Trump";-->
+<!--function Chairman() {-->
+<!--var name;-->
+<!--if (false) {-->
+<!--name = "Biden";-->
+<!--}-->
+<!--console.log(name);-->
+<!--}-->
+<!--Chairman();-->
+<!--这样一来，即使没有走到赋值语句处，在函数内部依然开辟了新的内存地址来保存局部变量name，所以最终输出的是undefined。-->
+<!--这其实算是js语言早期发展的一个bug。-->
+<!--https://segmentfault.com/a/1190000044673994-->

@@ -2,6 +2,8 @@ package cn.ibaochenyu.jzh_shop.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,6 +11,8 @@ import java.util.Date;
 @Data
 @TableName("t_produce")
 public class ProduceDO {
+    //https://blog.csdn.net/qq_41619796/article/details/125411221 //https://blog.csdn.net/zqm1992409670/article/details/125900250
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;//不是很明白修改为produceId后，无法UUID自增。用了@tableid也无效
 //铁路是自增UUID，mall是自增id //这里先暂时自增id吧
 

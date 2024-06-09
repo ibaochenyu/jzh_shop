@@ -125,13 +125,21 @@ public class ProduceServiceImpl implements ProduceService {
     }
 
     @Override
-    public void delete(ProduceDO produceDO) {
-        int rt=produceMapper.deleteById(produceDO);
-        System.out.println("produceMapper.delete"+   (""+produceDO.getId())  );
+    public void delete(List<Long> ids) {
+        //int rt=produceMapper.deleteById(produceDO);//传入单个dto的删除，用deleteByid
+        int rt=produceMapper.deleteBatchIds(ids);
+        System.out.println("produceMapper.delete返回rt个数"+   (""+rt)  );
         System.out.println("rt:"+   (""+rt)  );
+    }//使用postman //http://127.0.0.1:8081/produceHandle
 
-    }
-}
+    @Override
+    public void deleteOneId(Long id) {
+        int rt=produceMapper.deleteById(id);//传入单个dto的删除，用deleteByid
+        //int rt=produceMapper.deleteBatchIds(id);
+        System.out.println("produceMapper.delete返回rt个数"+   (""+rt)  );
+        System.out.println("rt:"+   (""+rt)  );
+    }//使用postman //http://127.0.0.1:8081/produceHandle
+}//在body的raw的json输入[0,14]
 
 //插入unique索引，chrome调试器中返回：
 //        {

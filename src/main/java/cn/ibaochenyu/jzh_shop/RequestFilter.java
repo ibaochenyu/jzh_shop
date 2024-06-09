@@ -39,7 +39,7 @@ public class RequestFilter implements Filter {
 //        response.addHeader("Access-Control-Allow-Origin", request.getHeader("origin"));
         // 解决预请求（发送2次请求），此问题也可在 nginx 中作相似设置解决。
         response.setHeader("Access-Control-Allow-Headers", "x-requested-with,Cache-Control,Pragma,Content-Type,Token, Content-Type");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");//这里曾经拉了一个put
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         String method = request.getMethod();
@@ -48,6 +48,12 @@ public class RequestFilter implements Filter {
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }
+
+//        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+//        response.setHeader("Access-Control-Max-Age", "3600");
+//        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+//        response.setHeader("Access-Control-Allow-Credentials", "true");
+//        filterChain.doFilter(request, response);
     }
 
 //@Override//这个函数大部分看懂了

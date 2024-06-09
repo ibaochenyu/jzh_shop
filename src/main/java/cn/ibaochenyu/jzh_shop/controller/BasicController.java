@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,7 @@ import java.util.List;
 //添加上去，否则private final BasicService basicService;报错
 @RequiredArgsConstructor
 @RequestMapping("/produceHandle")
+@CrossOrigin
 public class BasicController {
 
     private final BasicService basicService;
@@ -101,10 +103,20 @@ public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestPara
         return ServerResponseEntity.success();
     }
 
-    @SysLogMyAnnotation(mvalue="deleteProduce")
-    @DeleteMapping
-    public ServerResponseEntity<Void> delete(@RequestBody ProduceDO produceDO) {
-        produceService.delete(produceDO);
+//    @SysLogMyAnnotation(mvalue="deleteProduce")
+    @DeleteMapping("/testDelete")
+    //public ServerResponseEntity<Void> delete(@RequestBody List<Long> ids) {
+    public ServerResponseEntity<Void> delete(@RequestBody Long[] ids) {
+        List<Long> temp= Arrays.asList(ids);
+        produceService.delete(temp);
+        return ServerResponseEntity.success();
+    }//不知道为什么delete很久后才来？？？
+
+    @DeleteMapping("/{id}")
+    //public ServerResponseEntity<Void> delete(@RequestBody List<Long> ids) {
+    public ServerResponseEntity<Void> delete(@PathVariable Long id) {
+//        List<Long> temp= Arrays.asList(ids);
+        produceService.deleteOneId(id);
         return ServerResponseEntity.success();
     }
 
