@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 09/06/2024 11:57:22
+ Date: 09/06/2024 12:59:51
 */
 
 SET NAMES utf8mb4;
@@ -58,12 +58,12 @@ CREATE TABLE `t_item`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_produce`;
 CREATE TABLE `t_produce`  (
-  `id` bigint NOT NULL,
+  `produce_id` bigint NOT NULL,
   `produce_date` datetime NULL DEFAULT NULL,
   `truth_item_id` int NULL DEFAULT NULL,
   `truth_worker_id` int NULL DEFAULT NULL,
   `produce_count` int NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`produce_id`) USING BTREE,
   UNIQUE INDEX `测试冲突`(`truth_item_id`, `truth_worker_id`, `produce_count`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
@@ -95,6 +95,10 @@ INSERT INTO `t_produce` VALUES (1799459742207311873, '1997-02-28 08:00:00', 111,
 INSERT INTO `t_produce` VALUES (1799470610332700674, '1997-02-28 08:00:00', 111, 222, 335);
 INSERT INTO `t_produce` VALUES (1799627693006946305, '1997-02-28 08:00:00', 111, 222, 336);
 INSERT INTO `t_produce` VALUES (1799642769143320577, '1997-02-28 08:00:00', 111, 222, 337);
+INSERT INTO `t_produce` VALUES (1799654822461505537, '1997-02-28 08:00:00', 111, 222, 340);
+INSERT INTO `t_produce` VALUES (1799654822461505538, '1997-02-28 08:00:00', 111, 222, 341);
+INSERT INTO `t_produce` VALUES (1799654822461505539, '1997-02-28 08:00:00', 111, 222, 343);
+INSERT INTO `t_produce` VALUES (1799666989617307649, '1997-02-28 08:00:00', 111, 222, 345);
 
 -- ----------------------------
 -- Table structure for t_produce_salary
@@ -167,6 +171,17 @@ INSERT INTO `t_sys_log` VALUES (1799646657305071618, '2024-06-09 11:36:14', '请
 INSERT INTO `t_sys_log` VALUES (1799649502955786242, '2024-06-09 11:47:32', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 1254);
 INSERT INTO `t_sys_log` VALUES (1799650917656776705, '2024-06-09 11:53:09', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 139);
 INSERT INTO `t_sys_log` VALUES (1799651791279968258, '2024-06-09 11:56:38', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 63);
+INSERT INTO `t_sys_log` VALUES (1799653289472753665, '2024-06-09 12:02:35', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 3179);
+INSERT INTO `t_sys_log` VALUES (1799654834427854849, '2024-06-09 12:08:43', 'saveProduce', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.save()', '{\"produceId\":1799654822461505537,\"produceDate\":857088000000,\"truthItemId\":111,\"truthWorkerId\":222,\"produceCount\":340}', 5213);
+INSERT INTO `t_sys_log` VALUES (1799654857785933826, '2024-06-09 12:08:49', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 2159);
+INSERT INTO `t_sys_log` VALUES (1799656693183991810, '2024-06-09 12:16:06', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 4680);
+INSERT INTO `t_sys_log` VALUES (1799657438939598850, '2024-06-09 12:19:04', 'saveProduce', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.save()', '{\"produceId\":1799654822461505538,\"produceDate\":857088000000,\"truthItemId\":111,\"truthWorkerId\":222,\"produceCount\":341}', 3423);
+INSERT INTO `t_sys_log` VALUES (1799657458115956737, '2024-06-09 12:19:09', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 1051);
+INSERT INTO `t_sys_log` VALUES (1799665948427468802, '2024-06-09 12:52:53', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 3184);
+INSERT INTO `t_sys_log` VALUES (1799666017700593666, '2024-06-09 12:53:09', 'saveProduce', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.save()', '{\"produceId\":null,\"produceDate\":857088000000,\"truthItemId\":111,\"truthWorkerId\":222,\"produceCount\":343}', 3315);
+INSERT INTO `t_sys_log` VALUES (1799666035119538178, '2024-06-09 12:53:14', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 1162);
+INSERT INTO `t_sys_log` VALUES (1799666992729481217, '2024-06-09 12:57:02', 'saveProduce', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.save()', '{\"produceId\":1799666989617307649,\"produceDate\":857088000000,\"truthItemId\":111,\"truthWorkerId\":222,\"produceCount\":345}', 2167);
+INSERT INTO `t_sys_log` VALUES (1799667011645792258, '2024-06-09 12:57:06', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 1763);
 
 -- ----------------------------
 -- Table structure for t_worker
