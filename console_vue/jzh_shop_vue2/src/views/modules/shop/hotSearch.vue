@@ -40,6 +40,7 @@
       <template slot-scope="scope"
                 slot="menu">
 <!--        <el-button v-if="isAuth('admin:hotSearch:update')"-->
+<!--        明白了，原来参考的数据库的第一列就叫hotSearchId。而我这里传过来的是id，和他们不一样-->
         <el-button v-if="true"
                    type="primary"
                    size="small"
@@ -128,7 +129,7 @@ export default {
     // 新增 / 修改
     addOrUpdateHandle (id) {
       this.addOrUpdateVisible = true
-      this.$nextTick(() => {
+      this.$nextTick(() => {//this.$nextTick() 解释为在下次DOM更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的DOM.  也就是说，当dom元素发生改变，重新渲染dom树后，再执行vue.$nextTick()里面的内容。
         this.$refs.addOrUpdate.init(id)
       })
     },
