@@ -32,7 +32,7 @@ public class GlobalExceptionHandleMyself {
         log.error("测试参数：{}",throwable.getMessage());
 
         //log.error("进入GlobalExceptionHandleMyself关于Throwable的处理：{}",e.getMessage());
-        return ServerResponseEntity.fail();
+        return ServerResponseEntity.fail(ResponseEnum.SQL_DUPLICATE);
 
         //我看过了，铁路注册的用户名如果重复，首部状态码是200，responce的错误码才是自己细节定义的
     }//此处定义的是控制台response的码。前端会额外根据我们细节定义的A00005进行说明展示

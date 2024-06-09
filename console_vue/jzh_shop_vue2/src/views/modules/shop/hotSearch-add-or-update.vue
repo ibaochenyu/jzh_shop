@@ -1,6 +1,6 @@
 <template>
   <div class="mod-hotSearch-add-or-update">
-    <el-dialog :title="!dataForm.hotSearchId ? '新增' : '修改'"
+    <el-dialog :title="!dataForm.id ? '新增' : '修改'"
                :close-on-click-modal="false"
                :visible.sync="visible">
       <el-form :model="dataForm"
@@ -70,7 +70,7 @@ export default {
   data () {
     return {
       dataForm: {
-        hotSearchId: 0,
+        id: 0,
         produceDate: '',
         truthItemId: '',
         truthWorkerId: '',
@@ -104,13 +104,13 @@ export default {
   components: {},
   methods: {
     init (id) {
-      this.dataForm.hotSearchId = id || 0
+      this.dataForm.id = id || 0
       this.visible = true
       this.$nextTick(() => {//this.$nextTick ()方法可以在下次DOM更新循环结束之后执行延迟回调，获取更新后的DOM
         this.$refs['dataForm'].resetFields()
-        if (this.dataForm.hotSearchId) {
+        if (this.dataForm.id) {
           this.$http({
-            url: this.$http.adornUrl('/produceHandle/getOneProduceInfo/' + this.dataForm.hotSearchId),
+            url: this.$http.adornUrl('/produceHandle/getOneProduceInfo/' + this.dataForm.id),
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {
@@ -127,7 +127,7 @@ export default {
           let param = this.dataForm
           this.$http({
             url: this.$http.adornUrl(`/produceHandle`),
-            method: param.hotSearchId ? 'put' : 'post',
+            method: param.id ? 'put' : 'post',
             data: this.$http.adornData(param)
           }).then(({ data }) => {
             this.$message({

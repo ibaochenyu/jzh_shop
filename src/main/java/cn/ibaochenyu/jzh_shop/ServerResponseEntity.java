@@ -137,7 +137,15 @@ public class ServerResponseEntity<T> implements Serializable {
     public static <T> ServerResponseEntity<T> fail() {
         ServerResponseEntity<T> serverResponseEntity = new ServerResponseEntity<>();
         serverResponseEntity.setCode(ResponseEnum.EXCEPTION.value());
+        serverResponseEntity.setMsg(ResponseEnum.EXCEPTION.getMsg());
 //        serverResponseEntity.setData(data);
+        return serverResponseEntity;
+    }
+
+    public static <T> ServerResponseEntity<T> fail(ResponseEnum responseEnum) {//形参的错误写法  <T> data
+        ServerResponseEntity<T> serverResponseEntity = new ServerResponseEntity<>();
+        serverResponseEntity.setCode(responseEnum.value());//返回一个具体的错误码
+        serverResponseEntity.setMsg(responseEnum.getMsg());
         return serverResponseEntity;
     }
 

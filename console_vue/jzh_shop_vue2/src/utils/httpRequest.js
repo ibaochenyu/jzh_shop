@@ -38,29 +38,30 @@ http.interceptors.response.use(response => {//阻拦的关键：http.interceptor
   if (res.code === '00000') {
     return res
   }
-  // A00001 用于直接显示提示用户的错误,内容由输入决定
-  if (res.code === 'A00001') {
-    Message({
-      message: res.msg || 'Error',
-      type: 'error',
-      duration: 1.5 * 1000
-    })
-    return Promise.reject(res)
-  }
-  // A00002 用于直接显示提示系统的成功,内容由输入决定
-  if (res.code === 'A00002') {
-    Message({
-      message: res.msg,
-      type: 'success',
-      duration: 1.5 * 1000
-    })
-  }
+  // // A00001 用于直接显示提示用户的错误,内容由输入决定
+  // if (res.code === 'A00001') {
+  //   Message({
+  //     message: res.msg || 'Error',
+  //     type: 'error',
+  //     duration: 1.5 * 1000
+  //   })
+  //   return Promise.reject(res)
+  // }
 
-  // A00004 未授权
-  if (res.code === 'A00004') {
-    clearLoginInfo()
-    router.push({ name: 'login' })
-  }
+  // // A00002 用于直接显示提示系统的成功,内容由输入决定
+  // if (res.code === 'A00002') {
+  //   Message({
+  //     message: res.msg,
+  //     type: 'success',
+  //     duration: 1.5 * 1000
+  //   })
+  // }
+
+  // // A00004 未授权
+  // if (res.code === 'A00004') {
+  //   clearLoginInfo()
+  //   router.push({ name: 'login' })
+  // }
 
   // A00005 服务器异常
   if (res.code === 'A00005') {
@@ -76,13 +77,13 @@ http.interceptors.response.use(response => {//阻拦的关键：http.interceptor
     })
     return Promise.reject(res)//Promise.reject() 静态方法返回一个已拒绝（rejected）的 Promise 对象，拒绝原因为给定的参数。
   }
-  if (res.code === 'A00014') {
+  if (res.code === 'SQL00001') {
     Message({
-      message: res.msg,
+      message: 'sql修改数据出错，很可能是uniqueKey冲突--前端提示',
       type: 'error',
-      duration: 1.5 * 1000
+      duration: 1.5 * 1000,
+      customClass: 'element-error-message-zindex'
     })
-    return Promise.reject(res)
   }
 }, error => {
   switch (error.response.status) {

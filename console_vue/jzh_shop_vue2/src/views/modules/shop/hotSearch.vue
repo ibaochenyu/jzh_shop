@@ -40,12 +40,12 @@
       <template slot-scope="scope"
                 slot="menu">
 <!--        <el-button v-if="isAuth('admin:hotSearch:update')"-->
-<!--        明白了，原来参考的数据库的第一列就叫hotSearchId。而我这里传过来的是id，和他们不一样-->
+<!--        明白了，原来参考的数据库的第一列就叫id。而我这里传过来的是id，和他们不一样-->
         <el-button v-if="true"
                    type="primary"
                    size="small"
                    icon="el-icon-edit"
-                   @click="addOrUpdateHandle(scope.row.hotSearchId)">修改</el-button>
+                   @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
 <!--        <el-button v-if="isAuth('admin:hotSearch:delete')"-->
         <el-button v-if="true"
                    type="danger"
