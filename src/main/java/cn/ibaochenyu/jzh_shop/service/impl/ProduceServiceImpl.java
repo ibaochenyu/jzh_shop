@@ -110,7 +110,7 @@ public class ProduceServiceImpl implements ProduceService {
 
         ////
         int rt;
-        rt = produceMapper.insert(produceDO);
+        rt = produceMapper.insert(produceDO);//此处如果插入的东西遇到uniqueIndex阻碍，会自动throw，并被全局捕获
         System.out.println("produceMapper.save"+   (""+produceDO.getId())  );
         System.out.println("rt:"+   (""+rt)  );
 
