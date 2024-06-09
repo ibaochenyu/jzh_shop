@@ -5,7 +5,7 @@ public enum ResponseEnum {
     /**
      * ok
      */
-    OK("00000", "ok"),
+    OK("00000", "返回了一个okMsg"),
     SHOW_FAIL("A00001", ""),
 
     /**

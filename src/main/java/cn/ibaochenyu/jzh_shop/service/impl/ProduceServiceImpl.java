@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 //Parameter 1 of constructor in cn.ibaochenyu.jzh_shop.controller.BasicController required a bean of type 'cn.ibaochenyu.jzh_shop.service.ProduceService' that could not be found.
 //这里没有implement的原因
 //public class ProduceServiceImpl{
@@ -94,10 +96,25 @@ public class ProduceServiceImpl implements ProduceService {
 
     @Override
     public void save(ProduceDO produceDO) {
-        int rt=produceMapper.insert(produceDO);//如果是unique健，则直接被吞咽，不会进入下面的systemout.
-//### Error updating database.  Cause: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '111-222-333' for key 't_produce.测试冲突'
+
+//        int rt;
+//        try {//不能tryCatch，否则前端返回的是绿色的正常提示
+//            rt = produceMapper.insert(produceDO);//如果是unique健，则直接被吞咽，不会进入下面的systemout.
+////### Error updating database.  Cause: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '111-222-333' for key 't_produce.测试冲突'
+//            System.out.println("produceMapper.save"+   (""+produceDO.getId())  );
+//            System.out.println("rt:"+   (""+rt)  );
+//        }catch(Exception e){
+//            log.error("ProduceServiceImpl.save出错。具体为：{}",e.getMessage());
+//        }
+
+
+        ////
+        int rt;
+        rt = produceMapper.insert(produceDO);
         System.out.println("produceMapper.save"+   (""+produceDO.getId())  );
         System.out.println("rt:"+   (""+rt)  );
+
+
     }
 
     @Override

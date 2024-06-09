@@ -1,9 +1,9 @@
 import Vue from 'vue'
-import axios from 'axios'
+import axios from 'axios' //使用axios.create的必须
 import merge from 'lodash/merge'
-
+import { Message } from 'element-ui'//否则无法提示错误窗口
 //bcy：构造const的http，之后会导出这个http
-
+//idea中js调试，配置的参数 --remote-allow-origins=*
 const http = axios.create({
   timeout: 1000 * 30,
   withCredentials: true,
@@ -27,7 +27,7 @@ const http = axios.create({
 /**
  * 响应拦截
  *///此处写上后，自动把data.data给data。根据状态码来个提示
-http.interceptors.response.use(response => {
+http.interceptors.response.use(response => {//阻拦的关键：http.interceptors.response.use。之后把这个设置好的http挂载在全局里头
   // blob 格式处理
   if (response.request.responseType === 'blob') {
     return response
@@ -69,12 +69,12 @@ http.interceptors.response.use(response => {
     console.log('异常信息: ', res)
     console.error('============== 请求异常 end ==========')
     Message({
-      message: '服务器出了点小差，请稍后再试',
+      message: '服务器出了点小差，请稍后再试2222',
       type: 'error',
       duration: 1.5 * 1000,
       customClass: 'element-error-message-zindex'
     })
-    return Promise.reject(res)
+    return Promise.reject(res)//Promise.reject() 静态方法返回一个已拒绝（rejected）的 Promise 对象，拒绝原因为给定的参数。
   }
   if (res.code === 'A00014') {
     Message({
@@ -108,7 +108,7 @@ http.interceptors.response.use(response => {
       break
     case 500:
       Message({
-        message: '服务器出了点小差，请稍后再试',
+        message: '服务器出了点小差，请稍后再试3333',
         type: 'error',
         duration: 1500,
         customClass: 'element-error-message-zindex'
