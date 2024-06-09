@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 09/06/2024 11:57:22
+ Date: 09/06/2024 14:20:55
 */
 
 SET NAMES utf8mb4;
@@ -29,7 +29,7 @@ CREATE TABLE `t_basic`  (
   `home_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'homeAddress',
   `date` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_basic
@@ -47,7 +47,7 @@ CREATE TABLE `t_item`  (
   `show_item_id` int NULL DEFAULT NULL,
   `item_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_item
@@ -65,12 +65,12 @@ CREATE TABLE `t_produce`  (
   `produce_count` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `测试冲突`(`truth_item_id`, `truth_worker_id`, `produce_count`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_produce
 -- ----------------------------
-INSERT INTO `t_produce` VALUES (6, '1900-01-20 00:00:00', 82007, 1, 4);
+INSERT INTO `t_produce` VALUES (6, '1997-02-28 08:00:00', 82008, 1, 5545);
 INSERT INTO `t_produce` VALUES (7, '1900-01-20 00:00:00', 82008, 1, 5);
 INSERT INTO `t_produce` VALUES (8, '1900-01-20 00:00:00', 82009, 1, 6);
 INSERT INTO `t_produce` VALUES (9, '2020-05-07 19:26:07', 82002, 1, 7);
@@ -95,6 +95,8 @@ INSERT INTO `t_produce` VALUES (1799459742207311873, '1997-02-28 08:00:00', 111,
 INSERT INTO `t_produce` VALUES (1799470610332700674, '1997-02-28 08:00:00', 111, 222, 335);
 INSERT INTO `t_produce` VALUES (1799627693006946305, '1997-02-28 08:00:00', 111, 222, 336);
 INSERT INTO `t_produce` VALUES (1799642769143320577, '1997-02-28 08:00:00', 111, 222, 337);
+INSERT INTO `t_produce` VALUES (1799681530858229761, '1997-02-28 08:00:00', 82008, 1, 999);
+INSERT INTO `t_produce` VALUES (1799684386927607809, '1997-02-28 08:00:00', 82008, 1, 5544);
 
 -- ----------------------------
 -- Table structure for t_produce_salary
@@ -106,7 +108,7 @@ CREATE TABLE `t_produce_salary`  (
   `truth_item_id` int NULL DEFAULT NULL,
   `unit_price` decimal(10, 2) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_produce_salary
@@ -125,7 +127,7 @@ CREATE TABLE `t_sys_log`  (
   `operator_argv` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `duration` bigint NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_sys_log
@@ -167,6 +169,23 @@ INSERT INTO `t_sys_log` VALUES (1799646657305071618, '2024-06-09 11:36:14', '请
 INSERT INTO `t_sys_log` VALUES (1799649502955786242, '2024-06-09 11:47:32', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 1254);
 INSERT INTO `t_sys_log` VALUES (1799650917656776705, '2024-06-09 11:53:09', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 139);
 INSERT INTO `t_sys_log` VALUES (1799651791279968258, '2024-06-09 11:56:38', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 63);
+INSERT INTO `t_sys_log` VALUES (1799681493059162113, '2024-06-09 13:54:39', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 1288);
+INSERT INTO `t_sys_log` VALUES (1799681530925338626, '2024-06-09 13:54:48', 'saveProduce', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.save()', '{\"id\":1799681530858229761,\"produceDate\":857088000000,\"truthItemId\":82008,\"truthWorkerId\":1,\"produceCount\":999}', 16);
+INSERT INTO `t_sys_log` VALUES (1799681537460064257, '2024-06-09 13:54:50', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 34);
+INSERT INTO `t_sys_log` VALUES (1799682285086388226, '2024-06-09 13:57:48', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 283);
+INSERT INTO `t_sys_log` VALUES (1799682341206175745, '2024-06-09 13:58:01', 'saveProduce', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.save()', '{\"produceId\":0,\"produceDate\":857088000000,\"truthItemId\":82022,\"truthWorkerId\":1,\"produceCount\":9911}', 16);
+INSERT INTO `t_sys_log` VALUES (1799682347749289985, '2024-06-09 13:58:03', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 47);
+INSERT INTO `t_sys_log` VALUES (1799682908590608385, '2024-06-09 14:00:17', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 1392);
+INSERT INTO `t_sys_log` VALUES (1799684333857079298, '2024-06-09 14:05:56', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 1348);
+INSERT INTO `t_sys_log` VALUES (1799684386927607810, '2024-06-09 14:06:09', 'saveProduce', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.save()', '{\"id\":1799684386927607809,\"produceDate\":857088000000,\"truthItemId\":82008,\"truthWorkerId\":1,\"produceCount\":5544}', 0);
+INSERT INTO `t_sys_log` VALUES (1799684393521053697, '2024-06-09 14:06:11', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 33);
+INSERT INTO `t_sys_log` VALUES (1799684772367368194, '2024-06-09 14:07:41', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 33);
+INSERT INTO `t_sys_log` VALUES (1799684946640699393, '2024-06-09 14:08:22', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 46);
+INSERT INTO `t_sys_log` VALUES (1799687100675833858, '2024-06-09 14:16:56', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 4621);
+INSERT INTO `t_sys_log` VALUES (1799687336102117377, '2024-06-09 14:17:52', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 65);
+INSERT INTO `t_sys_log` VALUES (1799687448454938626, '2024-06-09 14:18:19', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 32);
+INSERT INTO `t_sys_log` VALUES (1799687613710516225, '2024-06-09 14:18:58', 'updateProduce', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.update()', '{\"id\":6,\"produceDate\":857088000000,\"truthItemId\":82008,\"truthWorkerId\":1,\"produceCount\":5545}', 16);
+INSERT INTO `t_sys_log` VALUES (1799687620173938689, '2024-06-09 14:19:00', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 15);
 
 -- ----------------------------
 -- Table structure for t_worker
@@ -178,7 +197,7 @@ CREATE TABLE `t_worker`  (
   `show_worker_id` int NULL DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_worker
