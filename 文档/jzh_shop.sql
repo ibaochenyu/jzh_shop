@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 10/06/2024 12:20:49
+ Date: 10/06/2024 12:35:53
 */
 
 SET NAMES utf8mb4;
@@ -38,14 +38,29 @@ INSERT INTO `t_basic` VALUES (1, 3, '黄小鑫', 1, '黄小鑫的家', '2024-06-
 INSERT INTO `t_basic` VALUES (2, 6, '严小玲', 1, '严小玲的家', '2024-06-22 19:00:43');
 
 -- ----------------------------
+-- Table structure for t_commodity
+-- ----------------------------
+DROP TABLE IF EXISTS `t_commodity`;
+CREATE TABLE `t_commodity`  (
+  `id` bigint NOT NULL,
+  `truth_styler_id` bigint NULL DEFAULT NULL,
+  `commodity_status` int NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_commodity
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for t_produce
 -- ----------------------------
 DROP TABLE IF EXISTS `t_produce`;
 CREATE TABLE `t_produce`  (
   `id` bigint NOT NULL,
   `produce_date` datetime NULL DEFAULT NULL,
-  `truth_styler_id` int NULL DEFAULT NULL,
-  `truth_worker_id` int NULL DEFAULT NULL,
+  `truth_styler_id` bigint NULL DEFAULT NULL,
+  `truth_worker_id` bigint NULL DEFAULT NULL,
   `produce_count` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
@@ -93,11 +108,11 @@ INSERT INTO `t_produce` VALUES (1800019066021359618, '1122-12-12 08:00:00', 55, 
 DROP TABLE IF EXISTS `t_produce_salary`;
 CREATE TABLE `t_produce_salary`  (
   `id` bigint NOT NULL,
-  `date` datetime NULL DEFAULT NULL,
-  `truth_styler_id` int NULL DEFAULT NULL,
+  `produce_date` datetime NULL DEFAULT NULL,
+  `truth_styler_id` bigint NULL DEFAULT NULL,
   `unit_price` decimal(10, 2) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `日期款号独立索引`(`date`, `truth_styler_id`) USING BTREE
+  UNIQUE INDEX `日期款号独立索引`(`produce_date`, `truth_styler_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -199,7 +214,7 @@ DROP TABLE IF EXISTS `t_worker`;
 CREATE TABLE `t_worker`  (
   `id` bigint NOT NULL,
   `show_worker_id` int NULL DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `worker_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 

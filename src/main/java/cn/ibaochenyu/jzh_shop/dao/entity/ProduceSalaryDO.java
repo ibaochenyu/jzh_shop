@@ -11,7 +11,7 @@ import java.util.Date;
 public class ProduceSalaryDO {
     private Long id;
 
-    private Date date;
-    private int truthStylerId;
+    private Date produceDate;
+    private Long truthStylerId;
     private BigDecimal unitPrice;//java中BigDecimal，mysql用decimal，长度10，小数点2？？？
 }

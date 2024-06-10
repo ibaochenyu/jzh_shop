@@ -11,6 +11,6 @@ public class WorkerDO {
 //    private int truthWorkerId;
 
     private int showWorkerId;
-    private String name;
+    private String workerName;
 
 }

@@ -20,9 +20,9 @@ public class ProduceDO {
     //java是Date类型。对应mysql不是Date，而是DateTime
     private Date produceDate;
 //一旦修改了。需要全局替换。1.这里  2.truth_Item_id   3.truthStylerId
-    private int truthStylerId;
+    private Long truthStylerId;
 
-    private int truthWorkerId;
+    private Long truthWorkerId;
     private int produceCount;
 
 
