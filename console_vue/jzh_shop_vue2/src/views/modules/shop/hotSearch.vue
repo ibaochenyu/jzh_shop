@@ -107,7 +107,7 @@ export default {
 //         源对象属性与目标对象属性不同，则会被拷贝到目标对象中；
 
         method: 'get',
-        params: this.$http.adornParams(Object.assign({  //{"current": 3,"size": 10,"truthTemplateId": "82002"}
+        params: this.$http.adornParams(Object.assign({  //{"current": 3,"size": 10,"truthStylerId": "82002"}
           current: page ? page.currentPage : 1,
           size: page ? page.pageSize : 10
         }, params))

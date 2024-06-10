@@ -43,24 +43,24 @@ public class BasicController {
     private final BasicService basicService;
 
     private final ProduceService produceService;
-////http://localhost:8081/getOneProduce?produce_date=2020-05-07&truth_template_id=82002&truth_worker_id=1
+////http://localhost:8081/getOneProduce?produce_date=2020-05-07&truth_styler_id=82002&truth_worker_id=1
 
 
 
 //    @RequestMapping("/getOneProduce")
-    //public ProduceQueryRespDTO getOneProduce(Date produce_date, int truth_template_id, int truth_worker_id) {
+    //public ProduceQueryRespDTO getOneProduce(Date produce_date, int truth_styler_id, int truth_worker_id) {
 //    public List<ProduceQueryRespDTO> getOneProduce(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
-//                                             @RequestParam(name="truth_template_id", defaultValue = "82002") int truth_template_id,
+//                                             @RequestParam(name="truth_styler_id", defaultValue = "82002") int truth_styler_id,
 //                                             @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
 
 
 
 //    //使用 @RequestParam 注解的方法参数默认为必填参数。
 //    public List<ProduceQueryRespDTO> getOneProduce(@RequestParam(name="produce_date", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
-//                                                   @RequestParam(name="truth_template_id", required = false) int truth_template_id,
+//                                                   @RequestParam(name="truth_styler_id", required = false) int truth_styler_id,
 //                                                   @RequestParam(name="truth_worker_id", required = false) int truth_worker_id) {
-//        //return produceService.getOneProduce(produce_date,truth_template_id,truth_worker_id);
-//        return produceService.getOneProduce(produce_date,truth_template_id,truth_worker_id);
+//        //return produceService.getOneProduce(produce_date,truth_styler_id,truth_worker_id);
+//        return produceService.getOneProduce(produce_date,truth_styler_id,truth_worker_id);
 //    }
 
 
@@ -68,14 +68,14 @@ public class BasicController {
 //    @SysLogMyAnnotation(mvalue="请求searchPageResult")
 @RequestMapping("/searchPageResult") //传入在前端的文本要写2020-05-07
 //public ServerResponseEntity<List<ProduceQueryRespDTO>> getOneProduceRtResult(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
-//                                                                       @RequestParam(name="truth_template_id", defaultValue = "82002") int truth_template_id,
+//                                                                       @RequestParam(name="truth_styler_id", defaultValue = "82002") int truth_styler_id,
 //                                                                       @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
 //参考：public ServerResponseEntity<IPage<HotSearch>> page(HotSearch hotSearch,PageParam<HotSearch> page){
 public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestParam(name="produceDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date produceDate,
-                                                                              @RequestParam(name="truthTemplateId", required = false) Integer truthTemplateId,
+                                                                              @RequestParam(name="truthStylerId", required = false) Integer truthStylerId,
                                                                               @RequestParam(name="truthWorkerId", required = false) Integer truthWorkerId,
                                                                               PageParam<ProduceDO> page) {
-    IPage<ProduceDO> rt=produceService.getOneProduce(produceDate,truthTemplateId,truthWorkerId,page);
+    IPage<ProduceDO> rt=produceService.getOneProduce(produceDate,truthStylerId,truthWorkerId,page);
     return ServerResponseEntity.success(rt);
 }
 

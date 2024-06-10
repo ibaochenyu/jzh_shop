@@ -12,6 +12,6 @@ public class ProduceSalaryDO {
     private Long id;
 
     private Date date;
-    private int truthTemplateId;
+    private int truthStylerId;
     private BigDecimal unitPrice;//java中BigDecimal，mysql用decimal，长度10，小数点2？？？
 }

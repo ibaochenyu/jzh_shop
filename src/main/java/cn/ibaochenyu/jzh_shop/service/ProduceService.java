@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ProduceService {
 //public interface ProduceService extends IService<ProduceDO> {
-IPage<ProduceDO> getOneProduce(Date produce_date, Integer truth_template_id, Integer truth_worker_id, PageParam<ProduceDO> page);
+IPage<ProduceDO> getOneProduce(Date produce_date, Integer truth_styler_id, Integer truth_worker_id, PageParam<ProduceDO> page);
 
     ProduceDO getOneProduceInfo(Long id);
 

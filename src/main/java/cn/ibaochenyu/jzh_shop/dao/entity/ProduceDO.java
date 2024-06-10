@@ -19,8 +19,8 @@ public class ProduceDO {
     //private Date produce_date;
     //java是Date类型。对应mysql不是Date，而是DateTime
     private Date produceDate;
-//一旦修改了。需要全局替换。1.这里  2.truth_Item_id   3.truthItemId
-    private int truthTemplateId;
+//一旦修改了。需要全局替换。1.这里  2.truth_Item_id   3.truthStylerId
+    private int truthStylerId;
 
     private int truthWorkerId;
     private int produceCount;
