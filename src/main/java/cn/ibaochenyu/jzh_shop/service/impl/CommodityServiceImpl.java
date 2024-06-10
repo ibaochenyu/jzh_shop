@@ -3,6 +3,7 @@ package cn.ibaochenyu.jzh_shop.service.impl;
 import cn.ibaochenyu.jzh_shop.CommodityStatusEnum;
 import cn.ibaochenyu.jzh_shop.PageParam;
 import cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO;
+import cn.ibaochenyu.jzh_shop.dao.entity.ProduceStylerDO;
 import cn.ibaochenyu.jzh_shop.dao.mapper.CommodityMapper;
 import cn.ibaochenyu.jzh_shop.service.CommodityService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -54,7 +55,7 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
     }
 
     @Override//返回商品页：某个商品对应和它的个数
-    public List<CommodityDO> getPageCommodityWithCnt(Long truthStylerId, List<Integer> factoryId)
+    public List<CommodityDO> getPageCommodityAndCnt(Long truthStylerId, List<Integer> factoryId)
     {
 
 //        LambdaQueryWrapper<CommodityDO> queryWrapper = Wrappers.lambdaQuery(CommodityDO.class);
@@ -65,8 +66,8 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
 
 //        Page<CommodityDO> pageTemp=page;
-        //List<CommodityDO> ipage=commodityMapper.getPageCommodityWithCnt(pageTemp,queryWrapper);//返回ipage
-        List<CommodityDO> lister=commodityMapper.getPageCommodityWithCnt(truthStylerId,factoryId);
+        //List<CommodityDO> ipage=commodityMapper.getPageCommodityAndCnt(pageTemp,queryWrapper);//返回ipage
+        List<CommodityDO> lister=commodityMapper.getPageCommodityAndCnt(truthStylerId,factoryId);
 //        IPage<CommodityDO> ipage=Ipage<lister>;
 //此处缺乏List<CommodityDO>到IPage<CommodityDO>的转化
         return lister;
@@ -93,6 +94,11 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
 
         int rt=commodityMapper.update(updateSeatDO, updateWrapper);
         return rt;
+    }
+
+    @Override
+    public int purchaseStylerAndGiveOneCommodity(ProduceStylerDO aDo) {
+        return -1;//todo
     }
 
     //

@@ -3,6 +3,7 @@ package cn.ibaochenyu.jzh_shop.service;
 import cn.ibaochenyu.jzh_shop.PageParam;
 import cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
+import cn.ibaochenyu.jzh_shop.dao.entity.ProduceStylerDO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -23,9 +24,11 @@ public interface CommodityService extends IService<CommodityDO> {
     //是哪个工人生产的不重要
 
     //返回商品页：某个商品对应和它的个数
-    List<CommodityDO> getPageCommodityWithCnt(Long truthStylerId,List<Integer> factoryIds);
+    List<CommodityDO> getPageCommodityAndCnt(Long truthStylerId,List<Integer> factoryIds);
 
     int statusChangesToLock(CommodityDO aDo);
+
+    int purchaseStylerAndGiveOneCommodity(ProduceStylerDO aDo);
 
 //    void saveListIds(List<Long> ids);
 }

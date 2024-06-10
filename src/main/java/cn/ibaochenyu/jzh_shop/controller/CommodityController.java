@@ -21,7 +21,7 @@ public class CommodityController {
 
 
 
-    //保存商品
+    //保存商品DO
     //@PostMapping("test")    //{"truthStylerId":12,"commodityStatus":13}
     @PostMapping//truthStylerId  commodityStatus
     public ServerResponseEntity<Void> saveCommodity(@RequestBody CommodityDO aDo){
@@ -34,6 +34,18 @@ public class CommodityController {
 
     //修改Commodity的状态
     //参考：public void lockSeat(String trainId, String departure, String arrival, List<TrainPurchaseTicketRespDTO> trainPurchaseTicketRespList) {
+    ////
+
+
+    @PutMapping//这里还没有实现
+    public ServerResponseEntity<Integer> purchaseStylerAndGiveOneCommodity(@RequestBody ProduceStylerDO aDo){
+        int rtChange=commodityService.purchaseStylerAndGiveOneCommodity(aDo);
+        Integer temp=Integer.valueOf(rtChange);
+        return ServerResponseEntity.success(temp);
+    }
+
+
+
     @PutMapping
     public ServerResponseEntity<Integer> changeCommodityStatusToLock(@RequestBody CommodityDO aDo){
         int rtChange=commodityService.statusChangesToLock(aDo);
@@ -67,14 +79,19 @@ public class CommodityController {
     }
 
 
-//    purchaseStylerAndGiveOneCommodity
-    @PostMapping("purchase")//http://127.0.0.1:8081/commodityHandle/purchase?truthStylerId=82003      [1,2]
-    public ServerResponseEntity<Void> getPageCommodityWithCnt(@RequestParam(name="truthStylerId", required = false) Long truthStylerId,
+
+
+
+
+    @GetMapping("getPageCommodityAndCnt")//http://127.0.0.1:8081/commodityHandle/getPageCommodityAndCnt?truthStylerId=82003      [1,2]
+    public ServerResponseEntity<Void> getPageCommodityAndCnt(@RequestParam(name="truthStylerId", required = false) Long truthStylerId,
                                                               @RequestBody List<Integer> factoryIds){
 
-        commodityService.getPageCommodityWithCnt(truthStylerId,factoryIds);
+        commodityService.getPageCommodityAndCnt(truthStylerId,factoryIds);
         return ServerResponseEntity.success();
     }
+
+
 }
 
 //    select truth_styler_id as truthStylerId, count(*) as commodityCount

@@ -18,7 +18,7 @@ id       show_worker_id       name
 bigint         int           String
 
 
-生产表t_produce【不如说是生产订单表：因为你可能要合并很多的小的生产盒子】
+生产表t_produce【不如说是生产订单表：因为你可能要合并很多的小的生产盒子，里头可能很多商品】【生产单一定是一个工人特定款号】
 (信息id)      生产日期           工厂号                             款号            工号              数量
 id        produce_date     truth_factory_id           truth_styler_id       truth_worker_id    produce_count
 bigint        Date             bigint                            bigint         bigint              int
@@ -31,9 +31,34 @@ id         date           truth_styler_id    unit_price
 bigint     Date                int                 Decimal
 //////////////////////////
 
-商品表t_commodity【跟踪每一个商品的状态】
+
+
+商品表t_commodity【跟踪每一个商品的状态】【分片分库了大概率】【相当于seat，还需要redis存style和cnt的对应关系】
+【一旦取消seat，我看了它不是判断seatId，而是判断列车id、车厢id、座位号，SeatServiceImpl.unlock】【但是这不对啊，seat哪有一直在的？？？】
+【假定：一个工人在一天，可能去不同的工厂了】
 （信息id）    生产日期            工厂号                      商品的款号           工号               商品状态
 id          produce_date      truth_factory_id         truth_styler_id   truth_worker_id          commodity_status
 bigint          Date          bigint                           bigint          bigint                int
 
+
+
+订单表t_order【由于我这里并没有为其他人购买的场景，因此order和orderItem合并在一块】【这里其实和t_order_item和t_seat很像，我看过了t_seat是有具体的seat信息，t_order_item也有seat信息，二者不是通过seatId联系的。seat没有存orderId，order也没有存seatId，二者都存的是seat的座位号】【铁路并没有对其他id进行外键约束】【那么完全可以不用商品id，把商品id的关键信息存到这表就行】【看mall好像是根据id操作库存】【所以这里的设计还行】
+（信息id）        商品id                下单日期         支付日期                客户id           订单状态
+id          true_commodity_id      order_date        pay_date          true_user_id        order_stuts
+bigint           bigint                 Date            Date                bigint           bigint
+
+
+用户表t_user
+（信息id）    客户昵称
+id             user_name
+bigint       var256
 ////////////////
+
+
+废弃方案【考虑到两种t_commodity都符合第三范式，并且商品查询其实是大流量。还是展开写吧】：
+商品表t_commodity【跟踪每一个商品的状态】
+（信息id）    生产id                         商品状态
+id          produce_date               commodity_status
+bigint          Date                         int
+
+

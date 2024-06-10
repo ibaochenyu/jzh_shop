@@ -4,7 +4,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.ibaochenyu.jzh_shop.dao.mapper.CommodityMapper">
 
-    <select id="getPageCommodityWithCnt" resultType="cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO">
+    <select id="getPageCommodityAndCnt" resultType="cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO">
 <!--        select seat_type as seatType, count(*) as seatCount-->
 <!--        from t_seat-->
 <!--        where train_id = #{trainId}-->
