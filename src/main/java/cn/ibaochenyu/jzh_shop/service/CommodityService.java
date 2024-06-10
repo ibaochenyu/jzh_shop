@@ -1,12 +1,13 @@
 package cn.ibaochenyu.jzh_shop.service;
 
 import cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO;
+import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.List;
+//public interface CommodityService {
+public interface CommodityService extends IService<CommodityDO> {
 
-public interface CommodityService {
 
-    void save(CommodityDO aDo);
+    void mySave(CommodityDO aDo);
 
 //    void saveListIds(List<Long> ids);
 }

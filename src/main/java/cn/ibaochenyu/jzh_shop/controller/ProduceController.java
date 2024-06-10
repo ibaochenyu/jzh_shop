@@ -11,27 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import cn.ibaochenyu.jzh_shop.PageParam;
-import cn.ibaochenyu.jzh_shop.Result;
-import cn.ibaochenyu.jzh_shop.Results;
-import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
-import cn.ibaochenyu.jzh_shop.annotation.SysLogMyAnnotation;
-import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
-import cn.ibaochenyu.jzh_shop.dto.resp.BasicQueryRespDTO;
-import cn.ibaochenyu.jzh_shop.dto.resp.ProduceQueryRespDTO;
-import cn.ibaochenyu.jzh_shop.service.BasicService;
-import cn.ibaochenyu.jzh_shop.service.ProduceService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 
 @RestController
@@ -94,16 +77,22 @@ public class ProduceController {
         produceService.save(produceDO);
         int produceCount=produceDO.getProduceCount();
 
-        //List<CommodityDO> tempList;
+        List<CommodityDO> tempList = new ArrayList<>();
         CommodityDO tempDO=new CommodityDO();
         tempDO.setTruthStylerId(produceDO.getTruthStylerId());
         tempDO.setCommodityStatus(1L);//设置商品要进入数据库
         for(int s=0;s<produceCount;s++) {
 
             //这么写不行，会出现：; Duplicate entry '1800034706216124417' for key 't_commodity.PRIMARY'] with root cause
-            commodityService.save(tempDO);
+            //commodityService.mySave(tempDO);
+//            tempList.add(tempDO);
+            CommodityDO tempADO=CommodityDO.builder()
+                    .truthStylerId(produceDO.getTruthStylerId())
+                    .commodityStatus(1L)
+                    .build();
+            tempList.add(tempADO);
         }
-        //commodityService
+        commodityService.saveBatch(tempList);//id=null，竟然真的插入进去了
 
         return ServerResponseEntity.success();
     }
