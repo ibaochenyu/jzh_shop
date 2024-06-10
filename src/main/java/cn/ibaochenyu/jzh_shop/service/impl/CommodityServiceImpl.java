@@ -17,6 +17,7 @@ import java.util.List;
 //参考的是：
 //orderItemService.saveBatch(orderItemDOList);
 //orderPassengerRelationService.saveBatch(orderPassengerRelationDOList);
+//ServiceImpl容易忘
 public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, CommodityDO> implements CommodityService {
 
 

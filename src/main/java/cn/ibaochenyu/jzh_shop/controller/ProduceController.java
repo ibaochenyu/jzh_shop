@@ -2,13 +2,16 @@ package cn.ibaochenyu.jzh_shop.controller;
 
 import cn.ibaochenyu.jzh_shop.PageParam;
 import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
+import cn.ibaochenyu.jzh_shop.dao.entity.BasicDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
+import cn.ibaochenyu.jzh_shop.service.BasicService;
 import cn.ibaochenyu.jzh_shop.service.CommodityService;
 import cn.ibaochenyu.jzh_shop.service.ProduceService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,6 +27,8 @@ public class ProduceController {
     private final ProduceService produceService;
 
     private final CommodityService  commodityService;
+
+    private final BasicService basicService;
 
 
 ////http://localhost:8081/getOneProduce?produce_date=2020-05-07&truth_styler_id=82002&truth_worker_id=1
@@ -71,6 +76,7 @@ public class ProduceController {
 
     //    @SysLogMyAnnotation(mvalue="saveProduce")
     @PostMapping//RequestBody???
+    @Transactional(rollbackFor = Exception.class)//果然加了Transactional,函数内一起回滚了
     public ServerResponseEntity<Void> save(@RequestBody ProduceDO produceDO) {
         //int rt=produceService.save(produceDO);
         //能不能返回一个插入的值呢？？？
@@ -78,22 +84,40 @@ public class ProduceController {
         int produceCount=produceDO.getProduceCount();
 
         List<CommodityDO> tempList = new ArrayList<>();
-        CommodityDO tempDO=new CommodityDO();
-        tempDO.setTruthStylerId(produceDO.getTruthStylerId());
-        tempDO.setCommodityStatus(1L);//设置商品要进入数据库
+        List<BasicDO> tempListBasic = new ArrayList<>();
+
+//        CommodityDO tempDO=new CommodityDO();
+//        tempDO.setTruthStylerId(produceDO.getTruthStylerId());
+//        tempDO.setCommodityStatus(1L);//设置商品要进入数据库
+        //tempDO.setId(null);
         for(int s=0;s<produceCount;s++) {
 
             //这么写不行，会出现：; Duplicate entry '1800034706216124417' for key 't_commodity.PRIMARY'] with root cause
             //commodityService.mySave(tempDO);
+
+            //我尝试了，无论如何使用for+tempList.add(tempDO)不行。总是提示Duplicate
 //            tempList.add(tempDO);
+
+
             CommodityDO tempADO=CommodityDO.builder()
                     .truthStylerId(produceDO.getTruthStylerId())
                     .commodityStatus(1L)
                     .build();
             tempList.add(tempADO);
-        }
-        commodityService.saveBatch(tempList);//id=null，竟然真的插入进去了
+        }//需要设置commodityService表是无符号、序号自动递增。从调试的记录来看，是批量插入
 
+
+
+        for(int s=0;s<produceCount;s++) {
+            BasicDO tempADO=BasicDO.builder()
+                    .workId(s+30)
+                    .name("测试SaveBatch")
+                    .build();
+            tempListBasic.add(tempADO);
+        }
+        commodityService.saveBatch(tempList);//id=null，竟然真的插入进去了p
+        basicService.saveBatch(tempListBasic);;//如果在basicService有中间冲突，会导致commodityService的saveBatch完成，basicService的整体saveBatch都不提交。也就是会提交一部分
+//返回的是java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '60' for key 't_basic.work_id独立索引'
         return ServerResponseEntity.success();
     }
 

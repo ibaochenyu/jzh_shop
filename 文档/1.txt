@@ -32,6 +32,8 @@ bigint     Date      int                 Decimal
 //////////////////////////
 
 商品表t_commodity
-信息id    商品的款号  商品状态
+（信息id）    商品的款号           商品状态
+id           truth_styler_id       commodity_status
+bigint          bigint               int
 
 ////////////////

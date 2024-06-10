@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 10/06/2024 12:35:53
+ Date: 10/06/2024 14:06:11
 */
 
 SET NAMES utf8mb4;
@@ -22,20 +22,21 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_basic`;
 CREATE TABLE `t_basic`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `work_id` int NULL DEFAULT NULL COMMENT 'workId',
   `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `sex` int NULL DEFAULT NULL,
   `home_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'homeAddress',
   `date` datetime NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `work_id独立索引`(`work_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_basic
 -- ----------------------------
 INSERT INTO `t_basic` VALUES (1, 3, '黄小鑫', 1, '黄小鑫的家', '2024-06-06 19:00:40');
-INSERT INTO `t_basic` VALUES (2, 6, '严小玲', 1, '严小玲的家', '2024-06-22 19:00:43');
+INSERT INTO `t_basic` VALUES (2, 60, '严小玲', 1, '严小玲的家', '2024-06-22 19:00:43');
 
 -- ----------------------------
 -- Table structure for t_commodity
@@ -57,7 +58,7 @@ CREATE TABLE `t_commodity`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_produce`;
 CREATE TABLE `t_produce`  (
-  `id` bigint NOT NULL,
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `produce_date` datetime NULL DEFAULT NULL,
   `truth_styler_id` bigint NULL DEFAULT NULL,
   `truth_worker_id` bigint NULL DEFAULT NULL,
@@ -68,8 +69,6 @@ CREATE TABLE `t_produce`  (
 -- ----------------------------
 -- Records of t_produce
 -- ----------------------------
-INSERT INTO `t_produce` VALUES (9, '2020-05-07 19:26:07', 82002, 1, 7);
-INSERT INTO `t_produce` VALUES (10, '1900-01-20 00:00:00', 82012, 1, 8);
 INSERT INTO `t_produce` VALUES (11, '1900-01-20 00:00:00', 82013, 1, 9);
 INSERT INTO `t_produce` VALUES (12, '1900-01-20 00:00:00', 82015, 1, 10);
 INSERT INTO `t_produce` VALUES (14, '1900-01-20 00:00:00', 82017, 301, 11);
@@ -101,6 +100,23 @@ INSERT INTO `t_produce` VALUES (1800017348630032386, '1111-11-11 08:00:00', 4, 4
 INSERT INTO `t_produce` VALUES (1800017869076049921, '1111-11-11 08:00:00', 5, 5, 5);
 INSERT INTO `t_produce` VALUES (1800018511072997378, '1111-11-11 08:00:00', 9, 9, 9);
 INSERT INTO `t_produce` VALUES (1800019066021359618, '1122-12-12 08:00:00', 55, 55, 55);
+INSERT INTO `t_produce` VALUES (1800024516846596098, '2222-11-11 08:00:00', 3, 3, 3);
+INSERT INTO `t_produce` VALUES (1800029821668044802, '1111-11-11 08:00:00', 2324, 23, 234);
+INSERT INTO `t_produce` VALUES (1800034130245910530, '1997-11-11 08:00:00', 666, 1, 12);
+INSERT INTO `t_produce` VALUES (1800034397066559490, '1999-11-11 08:00:00', 82001, 1, 12);
+INSERT INTO `t_produce` VALUES (1800034420764377089, '1999-11-11 08:00:00', 82001, 1, 12);
+INSERT INTO `t_produce` VALUES (1800034579158073346, '1999-11-11 08:00:00', 82001, 1, 12);
+INSERT INTO `t_produce` VALUES (1800034706149015553, '1999-11-11 08:00:00', 82001, 12, 12);
+INSERT INTO `t_produce` VALUES (1800035003097350145, '1999-11-11 08:00:00', 82001, 123, 12);
+INSERT INTO `t_produce` VALUES (1800038231876739073, '2023-01-01 08:00:00', 82999, 1, 12);
+INSERT INTO `t_produce` VALUES (1800040107376586754, '2023-01-01 08:00:00', 82999, 2, 12);
+INSERT INTO `t_produce` VALUES (1800041143843676161, '1992-11-11 08:00:00', 82001, 1, 12);
+INSERT INTO `t_produce` VALUES (1800041231903088642, '1992-11-11 08:00:00', 82001, 3, 12);
+INSERT INTO `t_produce` VALUES (1800041736502951937, '1992-11-11 08:00:00', 82002, 3, 12);
+INSERT INTO `t_produce` VALUES (1800041984877035521, '1992-11-11 08:00:00', 82002, 4, 9);
+INSERT INTO `t_produce` VALUES (1800044259871727618, '1999-11-11 08:00:00', 82003, 7979, 12);
+INSERT INTO `t_produce` VALUES (1800045432230039553, '1998-11-12 08:00:00', 82001, 4455, 100);
+INSERT INTO `t_produce` VALUES (1800045968870264833, '1998-11-12 08:00:00', 82001, 4455, 99);
 
 -- ----------------------------
 -- Table structure for t_produce_salary
