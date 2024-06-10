@@ -104,7 +104,7 @@ public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestPara
 
 //    @SysLogMyAnnotation(mvalue="deleteProduce")
     //@DeleteMapping("/testDelete")
-    @PutMapping("/testDelete")//神坑：为什么一@DeleteMapping+@RequestBody就开始变慢了？如果这里写deleteMapping，前端不会慢；一写@delete，前端就变慢
+    @PutMapping("/DeleteListIds")//神坑：为什么一@DeleteMapping+@RequestBody就开始变慢了？如果这里写deleteMapping，前端不会慢；一写@delete，前端就变慢
     public ServerResponseEntity<Void> delete(@RequestBody List<Long> ids) {//这个问题和前端有关。因为postman是正常发送的
 //    public ServerResponseEntity<Void> delete2(@RequestBody Long ids) {
 //        List<Long> temp= Arrays.asList(ids);

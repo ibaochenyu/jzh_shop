@@ -156,7 +156,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/produceHandle/testDelete'),
+          url: this.$http.adornUrl('/produceHandle/DeleteListIds'),
 
           //url: this.$http.adornUrl('/produceHandle/'+ids[0]),
 
