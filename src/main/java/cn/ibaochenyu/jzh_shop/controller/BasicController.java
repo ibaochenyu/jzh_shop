@@ -32,95 +32,15 @@ import java.util.List;
 //但是有时候需要将方法的返回值直接作为响应的主体内容，而不是解析为视图。为了实现这个目的，我们可以在方法上使用 @ResponseBody 注解。
 //@Controller
 @RestController
-
 //RequiredArgsConstructor会将类的每一个final字段或者non-null字段生成一个构造方法
 //@RequiredArgsConstructor是Lombok的一个注解，简化了我们对@Autowired书写
 //添加上去，否则private final BasicService basicService;报错
 @RequiredArgsConstructor
-@RequestMapping("/produceHandle")
+@RequestMapping("/basicHandle")
 public class BasicController {
 
     private final BasicService basicService;
 
-    private final ProduceService produceService;
-////http://localhost:8081/getOneProduce?produce_date=2020-05-07&truth_styler_id=82002&truth_worker_id=1
-
-
-
-//    @RequestMapping("/getOneProduce")
-    //public ProduceQueryRespDTO getOneProduce(Date produce_date, int truth_styler_id, int truth_worker_id) {
-//    public List<ProduceQueryRespDTO> getOneProduce(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
-//                                             @RequestParam(name="truth_styler_id", defaultValue = "82002") int truth_styler_id,
-//                                             @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
-
-
-
-//    //使用 @RequestParam 注解的方法参数默认为必填参数。
-//    public List<ProduceQueryRespDTO> getOneProduce(@RequestParam(name="produce_date", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
-//                                                   @RequestParam(name="truth_styler_id", required = false) int truth_styler_id,
-//                                                   @RequestParam(name="truth_worker_id", required = false) int truth_worker_id) {
-//        //return produceService.getOneProduce(produce_date,truth_styler_id,truth_worker_id);
-//        return produceService.getOneProduce(produce_date,truth_styler_id,truth_worker_id);
-//    }
-
-
-
-//    @SysLogMyAnnotation(mvalue="请求searchPageResult")
-@RequestMapping("/searchPageResult") //传入在前端的文本要写2020-05-07
-//public ServerResponseEntity<List<ProduceQueryRespDTO>> getOneProduceRtResult(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
-//                                                                       @RequestParam(name="truth_styler_id", defaultValue = "82002") int truth_styler_id,
-//                                                                       @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
-//参考：public ServerResponseEntity<IPage<HotSearch>> page(HotSearch hotSearch,PageParam<HotSearch> page){
-public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestParam(name="produceDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date produceDate,
-                                                                              @RequestParam(name="truthStylerId", required = false) Integer truthStylerId,
-                                                                              @RequestParam(name="truthWorkerId", required = false) Integer truthWorkerId,
-                                                                              PageParam<ProduceDO> page) {
-    IPage<ProduceDO> rt=produceService.getOneProduce(produceDate,truthStylerId,truthWorkerId,page);
-    return ServerResponseEntity.success(rt);
-}
-
-    @RequestMapping("/getOneProduceInfo/{id}")
-    //参考public ServerResponseEntity<HotSearch> info(@PathVariable("id") Long id){
-    public ServerResponseEntity<ProduceDO> getOneProduceInfo(@PathVariable("id") Long id) {
-        ProduceDO rt=produceService.getOneProduceInfo(id);
-        return ServerResponseEntity.success(rt);
-    }
-
-//    @SysLogMyAnnotation(mvalue="saveProduce")
-    @PostMapping//RequestBody???
-    public ServerResponseEntity<Void> save(@RequestBody ProduceDO produceDO) {
-        //int rt=produceService.save(produceDO);
-        //能不能返回一个插入的值呢？？？
-        produceService.save(produceDO);
-        return ServerResponseEntity.success();
-    }
-
-//    @SysLogMyAnnotation(mvalue="updateProduce")
-    @PutMapping
-    public ServerResponseEntity<Void> update(@RequestBody ProduceDO produceDO) {
-        produceService.update(produceDO);
-        return ServerResponseEntity.success();
-    }
-
-//    @SysLogMyAnnotation(mvalue="deleteProduce")
-    //@DeleteMapping("/testDelete")
-    @PutMapping("/DeleteListIds")//神坑：为什么一@DeleteMapping+@RequestBody就开始变慢了？如果这里写deleteMapping，前端不会慢；一写@delete，前端就变慢
-    public ServerResponseEntity<Void> delete(@RequestBody List<Long> ids) {//这个问题和前端有关。因为postman是正常发送的
-//    public ServerResponseEntity<Void> delete2(@RequestBody Long ids) {
-//        List<Long> temp= Arrays.asList(ids);
-
-        produceService.delete(ids);
-        //produceService.deleteOneId(ids);
-        return ServerResponseEntity.success();
-    }//不知道为什么delete很久后才来？？？
-
-    @DeleteMapping("/{id}")
-    //public ServerResponseEntity<Void> delete(@RequestBody List<Long> ids) {
-    public ServerResponseEntity<Void> delete(@PathVariable Long id) {
-//        List<Long> temp= Arrays.asList(ids);
-        produceService.deleteOneId(id);
-        return ServerResponseEntity.success();
-    }
 
 
     ////////
