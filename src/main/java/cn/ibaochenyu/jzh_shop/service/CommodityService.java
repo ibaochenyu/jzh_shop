@@ -1,13 +1,27 @@
 package cn.ibaochenyu.jzh_shop.service;
 
+import cn.ibaochenyu.jzh_shop.PageParam;
 import cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO;
+import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 //public interface CommodityService {
 public interface CommodityService extends IService<CommodityDO> {
 
 
     void mySave(CommodityDO aDo);
+
+    //返回商品页：每一个商品都有展示
+    IPage<CommodityDO> getPageCommodity(Long truthStylerId, PageParam<CommodityDO> page);
+
+
+    //返回商品页：某个商品对应和它的个数
+    List<CommodityDO> getPageCommodityWithCnt(Long truthStylerId,List<Integer> factoryId);
+
+    int statusChangesToLock(CommodityDO aDo);
 
 //    void saveListIds(List<Long> ids);
 }

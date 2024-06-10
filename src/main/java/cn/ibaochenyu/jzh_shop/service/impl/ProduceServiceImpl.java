@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,7 +35,7 @@ public class ProduceServiceImpl implements ProduceService {
 
 
     @Override//铁路写法
-    public IPage<ProduceDO> getOneProduce(Date produce_date, Integer truth_styler_id, Integer truth_worker_id, PageParam<ProduceDO> page){
+    public IPage<ProduceDO> getOneProduce(Date produce_date, Long truth_styler_id, Long truth_worker_id, PageParam<ProduceDO> page){
 
 
 

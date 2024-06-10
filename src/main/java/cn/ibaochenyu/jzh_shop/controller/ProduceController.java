@@ -1,5 +1,6 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
+import cn.ibaochenyu.jzh_shop.CommodityStatusEnum;
 import cn.ibaochenyu.jzh_shop.PageParam;
 import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
 import cn.ibaochenyu.jzh_shop.dao.entity.BasicDO;
@@ -60,8 +61,8 @@ public class ProduceController {
 //                                                                       @RequestParam(name="truth_worker_id", defaultValue = "1") int truth_worker_id) {
 //参考：public ServerResponseEntity<IPage<HotSearch>> page(HotSearch hotSearch,PageParam<HotSearch> page){
     public ServerResponseEntity<IPage<ProduceDO>> getOneProduceRtResult(@RequestParam(name="produceDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date produceDate,
-                                                                        @RequestParam(name="truthStylerId", required = false) Integer truthStylerId,
-                                                                        @RequestParam(name="truthWorkerId", required = false) Integer truthWorkerId,
+                                                                        @RequestParam(name="truthStylerId", required = false) Long truthStylerId,
+                                                                        @RequestParam(name="truthWorkerId", required = false) Long truthWorkerId,
                                                                         PageParam<ProduceDO> page) {
         IPage<ProduceDO> rt=produceService.getOneProduce(produceDate,truthStylerId,truthWorkerId,page);
         return ServerResponseEntity.success(rt);
@@ -101,7 +102,7 @@ public class ProduceController {
 
             CommodityDO tempADO=CommodityDO.builder()
                     .truthStylerId(produceDO.getTruthStylerId())
-                    .commodityStatus(1L)
+                    .commodityStatus(CommodityStatusEnum.AVAILABLE.getCode())//设置状态为可以销售
                     .build();
             tempList.add(tempADO);
         }//需要设置commodityService表是无符号、序号自动递增。从调试的记录来看，是批量插入

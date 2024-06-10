@@ -19,16 +19,16 @@ bigint         int           String
 
 
 生产表t_produce
-(信息id)      日期             款号            工号              数量
-id        produce_date  truth_styler_id  truth_worker_id    produce_count
-bigint      Date             int             int              int
+(信息id)      日期           【工厂号】                             款号            工号              数量
+id        produce_date     truth_factory_id           truth_styler_id  truth_worker_id    produce_count
+bigint      Date             bigint                            bigint             bigint              int
 
 
 
 生产工资表t_produce_salary【日期+款号建立独立索引】
-（信息id）（日期       款号）             单价
-id         date    truth_styler_id    unit_price
-bigint     Date      int                 Decimal
+（信息id）（日期              款号）             单价
+id         date           truth_styler_id    unit_price
+bigint     Date                int                 Decimal
 //////////////////////////
 
 商品表t_commodity
