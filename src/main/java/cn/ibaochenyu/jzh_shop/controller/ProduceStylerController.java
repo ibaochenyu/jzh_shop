@@ -12,13 +12,7 @@ public class ProduceStylerController {
 
     private final ProduceStylerService produceStylerService;
 
-//    @PostMapping("purchase")
-//    public ServerResponseEntity<Void> purchaseStylerAndGiveOneCommodity(@RequestBody ProduceStylerDO psDO){
-//
-//        produceStylerService
-//
-//
-//    }
+
 
 
 

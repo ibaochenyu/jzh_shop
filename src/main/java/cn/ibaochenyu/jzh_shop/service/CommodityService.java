@@ -18,8 +18,12 @@ public interface CommodityService extends IService<CommodityDO> {
     IPage<CommodityDO> getPageCommodity(Long truthStylerId, PageParam<CommodityDO> page);
 
 
+    //初步设定
+    //筛选：种类，工厂id，
+    //是哪个工人生产的不重要
+
     //返回商品页：某个商品对应和它的个数
-    List<CommodityDO> getPageCommodityWithCnt(Long truthStylerId,List<Integer> factoryId);
+    List<CommodityDO> getPageCommodityWithCnt(Long truthStylerId,List<Integer> factoryIds);
 
     int statusChangesToLock(CommodityDO aDo);
 

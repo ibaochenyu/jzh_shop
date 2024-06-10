@@ -17,17 +17,18 @@
 <!--        </foreach>-->
 <!--        group by seat_type-->
 <!--        having seatCount > 0-->
-        select seat_type as seatType, count(*) as seatCount
-        from t_seat
-        where train_id = #{trainId}
-        and start_station = #{startStation}
-        and end_station = #{endStation}
-        and seat_status = '0'
-        and seat_type in
-        <foreach collection="seatTypes" item="seatType" open="(" separator="," close=")">
-            #{seatType}
+
+<!-- seatType对应工厂id -->
+        select truth_styler_id as truthStylerId, count(*) as commodityCount
+        from t_commodity
+        where truth_styler_id = #{truthStylerId}
+        and commodity_status = '0'
+        and truth_factory_id in
+        <foreach collection="factoryIds" item="factoryId" open="(" separator="," close=")">
+            #{factoryId}
         </foreach>
-        group by seat_type
-        having seatCount > 0
+        group by truth_factory_id
+        having truth_factory_id > 0
     </select>
 </mapper>
+<!--直接修改这里不行。得重启springboot-->

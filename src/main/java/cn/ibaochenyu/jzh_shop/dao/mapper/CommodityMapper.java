@@ -13,5 +13,7 @@ import java.util.List;
 //BaseMapper是mybatis-plus自带
 public interface CommodityMapper extends BaseMapper<CommodityDO> {
     //参考List<SeatTypeCountDTO> listSeatTypeCount(@Param("trainId") Long trainId, @Param("startStation") String startStation, @Param("endStation") String endStation, @Param("seatTypes")  List<Integer> seatTypes);
-    List<CommodityDO> getPageCommodityWithCnt(@Param("id") Long id);
+    List<CommodityDO> getPageCommodityWithCnt(@Param("truthStylerId") Long truthStylerId, @Param("factoryIds") List<Integer> factoryIds);
+
+
 }

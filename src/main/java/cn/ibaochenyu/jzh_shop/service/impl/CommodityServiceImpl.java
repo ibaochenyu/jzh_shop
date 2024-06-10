@@ -54,19 +54,19 @@ public class CommodityServiceImpl extends ServiceImpl<CommodityMapper, Commodity
     }
 
     @Override//返回商品页：某个商品对应和它的个数
-    public List<CommodityDO> getPageCommodityWithCnt(Long truthStylerId,List<Integer> factoryId)
+    public List<CommodityDO> getPageCommodityWithCnt(Long truthStylerId, List<Integer> factoryId)
     {
 
-        LambdaQueryWrapper<CommodityDO> queryWrapper = Wrappers.lambdaQuery(CommodityDO.class);
-
-        if (truthStylerId != null) {
-            queryWrapper.eq(CommodityDO::getTruthStylerId, truthStylerId);
-        }
+//        LambdaQueryWrapper<CommodityDO> queryWrapper = Wrappers.lambdaQuery(CommodityDO.class);
+//
+//        if (truthStylerId != null) {
+//            queryWrapper.eq(CommodityDO::getTruthStylerId, truthStylerId);
+//        }
 
 
 //        Page<CommodityDO> pageTemp=page;
         //List<CommodityDO> ipage=commodityMapper.getPageCommodityWithCnt(pageTemp,queryWrapper);//返回ipage
-        List<CommodityDO> lister=commodityMapper.getPageCommodityWithCnt(truthStylerId);
+        List<CommodityDO> lister=commodityMapper.getPageCommodityWithCnt(truthStylerId,factoryId);
 //        IPage<CommodityDO> ipage=Ipage<lister>;
 //此处缺乏List<CommodityDO>到IPage<CommodityDO>的转化
         return lister;

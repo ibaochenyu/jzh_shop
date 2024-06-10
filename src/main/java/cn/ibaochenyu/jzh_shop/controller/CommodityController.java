@@ -11,12 +11,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController//别忘了加@RestController，respsonbody+controller //这样controller和service都需要注解，对应起来了
 @RequiredArgsConstructor
 @RequestMapping("/commodityHandle")
 public class CommodityController {
     private final CommodityService commodityService;
 
+
+
+    //保存商品
     //@PostMapping("test")    //{"truthStylerId":12,"commodityStatus":13}
     @PostMapping//truthStylerId  commodityStatus
     public ServerResponseEntity<Void> saveCommodity(@RequestBody CommodityDO aDo){
@@ -26,8 +31,10 @@ public class CommodityController {
         return ServerResponseEntity.success();
     }
 
+
+    //修改Commodity的状态
     //参考：public void lockSeat(String trainId, String departure, String arrival, List<TrainPurchaseTicketRespDTO> trainPurchaseTicketRespList) {
-    @PutMapping//修改Commodity的状态
+    @PutMapping
     public ServerResponseEntity<Integer> changeCommodityStatusToLock(@RequestBody CommodityDO aDo){
         int rtChange=commodityService.statusChangesToLock(aDo);
         //Integer temp=new Integer(rtChange); //'Integer(int)' is deprecated and marked for removal
@@ -48,6 +55,8 @@ public class CommodityController {
 //        return ServerResponseEntity.success();
 //    }
 
+
+    //返回商品的页信息
 //http://127.0.0.1:8081/commodityHandle?truthStylerId=83009&current=1&size=5
     @GetMapping//truthStylerId  commodityStatus
     public ServerResponseEntity<IPage<CommodityDO>> getPageCommodity(@RequestParam(name="truthStylerId", required = false) Long truthStylerId, PageParam<CommodityDO> page){
@@ -56,4 +65,22 @@ public class CommodityController {
         //tempList.add(new CommodityDO())
         return ServerResponseEntity.success(rt);
     }
+
+
+//    purchaseStylerAndGiveOneCommodity
+    @PostMapping("purchase")//http://127.0.0.1:8081/commodityHandle/purchase?truthStylerId=82003      [1,2]
+    public ServerResponseEntity<Void> getPageCommodityWithCnt(@RequestParam(name="truthStylerId", required = false) Long truthStylerId,
+                                                              @RequestBody List<Integer> factoryIds){
+
+        commodityService.getPageCommodityWithCnt(truthStylerId,factoryIds);
+        return ServerResponseEntity.success();
+    }
 }
+
+//    select truth_styler_id as truthStylerId, count(*) as commodityCount
+//        from t_commodity
+//        where truth_styler_id = 82003
+//        and commodity_status = '0'
+//        and truth_factory_id in ('1','2')
+//        group by truth_factory_id
+//        having truth_factory_id > 0

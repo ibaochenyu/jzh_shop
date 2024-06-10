@@ -18,10 +18,10 @@ id       show_worker_id       name
 bigint         int           String
 
 
-生产表t_produce
-(信息id)      日期           【工厂号】                             款号            工号              数量
-id        produce_date     truth_factory_id           truth_styler_id  truth_worker_id    produce_count
-bigint      Date             bigint                            bigint             bigint              int
+生产表t_produce【不如说是生产订单表：因为你可能要合并很多的小的生产盒子】
+(信息id)      生产日期           工厂号                             款号            工号              数量
+id        produce_date     truth_factory_id           truth_styler_id       truth_worker_id    produce_count
+bigint        Date             bigint                            bigint         bigint              int
 
 
 
@@ -31,9 +31,9 @@ id         date           truth_styler_id    unit_price
 bigint     Date                int                 Decimal
 //////////////////////////
 
-商品表t_commodity
-（信息id）    商品的款号           商品状态
-id           truth_styler_id       commodity_status
-bigint          bigint               int
+商品表t_commodity【跟踪每一个商品的状态】
+（信息id）    生产日期            工厂号                      商品的款号           工号               商品状态
+id          produce_date      truth_factory_id         truth_styler_id   truth_worker_id          commodity_status
+bigint          Date          bigint                           bigint          bigint                int
 
 ////////////////

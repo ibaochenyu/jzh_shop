@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @TableName("t_commodity")
 //下面三个参考铁路写法，写了才能使用.builder()
@@ -16,7 +18,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CommodityDO {
     private Long id;
+    private Date produceDate;
+    private Long truthFactoryId;
     private Long truthStylerId;
+
+    private Long truthWorkerId;
 
 
     //商品状态：
