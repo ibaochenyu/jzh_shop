@@ -20,8 +20,8 @@
         </el-form-item>
 
         <el-form-item label="产品id"
-                      prop="truthItemId">
-          <el-input v-model="dataForm.truthItemId"
+                      prop="truthTemplateId">
+          <el-input v-model="dataForm.truthTemplateId"
                     controls-position="right"
                     type="textarea"
                     :min="0"
@@ -72,7 +72,7 @@ export default {
       dataForm: {
         id: 0,
         produceDate: '',
-        truthItemId: '',
+        truthTemplateId: '',
         truthWorkerId: '',
         produceCount: '',
         // recDate: '',
@@ -93,7 +93,7 @@ export default {
           { min: 1, max: 50, message: '长度在1到50个字符内', trigger: 'blur' },//这里后期可以在后端对2000-02-31这种异常信息进行处理返回。
           { pattern: /^([1-9]\d{3})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, message: '生产时间填写异常。可能日期不存在。正常实例：2024-06-01', trigger: 'blur' }
         ],
-        truthItemId: [
+        truthTemplateId: [
           { required: true, message: '产品id不能为空', trigger: 'blur' },
           { min: 1, max: 255, message: '长度在1到255个字符内', trigger: 'blur' },
           { pattern: /\s\S+|S+\s|\S/, message: '产品id不能为空', trigger: 'blur' }

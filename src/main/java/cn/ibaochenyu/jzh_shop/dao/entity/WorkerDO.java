@@ -8,7 +8,7 @@ import lombok.Data;
 public class WorkerDO {
     private Long id;
 
-    private int truthWorkerId;
+//    private int truthWorkerId;
 
     private int showWorkerId;
     private String name;

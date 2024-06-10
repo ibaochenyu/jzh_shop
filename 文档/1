@@ -5,24 +5,33 @@
 ////////////////////////
 方案A：
 //
-产品表
-（款号） 展示款号   款名
-int        int      String
+生产模板表t_produce_template【模板指一个商场的父类，例如82002模板的衣服】【Template近似于style】
+（真实款号）   展示款号              款名
+id          show_template_id   template_name
+bigint          int                String
 
-工人表
-（工号） 展示工号   姓名
-int        int      String
 
-生产表
-（日期  款号 工号） 数量
-Date    int   int   int
+//
+工人表t_worker
+（工号）    展示工号           姓名
+id       show_worker_id       name
+bigint         int           String
 
-生产工资表
-（日期  款号） 单价
-Date    int    Decimal
 
+生产表t_produce
+(信息id)      日期             款号            工号              数量
+id        produce_date  truth_template_id  truth_worker_id    produce_count
+bigint      Date             int             int              int
+
+
+
+生产工资表t_produce_salary【日期+款号建立独立索引】
+（信息id）（日期       款号）             单价
+id         date    truth_template_id    unit_price
+bigint     Date      int                 Decimal
 //////////////////////////
 
-
+商品表t_commodity
+信息id    商品的款号  商品状态
 
 ////////////////

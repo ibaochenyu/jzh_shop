@@ -1,7 +1,6 @@
 package cn.ibaochenyu.jzh_shop.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
@@ -20,8 +19,8 @@ public class ProduceDO {
     //private Date produce_date;
     //java是Date类型。对应mysql不是Date，而是DateTime
     private Date produceDate;
-
-    private int truthItemId;
+//一旦修改了。需要全局替换。1.这里  2.truth_Item_id   3.truthItemId
+    private int truthTemplateId;
 
     private int truthWorkerId;
     private int produceCount;

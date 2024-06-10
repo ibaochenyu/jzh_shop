@@ -6,6 +6,6 @@ public class ProduceQueryReqDTO {
 
 //    private Long id;
 private Date produceDate;
-    private int truthItemId;
+    private int truthTemplateId;
     private int truthWorkerId;
 }

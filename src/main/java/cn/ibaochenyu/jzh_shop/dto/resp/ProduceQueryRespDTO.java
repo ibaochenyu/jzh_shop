@@ -14,12 +14,12 @@ import java.util.Date;
 public class ProduceQueryRespDTO {
 //    private int id;
 //    private String date;
-//    private int truth_item_id;
+//    private int truth_template_id;
 //    private int truth_worker_id;
 //    private int item_count;
 //    private int unit_price;
 private Date produceDate;
-    private int truthItemId;
+    private int truthTemplateId;
     private int truthWorkerId;
 
     private int produceCount;

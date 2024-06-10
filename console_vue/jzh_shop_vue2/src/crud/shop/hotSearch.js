@@ -31,7 +31,7 @@ export const tableOption = {
     {
       //label: '真实item的id',
       label: '产品id',
-      prop: 'truthItemId',
+      prop: 'truthTemplateId',
       search: true
     },
     {

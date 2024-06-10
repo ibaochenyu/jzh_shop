@@ -33,7 +33,7 @@ public class ProduceServiceImpl implements ProduceService {
 
 
     @Override//铁路写法
-    public IPage<ProduceDO> getOneProduce(Date produce_date, Integer truth_item_id, Integer truth_worker_id, PageParam<ProduceDO> page){
+    public IPage<ProduceDO> getOneProduce(Date produce_date, Integer truth_template_id, Integer truth_worker_id, PageParam<ProduceDO> page){
 
 
 
@@ -58,13 +58,13 @@ public class ProduceServiceImpl implements ProduceService {
             queryWrapper.ge(ProduceDO::getProduceDate, temp)//大于今天
                     .le(ProduceDO::getProduceDate, tomorrow);//小于明天
         }
-        if (truth_item_id != null) {
-            queryWrapper.eq(ProduceDO::getTruthItemId, truth_item_id);
+        if (truth_template_id != null) {
+            queryWrapper.eq(ProduceDO::getTruthTemplateId, truth_template_id);
         }
         if (truth_worker_id != null) {
             queryWrapper.eq(ProduceDO::getTruthWorkerId, truth_worker_id);
         }
-//        queryWrapper.orderByDesc(ProduceDO::getTruthItemId);
+//        queryWrapper.orderByDesc(ProduceDO::getTruthTemplateId);
 //current默认1，size默认10。则以size=10切分一份，current为1则展示第一份
 
 //        Page<ProduceDO> pageTemp = new Page<>(5, 3);//current,size
