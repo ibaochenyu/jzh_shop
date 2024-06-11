@@ -23,7 +23,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public void saveStylerToOrderItem(StylerDTO stylerDTO) {
 
-        //服务请求的工厂id，样式id，个数，扔到OrderItem表
+        //服务请求的工厂id，样式id，个数，扔到OrderItem表 //缺个OrderMainID
         OrderItemDO tempDO = OrderItemDO.builder()
                 .truthStylerId(stylerDTO.getTruthStylerId())
                 .truthFactoryId(stylerDTO.getTruthFactoryId())

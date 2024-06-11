@@ -81,11 +81,11 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void locateStylerFromWarehouse(StylerDTO stylerDTO) {
-        BasicDO a=new BasicDO();
-        a.setDate(new Date());
-        basicMapper.insert(a);
-//
+    public void locateStylerFromWarehouse(StylerDTO stylerDTO) {//imp关键函数
+//        BasicDO a=new BasicDO();
+//        a.setDate(new Date());
+//        basicMapper.insert(a);
+
 //        //拿到服务请求的工厂id，样式id，个数
 //        //从warehouse中扣除
 //        WarehouseDO tempDO = WarehouseDO.builder()
@@ -115,6 +115,7 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
             if(warehouseDO.getStockCount() - stockCount>=0) {
                 warehouseDO.setStockCount(warehouseDO.getStockCount() - stockCount);
                 warehouseMapper.updateById(warehouseDO);
+                //假设此处减少了库存就是已经落库了。我需要解耦其他步骤
             }
             else{
                 log.error("！！！！错误：库存不够");

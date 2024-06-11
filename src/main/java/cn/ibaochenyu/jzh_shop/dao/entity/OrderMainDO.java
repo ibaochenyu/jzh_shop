@@ -14,6 +14,6 @@ public class OrderMainDO {
     private Long id;
     private Date createDate;
     private Date payDate;
-    private Long trueUserId;
+    private Long truthUserId;
     private int orderStatus;
 }

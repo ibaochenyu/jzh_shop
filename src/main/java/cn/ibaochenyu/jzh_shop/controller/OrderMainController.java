@@ -19,6 +19,12 @@ public class OrderMainController {
         return ServerResponseEntity.success();
     }
 
+    @PostMapping("saveOrderMain")
+    public ServerResponseEntity<Void> saveStylerToOrderMain(@RequestBody StylerDTO stylerDTO){
+        orderMainService.saveStylerToOrderMain(stylerDTO);
+        return ServerResponseEntity.success();
+    }
+
 
 
 
