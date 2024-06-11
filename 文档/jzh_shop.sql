@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 10/06/2024 16:48:40
+ Date: 11/06/2024 11:09:10
 */
 
 SET NAMES utf8mb4;
@@ -331,6 +331,39 @@ INSERT INTO `t_commodity` VALUES (1800059497543258142, '2024-06-10 16:14:51', 3,
 INSERT INTO `t_commodity` VALUES (1800059497543258143, '2024-06-10 16:14:51', 3, 82003, 11, 0);
 
 -- ----------------------------
+-- Table structure for t_order_item
+-- ----------------------------
+DROP TABLE IF EXISTS `t_order_item`;
+CREATE TABLE `t_order_item`  (
+  `id` bigint NOT NULL,
+  `true_order_main_id` bigint NULL DEFAULT NULL,
+  `truth_factory_id` bigint NULL DEFAULT NULL,
+  `truth_styler_id` bigint NULL DEFAULT NULL,
+  `product_count` int NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_order_item
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_order_main
+-- ----------------------------
+DROP TABLE IF EXISTS `t_order_main`;
+CREATE TABLE `t_order_main`  (
+  `id` bigint NOT NULL,
+  `create_date` datetime NULL DEFAULT NULL,
+  `pay_date` datetime NULL DEFAULT NULL,
+  `true_user_id` bigint NULL DEFAULT NULL,
+  `order_status` int NULL DEFAULT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_order_main
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for t_produce
 -- ----------------------------
 DROP TABLE IF EXISTS `t_produce`;
@@ -503,6 +536,36 @@ INSERT INTO `t_sys_log` VALUES (1799687336102117377, '2024-06-09 14:17:52', '请
 INSERT INTO `t_sys_log` VALUES (1799687448454938626, '2024-06-09 14:18:19', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 32);
 INSERT INTO `t_sys_log` VALUES (1799687613710516225, '2024-06-09 14:18:58', 'updateProduce', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.update()', '{\"id\":6,\"produceDate\":857088000000,\"truthItemId\":82008,\"truthWorkerId\":1,\"produceCount\":5545}', 16);
 INSERT INTO `t_sys_log` VALUES (1799687620173938689, '2024-06-09 14:19:00', '请求searchPageResult', '0.0.0.0', 'cn.ibaochenyu.jzh_shop.controller.BasicController.getOneProduceRtResult()', 'null', 15);
+
+-- ----------------------------
+-- Table structure for t_user
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user`;
+CREATE TABLE `t_user`  (
+  `id` bigint NOT NULL,
+  `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_user
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_warehouse
+-- ----------------------------
+DROP TABLE IF EXISTS `t_warehouse`;
+CREATE TABLE `t_warehouse`  (
+  `id` bigint NOT NULL,
+  `truth_factory_id` bigint NULL DEFAULT NULL,
+  `truth_styler_id` bigint NULL DEFAULT NULL,
+  `stock_count` int NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_warehouse
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_worker

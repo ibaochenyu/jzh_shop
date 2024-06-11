@@ -33,29 +33,28 @@ bigint     Date                int                 Decimal
 
 
 
-商品表t_commodity【跟踪每一个商品的状态】【分片分库了大概率】【相当于seat，还需要redis存style和cnt的对应关系】
-【一旦取消seat，我看了它不是判断seatId，而是判断列车id、车厢id、座位号，SeatServiceImpl.unlock】【但是这不对啊，seat哪有一直在的？？？】
-【假定：一个工人在一天，可能去不同的工厂了】【需要加一个注释，标识这个商品坏在哪里，如何处理】
-（此处本来应该是像商城存库存比较好。但是实际使用时候，由于我们的商品模板需要设计，因此存styler显得数据很少，无法方便我后面调优尝试，因此改为存单个商品】
-
-（信息id）    生产日期            工厂号                      商品的款号           工号               商品状态
-id          produce_date      truth_factory_id         truth_styler_id   truth_worker_id          commodity_status
-bigint          Date          bigint                           bigint          bigint                int
-
+仓库表t_warehouse【跟踪每个styler的信息】
+【假设服务请求中，查看是1w次，买是100次】
+【仓库不关心生产时间，但是有些客户有需求，想要某个工人做的东西】
+【显示某个styler，在某个工厂，有多少数量】
+（信息id）          工厂号                 商品的款号                        数量
+id            truth_factory_id         truth_styler_id                 stock_count
+bigint          bigint                       bigint                         int
 
 
-订单表t_order【这里其实和t_order_item和t_seat很像，我看过了t_seat是有具体的seat信息，t_order_item也有seat信息，二者不是通过seatId联系的。seat没有存orderId，order也没有存seatId，二者都存的是seat的座位号】【铁路并没有对其他id进行外键约束】【那么完全可以不用商品id，把商品id的关键信息存到这表就行】【看mall好像是根据id操作库存】【所以这里的设计还行】
-（信息id）                        下单日期         支付日期                客户id           订单状态
-id                               order_date        pay_date          true_user_id        order_stuts
-bigint                            Date            Date                bigint           bigint
+【生产货的数量高，下单买货的数量一般比较低】
+【请求的一定是单一styler】
+订单表t_order_main【这里其实和t_order_item和t_seat很像，我看过了t_seat是有具体的seat信息，t_order_item也有seat信息，二者不是通过seatId联系的。seat没有存orderId，order也没有存seatId，二者都存的是seat的座位号】【铁路并没有对其他id进行外键约束】【那么完全可以不用商品id，把商品id的关键信息存到这表就行】【看mall好像是根据id操作库存】【所以这里的设计还行】
+（信息id）                        创建日期         支付日期                客户id             订单状态
+id                               create_date        pay_date          true_user_id        order_status
+bigint                            Date            Date                bigint               int
 
 
-
-订单明细表t_order_item   【此处没必要用商品id关联了】
-（信息id）      订单主表id                      生产日期            工厂号                      商品的款号           工号
-id            true_orderMain_id             produce_date      truth_factory_id         truth_styler_id   truth_worker_id
-bigint           bigint                          Date          bigint                           bigint          bigint
-
+【分库分表，根据order和user】
+订单明细表t_order_item   【此处没必要用商品id关联了】【分片分库了大概率】【redis存style和cnt的对应关系】
+（信息id）      订单主表id                             工厂号（发货地）               商品的款号          商品个数
+id            true_order_main_id                     truth_factory_id             truth_styler_id       product_count
+bigint            bigint                                 bigint                      bigint              int
 
 
 用户表t_user
@@ -76,3 +75,11 @@ bigint          Date                         int
 id            true_orderMain_id             true_commodity_id
 bigint           bigint                         bigint
 
+商品表t_commodity【跟踪每一个商品的状态】【分片分库了大概率】【相当于seat，还需要redis存style和cnt的对应关系】
+【一旦取消seat，我看了它不是判断seatId，而是判断列车id、车厢id、座位号，SeatServiceImpl.unlock】【但是这不对啊，seat哪有一直在的？？？】
+【假定：一个工人在一天，可能去不同的工厂了】【需要加一个注释，标识这个商品坏在哪里，如何处理】
+（此处本来应该是像商城存库存比较好。但是实际使用时候，由于我们的商品模板需要设计，因此存styler显得数据很少，无法方便我后面调优尝试，因此改为存单个商品】
+
+（信息id）    生产日期            工厂号                      商品的款号           工号               商品状态
+id          produce_date      truth_factory_id         truth_styler_id   truth_worker_id          commodity_status
+bigint          Date          bigint                           bigint          bigint                int
