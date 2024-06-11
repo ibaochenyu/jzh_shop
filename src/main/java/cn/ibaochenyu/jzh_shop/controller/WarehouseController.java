@@ -28,6 +28,13 @@ public class WarehouseController {
         return ServerResponseEntity.success();
     }
 
+
+    @PostMapping("saveProduceDOToWarehouse")
+    public ServerResponseEntity<Void> saveProduceDOToWarehouse(@RequestBody ProduceDO aDO){//本来传参无法进来，把其他人的import拿来就好了
+        warehouseService.saveProduceDOToWarehouse(aDO);
+        return ServerResponseEntity.success();
+    }
+
     @PutMapping("saveWarehouseAddCount")
     public ServerResponseEntity<Void> saveWarehouseAddCount(@RequestBody WarehouseDO aDO){//本来传参无法进来，把其他人的import拿来就好了
         warehouseService.mySave(aDO);

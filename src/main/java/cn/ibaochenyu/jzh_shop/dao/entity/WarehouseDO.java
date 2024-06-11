@@ -16,7 +16,7 @@ public class WarehouseDO {
     private Long id;
     private Long truthFactoryId;
     private Long truthStylerId;
-    private Long stockCount;
+    private int stockCount;
 
 
 }
