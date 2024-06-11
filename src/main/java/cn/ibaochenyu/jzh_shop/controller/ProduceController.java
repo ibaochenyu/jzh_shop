@@ -6,6 +6,7 @@ import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
 import cn.ibaochenyu.jzh_shop.dao.entity.BasicDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
+import cn.ibaochenyu.jzh_shop.dao.entity.WarehouseDO;
 import cn.ibaochenyu.jzh_shop.service.BasicService;
 import cn.ibaochenyu.jzh_shop.service.CommodityService;
 import cn.ibaochenyu.jzh_shop.service.ProduceService;
@@ -86,36 +87,35 @@ public class ProduceController {
 
         List<CommodityDO> tempList = new ArrayList<>();
         List<BasicDO> tempListBasic = new ArrayList<>();
+        List<WarehouseDO> tempListWarehouse = new ArrayList<>();
 
-//        CommodityDO tempDO=new CommodityDO();
-//        tempDO.setTruthStylerId(produceDO.getTruthStylerId());
-//        tempDO.setCommodityStatus(1L);//设置商品要进入数据库
-        //tempDO.setId(null);
+
         for(int s=0;s<produceCount;s++) {
-
-            //这么写不行，会出现：; Duplicate entry '1800034706216124417' for key 't_commodity.PRIMARY'] with root cause
-            //commodityService.mySave(tempDO);
-
-            //我尝试了，无论如何使用for+tempList.add(tempDO)不行。总是提示Duplicate
-//            tempList.add(tempDO);
-
-
             CommodityDO tempADO=CommodityDO.builder()
                     .truthStylerId(produceDO.getTruthStylerId())
                     .commodityStatus(CommodityStatusEnum.AVAILABLE.getCode())//设置状态为可以销售
                     .build();
             tempList.add(tempADO);
-        }//需要设置commodityService表是无符号、序号自动递增。从调试的记录来看，是批量插入
+            //////
 
-
-
-        for(int s=0;s<produceCount;s++) {
-            BasicDO tempADO=BasicDO.builder()
+            ////////
+            BasicDO tempADOBaisc=BasicDO.builder()
                     .workId(s+30)
                     .name("测试SaveBatch")
                     .build();
-            tempListBasic.add(tempADO);
+            tempListBasic.add(tempADOBaisc);
+        }//需要设置commodityService表是无符号、序号自动递增。从调试的记录来看，是批量插入
+
+
+        for(int s=0;s<produceCount;s++) {
+            WarehouseDO tempWareADO = WarehouseDO.builder()
+                    .truthStylerId(produceDO.getTruthStylerId())
+                    .truthFactoryId(produceDO.getTruthFactoryId())
+                    .build();
+
+            tempListWarehouse.add(tempWareADO);
         }
+
         commodityService.saveBatch(tempList);//id=null，竟然真的插入进去了p
         basicService.saveBatch(tempListBasic);;//如果在basicService有中间冲突，会导致commodityService的saveBatch完成，basicService的整体saveBatch都不提交。也就是会提交一部分
 //返回的是java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '60' for key 't_basic.work_id独立索引'

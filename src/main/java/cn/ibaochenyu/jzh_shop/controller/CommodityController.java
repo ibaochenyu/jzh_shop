@@ -37,11 +37,11 @@ public class CommodityController {
     ////
 
 
-    @PutMapping//这里还没有实现
+    @PutMapping("purchaseStylerAndGiveOneCommodity")//这里还没有实现
     public ServerResponseEntity<Integer> purchaseStylerAndGiveOneCommodity(@RequestBody ProduceStylerDO aDo){
-        int rtChange=commodityService.purchaseStylerAndGiveOneCommodity(aDo);
-        Integer temp=Integer.valueOf(rtChange);
-        return ServerResponseEntity.success(temp);
+//        int rtChange=commodityService.purchaseStylerAndGiveOneCommodity(aDo);
+//        Integer temp=Integer.valueOf(rtChange);
+        return ServerResponseEntity.success(-1);
     }
 
 
