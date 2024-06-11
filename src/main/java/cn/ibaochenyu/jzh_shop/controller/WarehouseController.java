@@ -2,18 +2,13 @@ package cn.ibaochenyu.jzh_shop.controller;
 
 import cn.ibaochenyu.jzh_shop.PageParam;
 import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
-import cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
-import cn.ibaochenyu.jzh_shop.dao.entity.ProduceStylerDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.WarehouseDO;
-import cn.ibaochenyu.jzh_shop.service.CommodityService;
-import cn.ibaochenyu.jzh_shop.service.ProduceService;
+import cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO;
 import cn.ibaochenyu.jzh_shop.service.WarehouseService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,9 +24,10 @@ public class WarehouseController {
     }
 
 
-    @PostMapping("saveProduceDOToWarehouse")
-    public ServerResponseEntity<Void> saveProduceDOToWarehouse(@RequestBody ProduceDO aDO){//本来传参无法进来，把其他人的import拿来就好了
-        warehouseService.saveProduceDOToWarehouse(aDO);
+    //saveProduceToWarehouseAndCountPlus和saveWarehouseAddCount差不多。参数输入不同；一个操作一张表，一个操作两张表
+    @PostMapping("saveProduceToWarehouseAndCountPlus")
+    public ServerResponseEntity<Void> saveProduceToWarehouseAndCountPlus(@RequestBody ProduceDO aDO){//本来传参无法进来，把其他人的import拿来就好了
+        warehouseService.saveProduceToWarehouseAndCountPlus(aDO);
         return ServerResponseEntity.success();
     }
 
@@ -47,6 +43,12 @@ public class WarehouseController {
         //List<CommodityDO> tempList;
         //tempList.add(new CommodityDO())
         return ServerResponseEntity.success(rt);
+    }
+
+    @PutMapping("locateStylerFromWarehouse")
+    public ServerResponseEntity<Void> locateStylerFromWarehouse(@RequestBody StylerDTO stylerDTO){
+        warehouseService.locateStylerFromWarehouse(stylerDTO);
+        return ServerResponseEntity.success();
     }
 
 

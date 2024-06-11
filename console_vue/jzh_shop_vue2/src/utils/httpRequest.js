@@ -36,102 +36,112 @@ http.interceptors.response.use(response => {//阻拦的关键：http.interceptor
 
 
   const res = response.data
-  return res
+  // return res
+
+
   // 00000 请求成功
-  // if (res.code === '00000') {
-  //   return res
-  // }
-})
-  // // // A00001 用于直接显示提示用户的错误,内容由输入决定
-  // // if (res.code === 'A00001') {
-  // //   Message({
-  // //     message: res.msg || 'Error',
-  // //     type: 'error',
-  // //     duration: 1.5 * 1000
-  // //   })
-  // //   return Promise.reject(res)
-  // // }
-  //
-  // // // A00002 用于直接显示提示系统的成功,内容由输入决定
-  // // if (res.code === 'A00002') {
-  // //   Message({
-  // //     message: res.msg,
-  // //     type: 'success',
-  // //     duration: 1.5 * 1000
-  // //   })
-  // // }
-  //
-  // // // A00004 未授权
-  // // if (res.code === 'A00004') {
-  // //   clearLoginInfo()
-  // //   router.push({ name: 'login' })
-  // // }
-  //
-  // // A00005 服务器异常
-  // if (res.code === 'A00005') {
-  //   console.error('============== 请求异常 ==============')
-  //   console.log('接口地址: ', response.config.url.replace(process.env.VUE_APP_BASE_API, ''))
-  //   console.log('异常信息: ', res)
-  //   console.error('============== 请求异常 end ==========')
+  if (res.code === '00000') {
+    return res
+  }
+
+  // // A00001 用于直接显示提示用户的错误,内容由输入决定
+  // if (res.code === 'A00001') {
   //   Message({
-  //     message: '服务器出了点小差，请稍后再试2222',
+  //     message: res.msg || 'Error',
   //     type: 'error',
-  //     duration: 1.5 * 1000,
-  //     customClass: 'element-error-message-zindex'
+  //     duration: 1.5 * 1000
   //   })
-  //   return Promise.reject(res)//Promise.reject() 静态方法返回一个已拒绝（rejected）的 Promise 对象，拒绝原因为给定的参数。
+  //   return Promise.reject(res)
   // }
-  // if (res.code === 'SQL00001') {
+
+  // // A00002 用于直接显示提示系统的成功,内容由输入决定
+  // if (res.code === 'A00002') {
   //   Message({
-  //     message: 'sql修改数据出错，很可能是uniqueKey冲突--前端提示',
-  //     type: 'error',
-  //     duration: 1.5 * 1000,
-  //     customClass: 'element-error-message-zindex'
+  //     message: res.msg,
+  //     type: 'success',
+  //     duration: 1.5 * 1000
   //   })
   // }
-// }
-// , error => {
-  // switch (error.response.status) {
-  //   case 400:
-  //     Message({
-  //       message: error.response.data,
-  //       type: 'error',
-  //       duration: 1500,
-  //       customClass: 'element-error-message-zindex'
-  //     })
-  //     break
-  //   case 401:
-  //     clearLoginInfo()
-  //     router.push({ name: 'login' })
-  //     break
-  //   case 405:
-  //     Message({
-  //       message: 'http请求方式有误',
-  //       type: 'error',
-  //       duration: 1500,
-  //       customClass: 'element-error-message-zindex'
-  //     })
-  //     break
-  //   case 500:
-  //     Message({
-  //       message: '服务器出了点小差，请稍后再试3333',
-  //       type: 'error',
-  //       duration: 1500,
-  //       customClass: 'element-error-message-zindex'
-  //     })
-  //     break
-  //   case 501:
-  //     Message({
-  //       message: '服务器不支持当前请求所需要的某个功能',
-  //       type: 'error',
-  //       duration: 1500,
-  //       customClass: 'element-error-message-zindex'
-  //     })
-  //     break
+
+  // // A00004 未授权
+  // if (res.code === 'A00004') {
+  //   clearLoginInfo()
+  //   router.push({ name: 'login' })
   // }
-  // return Promise.reject(error)
-// }
-// )
+
+  // A00005 服务器异常
+  if (res.code === 'A00005') {
+    console.error('============== 请求异常 ==============')
+    console.log('接口地址: ', response.config.url.replace(process.env.VUE_APP_BASE_API, ''))
+    console.log('异常信息: ', res)
+    console.error('============== 请求异常 end ==========')
+    Message({
+      message: '服务器出了点小差，请稍后再试2222',
+      type: 'error',
+      duration: 1.5 * 1000,
+      customClass: 'element-error-message-zindex'
+    })
+    return Promise.reject(res)//Promise.reject() 静态方法返回一个已拒绝（rejected）的 Promise 对象，拒绝原因为给定的参数。
+  }
+  if (res.code === 'SQL00001') {
+    Message({
+      message: 'sql修改数据出错，很可能是uniqueKey冲突--前端提示',
+      type: 'error',
+      duration: 1.5 * 1000,
+      customClass: 'element-error-message-zindex'
+    })
+  }
+  if (res.code === 'EXC114514') {
+    Message({//Message是element-ui的
+      message: '测试错误出现了。这里是前端的错误',
+      type: 'error',
+      duration: 1.5 * 1000,
+      customClass: 'element-error-message-zindex'
+    })
+  }
+}
+, error => {
+  switch (error.response.status) {
+    case 400:
+      Message({
+        message: error.response.data,
+        type: 'error',
+        duration: 1500,
+        customClass: 'element-error-message-zindex'
+      })
+      break
+    case 401:
+      clearLoginInfo()
+      router.push({ name: 'login' })
+      break
+    case 405:
+      Message({
+        message: 'http请求方式有误',
+        type: 'error',
+        duration: 1500,
+        customClass: 'element-error-message-zindex'
+      })
+      break
+    case 500:
+      Message({
+        message: '服务器出了点小差，请稍后再试3333',
+        type: 'error',
+        duration: 1500,
+        customClass: 'element-error-message-zindex'
+      })
+      break
+    case 501:
+      Message({
+        message: '服务器不支持当前请求所需要的某个功能',
+        type: 'error',
+        duration: 1500,
+        customClass: 'element-error-message-zindex'
+      })
+      break
+  }
+  return Promise.reject(error)
+}
+)
 
 /**
  * 请求地址处理

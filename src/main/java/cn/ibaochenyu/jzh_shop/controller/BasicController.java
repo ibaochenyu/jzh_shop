@@ -1,8 +1,6 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
 import cn.ibaochenyu.jzh_shop.PageParam;
-import cn.ibaochenyu.jzh_shop.Result;
-import cn.ibaochenyu.jzh_shop.Results;
 import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
 import cn.ibaochenyu.jzh_shop.annotation.SysLogMyAnnotation;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;

@@ -43,7 +43,7 @@ bigint          bigint                       bigint                         int
 
 
 【生产货的数量高，下单买货的数量一般比较低】
-【请求的一定是单一styler】
+【请求的一定是单一工厂单一Styler】
 订单表t_order_main【这里其实和t_order_item和t_seat很像，我看过了t_seat是有具体的seat信息，t_order_item也有seat信息，二者不是通过seatId联系的。seat没有存orderId，order也没有存seatId，二者都存的是seat的座位号】【铁路并没有对其他id进行外键约束】【那么完全可以不用商品id，把商品id的关键信息存到这表就行】【看mall好像是根据id操作库存】【所以这里的设计还行】
 （信息id）                        创建日期         支付日期                客户id             订单状态
 id                               create_date        pay_date          true_user_id        order_status

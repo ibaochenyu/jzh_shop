@@ -1,15 +1,14 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
-import cn.ibaochenyu.jzh_shop.CommodityStatusEnum;
+import cn.ibaochenyu.jzh_shop.JZHcustomException;
 import cn.ibaochenyu.jzh_shop.PageParam;
+import cn.ibaochenyu.jzh_shop.ResponseEnum;
 import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
 import cn.ibaochenyu.jzh_shop.dao.entity.BasicDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.WarehouseDO;
-import cn.ibaochenyu.jzh_shop.service.BasicService;
-import cn.ibaochenyu.jzh_shop.service.CommodityService;
-import cn.ibaochenyu.jzh_shop.service.ProduceService;
+import cn.ibaochenyu.jzh_shop.service.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,6 +28,8 @@ public class ProduceController {
     private final ProduceService produceService;
 
     private final CommodityService  commodityService;
+
+    private final WarehouseService warehouseService;
 
     private final BasicService basicService;
 
@@ -72,53 +73,62 @@ public class ProduceController {
     @RequestMapping("/getOneProduceInfo/{id}")
     //参考public ServerResponseEntity<HotSearch> info(@PathVariable("id") Long id){
     public ServerResponseEntity<ProduceDO> getOneProduceInfo(@PathVariable("id") Long id) {
+
         ProduceDO rt=produceService.getOneProduceInfo(id);
+        if(true){
+            //throw new JZHcustomException("测试未知错误");//"code": "A00001",//    "msg": "测试未知错误",
+            throw new JZHcustomException(ResponseEnum.TEST_EXCEPTION,"好，错误出现了");////{"code": "EXC114514", "msg": "好，错误出现了",
+        }
         return ServerResponseEntity.success(rt);
     }
 
     //    @SysLogMyAnnotation(mvalue="saveProduce")
-    @PostMapping//RequestBody???
+    @PutMapping("saveProduceDO")//RequestBody???
     @Transactional(rollbackFor = Exception.class)//果然加了Transactional,函数内一起回滚了
-    public ServerResponseEntity<Void> save(@RequestBody ProduceDO produceDO) {
+    public ServerResponseEntity<Void> saveProduceDO(@RequestBody ProduceDO produceDO) {
         //int rt=produceService.save(produceDO);
         //能不能返回一个插入的值呢？？？
-        produceService.save(produceDO);
-        int produceCount=produceDO.getProduceCount();
 
+
+        produceService.save(produceDO);//生产一个produce筐
+
+
+        int produceCount=produceDO.getProduceCount();
         List<CommodityDO> tempList = new ArrayList<>();
         List<BasicDO> tempListBasic = new ArrayList<>();
         List<WarehouseDO> tempListWarehouse = new ArrayList<>();
 
 
-        for(int s=0;s<produceCount;s++) {
-            CommodityDO tempADO=CommodityDO.builder()
-                    .truthStylerId(produceDO.getTruthStylerId())
-                    .commodityStatus(CommodityStatusEnum.AVAILABLE.getCode())//设置状态为可以销售
-                    .build();
-            tempList.add(tempADO);
-            //////
+//        for(int s=0;s<produceCount;s++) {
+//            CommodityDO tempADO=CommodityDO.builder()
+//                    .truthStylerId(produceDO.getTruthStylerId())
+//                    .commodityStatus(CommodityStatusEnum.AVAILABLE.getCode())//设置状态为可以销售
+//                    .build();
+//            tempList.add(tempADO);
+//            //////
+//
+//            ////////
+//            BasicDO tempADOBaisc=BasicDO.builder()
+//                    .workId(s+30)
+//                    .name("测试SaveBatch")
+//                    .build();
+//            tempListBasic.add(tempADOBaisc);
+//        }//需要设置commodityService表是无符号、序号自动递增。从调试的记录来看，是批量插入
 
-            ////////
-            BasicDO tempADOBaisc=BasicDO.builder()
-                    .workId(s+30)
-                    .name("测试SaveBatch")
-                    .build();
-            tempListBasic.add(tempADOBaisc);
-        }//需要设置commodityService表是无符号、序号自动递增。从调试的记录来看，是批量插入
 
+//        WarehouseDO tempWareADO = WarehouseDO.builder()
+//                .truthStylerId(produceDO.getTruthStylerId())
+//                .truthFactoryId(produceDO.getTruthFactoryId())
+//                .stockCount(produceDO.getProduceCount())//将produce生产的数目给库存
+//                .build();
 
-        for(int s=0;s<produceCount;s++) {
-            WarehouseDO tempWareADO = WarehouseDO.builder()
-                    .truthStylerId(produceDO.getTruthStylerId())
-                    .truthFactoryId(produceDO.getTruthFactoryId())
-                    .build();
+        //不要直接save，可能会触发unique索引
+        // warehouseService.save(tempWareADO);
+        warehouseService.saveProduceToWarehouseAndCountPlus(produceDO);
 
-            tempListWarehouse.add(tempWareADO);
-        }
+//        commodityService.saveBatch(tempList);//produce导致商品详情改变
+//        basicService.saveBatch(tempListBasic);;
 
-        commodityService.saveBatch(tempList);//id=null，竟然真的插入进去了p
-        basicService.saveBatch(tempListBasic);;//如果在basicService有中间冲突，会导致commodityService的saveBatch完成，basicService的整体saveBatch都不提交。也就是会提交一部分
-//返回的是java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '60' for key 't_basic.work_id独立索引'
         return ServerResponseEntity.success();
     }
 

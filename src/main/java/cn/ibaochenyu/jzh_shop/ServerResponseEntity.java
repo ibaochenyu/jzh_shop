@@ -6,9 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * @author lanhai
- */
+
 @Slf4j
 public class ServerResponseEntity<T> implements Serializable {
 
@@ -189,18 +187,18 @@ public class ServerResponseEntity<T> implements Serializable {
 //        return serverResponseEntity;
 //    }
 //
-//    public static <T> ServerResponseEntity<T> fail(String code, String msg, T data) {//核心构造三成员：(String code, String msg, T data)
-//        log.error(msg);
-//        ServerResponseEntity<T> serverResponseEntity = new ServerResponseEntity<>();
-//        serverResponseEntity.setCode(code);
-//        serverResponseEntity.setMsg(msg);
-//        serverResponseEntity.setData(data);
-//        return serverResponseEntity;
-//    }
-//
-//    public static <T> ServerResponseEntity<T> fail(String code, String msg) {
-//        return fail(code, msg, null);
-//    }
+    public static <T> ServerResponseEntity<T> fail(String code, String msg, T data) {//核心构造三成员：(String code, String msg, T data)
+        log.error(msg);
+        ServerResponseEntity<T> serverResponseEntity = new ServerResponseEntity<>();
+        serverResponseEntity.setCode(code);
+        serverResponseEntity.setMsg(msg);
+        serverResponseEntity.setData(data);
+        return serverResponseEntity;
+    }
+
+    public static <T> ServerResponseEntity<T> fail(String code, String msg) {
+        return fail(code, msg, null);
+    }
 //
 //    public static <T> ServerResponseEntity<T> fail(Integer code, T data) {
 //        ServerResponseEntity<T> serverResponseEntity = new ServerResponseEntity<>();

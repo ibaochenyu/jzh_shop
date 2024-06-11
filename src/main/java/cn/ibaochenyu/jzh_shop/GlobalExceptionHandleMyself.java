@@ -3,7 +3,8 @@ package cn.ibaochenyu.jzh_shop;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -37,6 +38,18 @@ public class GlobalExceptionHandleMyself {
 //        //我看过了，铁路注册的用户名如果重复，首部状态码是200，responce的错误码才是自己细节定义的
 //    }//此处定义的是控制台response的码。前端会额外根据我们细节定义的A00005进行说明展示
 
+    @ExceptionHandler(JZHcustomException.class)
+    public ResponseEntity<ServerResponseEntity<?>> unauthorizedExceptionHandler(JZHcustomException e){
+        log.error("mall4jExceptionHandler", e);
+
+        ServerResponseEntity<?> serverResponseEntity = e.getServerResponseEntity();
+        if (serverResponseEntity!=null) {
+            return ResponseEntity.status(HttpStatus.OK).body(serverResponseEntity);
+        }
+        // 失败返回消息 状态码固定为直接显示消息的状态码
+        return ResponseEntity.status(HttpStatus.OK).body(ServerResponseEntity.fail(e.getCode(),e.getMessage()));
+    }//关键：ResponseEntity.status(...).body(...)
+
     private String getUrl(HttpServletRequest request) {
         if (StringUtils.isEmpty(request.getQueryString())) {
             return request.getRequestURL().toString();
@@ -45,3 +58,13 @@ public class GlobalExceptionHandleMyself {
             return "-1";
     }
 }
+
+//statusCode：200
+//{
+//        "code": "A00001",
+//        "msg": "测试未知错误",
+//        "data": null,
+//        "version": "jzh-Shop.v230424",
+//        "success": false,
+//        "fail": true
+//        }
