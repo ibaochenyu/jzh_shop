@@ -1,7 +1,7 @@
-package cn.ibaochenyu.jzh_shop;
+package cn.ibaochenyu.jzh_shop.webGlobal;
 
-import cn.ibaochenyu.jzh_shop.ResponseEnum;
-import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
+import cn.ibaochenyu.jzh_shop.myResponse.ResponseEnum;
+import cn.ibaochenyu.jzh_shop.myResponse.ServerResponseEntity;
 import lombok.Getter;
 
 @Getter//例如throw new JZHcustomException("账号或密码不正确");

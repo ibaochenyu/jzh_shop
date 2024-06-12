@@ -1,6 +1,6 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
-import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
+import cn.ibaochenyu.jzh_shop.myResponse.ServerResponseEntity;
 import cn.ibaochenyu.jzh_shop.dao.entity.OrderMainDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO;
 import cn.ibaochenyu.jzh_shop.service.OrderMainService;

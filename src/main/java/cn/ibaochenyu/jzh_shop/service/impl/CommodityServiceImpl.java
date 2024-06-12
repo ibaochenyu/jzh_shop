@@ -1,7 +1,7 @@
 package cn.ibaochenyu.jzh_shop.service.impl;
 
-import cn.ibaochenyu.jzh_shop.CommodityStatusEnum;
-import cn.ibaochenyu.jzh_shop.PageParam;
+import cn.ibaochenyu.jzh_shop.enums.CommodityStatusEnum;
+import cn.ibaochenyu.jzh_shop.util.PageParam;
 import cn.ibaochenyu.jzh_shop.dao.entity.CommodityDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceStylerDO;
 import cn.ibaochenyu.jzh_shop.dao.mapper.CommodityMapper;

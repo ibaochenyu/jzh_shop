@@ -1,22 +1,9 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
-import cn.ibaochenyu.jzh_shop.PageParam;
-import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
-import cn.ibaochenyu.jzh_shop.annotation.SysLogMyAnnotation;
-import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.BasicQueryRespDTO;
-import cn.ibaochenyu.jzh_shop.dto.resp.ProduceQueryRespDTO;
 import cn.ibaochenyu.jzh_shop.service.BasicService;
-import cn.ibaochenyu.jzh_shop.service.ProduceService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 //无法map，可能是文件位置和package的原因
 

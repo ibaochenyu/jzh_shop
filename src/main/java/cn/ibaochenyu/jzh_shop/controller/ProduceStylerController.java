@@ -1,7 +1,5 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
-import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
-import cn.ibaochenyu.jzh_shop.dao.entity.ProduceStylerDO;
 import cn.ibaochenyu.jzh_shop.service.ProduceStylerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

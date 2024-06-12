@@ -1,17 +1,15 @@
-package cn.ibaochenyu.jzh_shop;
+package cn.ibaochenyu.jzh_shop.mq;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DelayCloseOrderEvent {
+public class MyCustomEvent {
 
 
 

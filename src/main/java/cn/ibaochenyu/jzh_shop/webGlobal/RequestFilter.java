@@ -1,4 +1,4 @@
-package cn.ibaochenyu.jzh_shop;
+package cn.ibaochenyu.jzh_shop.webGlobal;
 //import javax.servlet.*;
 //import javax.servlet.annotation.WebFilter;
 //import javax.servlet.http.HttpServletRequest;
@@ -8,18 +8,8 @@ import java.io.IOException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.util.StringUtils;
 
-import java.io.IOException;
-import java.net.URLDecoder;
 
-/**
- * 解决跨域设置
- * （可把此设置放在 nginx 中，但只能设置一处）
- *
- * @author silence
- * @date 2018/12/11 15:19
- */
 
 //@WebFilter(filterName = "requestFilter", urlPatterns = {"/*"})
 public class RequestFilter implements Filter {

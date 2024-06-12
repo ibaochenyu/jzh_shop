@@ -1,7 +1,7 @@
 package cn.ibaochenyu.jzh_shop.service.impl;
 
-import cn.ibaochenyu.jzh_shop.DelayCloseOrderEvent;
-import cn.ibaochenyu.jzh_shop.JZHcustomException;
+import cn.ibaochenyu.jzh_shop.mq.MyCustomEvent;
+import cn.ibaochenyu.jzh_shop.webGlobal.JZHcustomException;
 import cn.ibaochenyu.jzh_shop.controller.MyRocketMQ;
 import cn.ibaochenyu.jzh_shop.dao.entity.OrderMainDO;
 import cn.ibaochenyu.jzh_shop.dao.mapper.OrderMainMapper;
@@ -47,11 +47,11 @@ public class OrderMainServiceImpl implements OrderMainService {
         log.info("请求参数：{}", JSON.toJSONString(stylerDTO));
         try {
             // 发送 RocketMQ 延时消息，指定时间后取消订单
-            DelayCloseOrderEvent delayCloseOrderEvent = DelayCloseOrderEvent.builder()
+            MyCustomEvent myCustomEvent = MyCustomEvent.builder()
                     .orderMainId(String.valueOf( tempDO.getId()))
                     .build();
             // 创建订单并支付后延时关闭订单消息怎么办？详情查看：https://nageoffer.com/12306/question
-            SendResult sendResult = myRocketMQ.sendMessage(delayCloseOrderEvent);
+            SendResult sendResult = myRocketMQ.sendMessage(myCustomEvent);
             if (!Objects.equals(sendResult.getSendStatus(), SendStatus.SEND_OK)) {
                 throw new JZHcustomException("投递延迟关闭订单消息队列失败");
             }

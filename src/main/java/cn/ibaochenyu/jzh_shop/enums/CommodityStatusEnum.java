@@ -1,4 +1,4 @@
-package cn.ibaochenyu.jzh_shop;
+package cn.ibaochenyu.jzh_shop.enums;
 
 import lombok.Data;
 import lombok.Getter;

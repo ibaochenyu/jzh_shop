@@ -1,9 +1,7 @@
 package cn.ibaochenyu.jzh_shop.config;
 
 
-import cn.ibaochenyu.jzh_shop.RequestFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import cn.ibaochenyu.jzh_shop.webGlobal.RequestFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 package cn.ibaochenyu.jzh_shop.service.impl;
 
-import cn.ibaochenyu.jzh_shop.PageParam;
+import cn.ibaochenyu.jzh_shop.util.PageParam;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
 
 import cn.ibaochenyu.jzh_shop.dao.mapper.ProduceMapper;

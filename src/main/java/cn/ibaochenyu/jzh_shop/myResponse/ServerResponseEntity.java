@@ -1,4 +1,4 @@
-package cn.ibaochenyu.jzh_shop;
+package cn.ibaochenyu.jzh_shop.myResponse;
 
 
 import lombok.extern.slf4j.Slf4j;

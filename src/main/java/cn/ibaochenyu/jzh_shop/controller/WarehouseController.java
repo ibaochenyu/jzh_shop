@@ -1,7 +1,7 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
-import cn.ibaochenyu.jzh_shop.PageParam;
-import cn.ibaochenyu.jzh_shop.ServerResponseEntity;
+import cn.ibaochenyu.jzh_shop.util.PageParam;
+import cn.ibaochenyu.jzh_shop.myResponse.ServerResponseEntity;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.WarehouseDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO;
