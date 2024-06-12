@@ -18,10 +18,10 @@ public class DelayCloseOrderEvent {
     /**
      * 订单号
      */
-    private Long orderMainId;
+    private String orderMainId;
 
     /**
      * 乘车人购票信息
      */
-    private List<Long> LiseterTest;
+//    private List<Long> LiseterTest;
 }

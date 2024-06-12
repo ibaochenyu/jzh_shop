@@ -25,6 +25,8 @@ public class MyRocketMQ {
 
     private final RocketMQTemplate rocketMQTemplate;
 
+    //private final ObjectMapper objectMapper;
+
 //    protected BaseSendExtendDTO buildBaseSendExtendParam(DelayCloseOrderEvent messageSendEvent) {
 //        return
 //    }
@@ -48,14 +50,16 @@ public class MyRocketMQ {
      */
     public SendResult sendMessage(DelayCloseOrderEvent messageSendEvent) {//DelayCloseOrderEvent是一种消息种类
         //原来参考buildBaseSendExtendParam的作用
+        String tempStr=(messageSendEvent.getOrderMainId());//long转string
         BaseSendExtendDTO baseSendExtendDTO = BaseSendExtendDTO.builder()
                 .eventName("延迟关闭订单")
-                .keys(String.valueOf(messageSendEvent.getOrderMainId()))//long转string
+                .keys(tempStr)
                 .topic((OrderRocketMQConstant.ORDER_DELAY_CLOSE_TOPIC_KEY))
                 .tag((OrderRocketMQConstant.ORDER_DELAY_CLOSE_TAG_KEY))
                 .sentTimeout(2000L)
                 // RocketMQ 延迟消息级别 1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
-                .delayLevel(14)//10m数过来是第14个
+                //.delayLevel(14)//10m数过来是第14个
+                .delayLevel(3)//10m数过来是第14个
                 .build();
 
 

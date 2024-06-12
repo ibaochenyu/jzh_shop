@@ -22,7 +22,7 @@ public final class DelayCloseOrderConsumer implements RocketMQListener<MessageWr
         public void onMessage(MessageWrapper<DelayCloseOrderEvent> delayCloseOrderEventMessageWrapper){
                 log.info("[延迟关闭订单] 开始消费：{}",JSON.toJSONString(delayCloseOrderEventMessageWrapper));
                 DelayCloseOrderEvent delayCloseOrderEvent=delayCloseOrderEventMessageWrapper.getMessage();
-                Long orderSn=delayCloseOrderEvent.getOrderMainId();
+                String orderSn=delayCloseOrderEvent.getOrderMainId();
 
                 int a=2;
                 int b=3;
