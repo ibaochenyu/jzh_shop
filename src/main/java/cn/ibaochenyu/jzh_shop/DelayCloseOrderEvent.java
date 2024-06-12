@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 
 @Data
 @Builder
@@ -13,11 +14,14 @@ import lombok.NoArgsConstructor;
 public class DelayCloseOrderEvent {
 
 
+
     /**
-     * 车次 ID
+     * 订单号
      */
-    private String rtInsertId;
+    private String orderMainId;
 
-    private String rtInsertId2;
-
+    /**
+     * 乘车人购票信息
+     */
+//    private List<Long> LiseterTest;
 }

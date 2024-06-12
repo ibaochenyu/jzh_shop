@@ -11,20 +11,20 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @RocketMQMessageListener(
-        topic = TicketRocketMQConstant.ORDER_DELAY_CLOSE_TOPIC_KEY,
-        selectorExpression = TicketRocketMQConstant.ORDER_DELAY_CLOSE_TAG_KEY,
-        consumerGroup = TicketRocketMQConstant.TICKET_DELAY_CLOSE_CG_KEY
+        topic = OrderRocketMQConstant.ORDER_DELAY_CLOSE_TOPIC_KEY,
+        selectorExpression = OrderRocketMQConstant.ORDER_DELAY_CLOSE_TAG_KEY,
+        consumerGroup = OrderRocketMQConstant.TICKET_DELAY_CLOSE_CG_KEY
 )
-public class DelayCloseOrderConsumer implements RocketMQListener<MessageWrapper<DelayCloseOrderEvent>> {
+public final class DelayCloseOrderConsumer implements RocketMQListener<MessageWrapper<DelayCloseOrderEvent>> {
 
-    @Override//我认为SendResult sendResult = delayCloseOrderSendProduce.sendMessage(delayCloseOrderEvent);后10min触发这里
-    public void onMessage(MessageWrapper<DelayCloseOrderEvent> delayCloseOrderEventMessageWrapper) {
-        log.info("[延迟关闭订单] 开始消费：{}", JSON.toJSONString(delayCloseOrderEventMessageWrapper));
-        DelayCloseOrderEvent delayCloseOrderEvent = delayCloseOrderEventMessageWrapper.getMessage();
-        String rtInsertId = delayCloseOrderEvent.getRtInsertId();
 
-        log.info("rtInsertId是{}",rtInsertId);
-        int a=2;
-        int b=3;
-    }
+        @Override
+        public void onMessage(MessageWrapper<DelayCloseOrderEvent> delayCloseOrderEventMessageWrapper){
+                log.info("[延迟关闭订单] 开始消费：{}",JSON.toJSONString(delayCloseOrderEventMessageWrapper));
+                DelayCloseOrderEvent delayCloseOrderEvent=delayCloseOrderEventMessageWrapper.getMessage();
+                String orderSn=delayCloseOrderEvent.getOrderMainId();
+
+                int a=2;
+                int b=3;
+        }
 }

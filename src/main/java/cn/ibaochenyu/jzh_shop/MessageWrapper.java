@@ -9,7 +9,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-@RequiredArgsConstructor//一句句是懂了，但是整体是怎么用的呢？？？
+@RequiredArgsConstructor
 public final class MessageWrapper<T> implements Serializable {//Message-Wrapper ['ræpә]n. 包装者
 
     private static final long serialVersionUID = 1L;
@@ -36,4 +36,3 @@ public final class MessageWrapper<T> implements Serializable {//Message-Wrapper 
      */
     private Long timestamp = System.currentTimeMillis();
 }
-
