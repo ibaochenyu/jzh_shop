@@ -17,3 +17,12 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #调试输出的sql
     #map-underscore-to-camel-case: false #如果java还是下划线。mybatis这里默认是true，会把mysql下划线转为java的驼峰命名法
+
+rocketmq:
+  name-server: 10.169.5.191:9876
+  producer:
+    group: index12306_aggregation-service_common-message-execute_pg
+    #send-message-timeout: 2000
+    send-message-timeout: 10000
+    retry-times-when-send-failed: 1
+    retry-times-when-send-async-failed: 1

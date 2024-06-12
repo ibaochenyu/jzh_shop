@@ -1,7 +1,7 @@
 package cn.ibaochenyu.jzh_shop.config;
 
 
-import cn.ibaochenyu.jzh_shop.RequestFilter;
+//import cn.ibaochenyu.jzh_shop.RequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -23,12 +23,12 @@ public class UserAutoConfiguration {
     /**
      * 用户信息传递过滤器
      */
-    @Bean
-    public FilterRegistrationBean<RequestFilter> globalUserTransmitFilter() {//globalUserTransmitFilter这个名字应该是自己自定义的，不是.s
-        FilterRegistrationBean<RequestFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new RequestFilter());
-        registration.addUrlPatterns("/*");
-        registration.setOrder(100);
-        return registration;
-    }
+//    @Bean
+//    public FilterRegistrationBean<RequestFilter> globalUserTransmitFilter() {//globalUserTransmitFilter这个名字应该是自己自定义的，不是.s
+//        FilterRegistrationBean<RequestFilter> registration = new FilterRegistrationBean<>();
+//        registration.setFilter(new RequestFilter());
+//        registration.addUrlPatterns("/*");
+//        registration.setOrder(100);
+//        return registration;
+//    }
 }
