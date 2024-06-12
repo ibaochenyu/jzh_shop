@@ -61,6 +61,11 @@ bigint            bigint                                 bigint                 
 （信息id）    客户昵称
 id             user_name
 bigint       var256
+
+工厂表t_factory
+（信息id）    工厂昵称
+id             factory_name
+bigint       var256
 ////////////////
 
 
