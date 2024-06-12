@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/orderMainHandle")
 public class OrderMainController {
 
     private final OrderMainService orderMainService;
@@ -20,7 +19,7 @@ public class OrderMainController {
         return ServerResponseEntity.success();
     }
 
-    @PostMapping("saveStylerToOrderMain")
+    @PostMapping("saveOrderMain")
     public ServerResponseEntity<Void> saveStylerToOrderMain(@RequestBody StylerDTO stylerDTO){
         orderMainService.saveStylerToOrderMain(stylerDTO);
         return ServerResponseEntity.success();

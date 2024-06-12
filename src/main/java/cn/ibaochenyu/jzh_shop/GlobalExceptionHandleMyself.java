@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice//务必加这个注释，否则无法拦截
 public class GlobalExceptionHandleMyself {
 
-
+//    @ExceptionHandler(value = Throwable.class)
+//    public ServerResponseEntity defaultErrorHandle(HttpServletRequest request,Throwable throwable) {
+//        log.error("进行defaultErrorHandle处理：[{}] {} ", request.getMethod(), getUrl(request),throwable);//我测试了下，写throwable会打印错误消息+堆栈。
+//        return ServerResponseEntity.fail();
+//    }
 //
 //
 //
@@ -34,23 +38,17 @@ public class GlobalExceptionHandleMyself {
 //        //我看过了，铁路注册的用户名如果重复，首部状态码是200，responce的错误码才是自己细节定义的
 //    }//此处定义的是控制台response的码。前端会额外根据我们细节定义的A00005进行说明展示
 
-//    @ExceptionHandler(JZHcustomException.class)
-//    public ResponseEntity<ServerResponseEntity<?>> unauthorizedExceptionHandler(JZHcustomException e){
-//        log.error("mall4jExceptionHandler", e);
-//
-//        ServerResponseEntity<?> serverResponseEntity = e.getServerResponseEntity();
-//        if (serverResponseEntity!=null) {
-//            return ResponseEntity.status(HttpStatus.OK).body(serverResponseEntity);
-//        }
-//        // 失败返回消息 状态码固定为直接显示消息的状态码
-//        return ResponseEntity.status(HttpStatus.OK).body(ServerResponseEntity.fail(e.getCode(),e.getMessage()));
-//    }//关键：ResponseEntity.status(...).body(...)
-//
-//    @ExceptionHandler(value = Throwable.class)
-//    public ServerResponseEntity defaultErrorHandle(HttpServletRequest request,Throwable throwable) {
-//        log.error("进行defaultErrorHandle处理：[{}] {} ", request.getMethod(), getUrl(request),throwable);//我测试了下，写throwable会打印错误消息+堆栈。
-//        return ServerResponseEntity.fail();
-//    }
+    @ExceptionHandler(JZHcustomException.class)
+    public ResponseEntity<ServerResponseEntity<?>> unauthorizedExceptionHandler(JZHcustomException e){
+        log.error("mall4jExceptionHandler", e);
+
+        ServerResponseEntity<?> serverResponseEntity = e.getServerResponseEntity();
+        if (serverResponseEntity!=null) {
+            return ResponseEntity.status(HttpStatus.OK).body(serverResponseEntity);
+        }
+        // 失败返回消息 状态码固定为直接显示消息的状态码
+        return ResponseEntity.status(HttpStatus.OK).body(ServerResponseEntity.fail(e.getCode(),e.getMessage()));
+    }//关键：ResponseEntity.status(...).body(...)
 
     private String getUrl(HttpServletRequest request) {
         if (StringUtils.isEmpty(request.getQueryString())) {
