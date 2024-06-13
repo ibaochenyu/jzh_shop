@@ -80,9 +80,10 @@ public class WarehouseController {
 //期望程序启动从60秒到10.568 seconds
 
 //实现好了redis加速查询
-    //参考public TicketPageQueryRespDTO pageListTicketQueryV1(TicketPageQueryReqDTO requestParam) {
-    @PutMapping("locateStylerFromWarehouseWithUserStyleInput")//等价于pageListTicketQueryV1
-    public ServerResponseEntity<debugParam<Map<Object,Object>>> locateStylerFromWarehouseWithUserStyleInput(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
+    //输入StylerDTOForUser,也就是factorName,stylerid,count
+    //返回该factory下，不同stylerid的count
+    @GetMapping("pageListTicketQueryV1")//等价于pageListTicketQueryV1
+    public ServerResponseEntity<debugParam<Map<Object,Object>>> pageListTicketQueryV1(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
 //购票V1，传入BJP代码，翻译成北京，再得到北京南到XXX的时间、地点等信息
 
         Integer flag1=-1;
@@ -98,13 +99,13 @@ public class WarehouseController {
             try {
                 wantFactoryIdDetail=stringRedisTemplate.opsForHash().multiGet(FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING,Lists.newArrayList(requestParamsStylerDTOForUser.getFactoryNameForUser(),"杭州三鑫工业园"));
                 count=wantFactoryIdDetail.stream().filter(Objects::isNull).count();
-//                log.info("开始sleep");//这里ttl从30到20，再回到30
-//                try {//internalLockLeaseTime默认30
-//                    Thread.sleep(1000*40);//Watch Dog 机制其实就是一个后台定时任务线程，获取锁成功之后，会将持有锁的线程放入到一个 RedissonLock.EXPIRATION_RENEWAL_MAP里面，然后每隔 10 秒 （internalLockLeaseTime / 3） 检查一下，
-//                } catch (InterruptedException e) {//https://juejin.cn/post/7044833565766320164
-//                    throw new RuntimeException(e);
-//                }
-//                log.info("结束sleep");
+                log.info("开始sleep");//这里ttl从30到20，再回到30
+                try {//internalLockLeaseTime默认30
+                    Thread.sleep(1000*40);//Watch Dog 机制其实就是一个后台定时任务线程，获取锁成功之后，会将持有锁的线程放入到一个 RedissonLock.EXPIRATION_RENEWAL_MAP里面，然后每隔 10 秒 （internalLockLeaseTime / 3） 检查一下，
+                } catch (InterruptedException e) {//https://juejin.cn/post/7044833565766320164
+                    throw new RuntimeException(e);
+                }
+                log.info("结束sleep");
                 if(count>0){//再次检验 //wrapper  包装者
                     List<FactoryDO> factoryDOlist= factoryMapper.selectList(Wrappers.emptyWrapper());
                     //Map<String, Long> maper = new HashMap<>(); 这种放不进去啊
@@ -127,6 +128,7 @@ public class WarehouseController {
             log.info("key1已经存在");
         }
 
+        log.info("某个thread进入中间过程了");
         int a=3;
         int b=4;
 
@@ -175,6 +177,10 @@ public class WarehouseController {
         return ServerResponseEntity.success(temp);
     }
 
+    @PutMapping("executePurchaseWarehouse")
+    public ServerResponseEntity<Void> executePurchaseWarehouse(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
+        return ServerResponseEntity.success();
+    }
 
 }
 
@@ -184,3 +190,34 @@ public class WarehouseController {
 //        "truthStylerId":83009,
 //        "stockCount":34
 //        }
+
+
+//code1
+//RLock lock =redissonClient.getLock
+//lock.lock();
+//code2
+//
+//如果lock.lock()没有得到lock，它会一直等待，再执行code2；还是直接不等待，直接执行code2?
+//
+//lock.lock() 会一直等待，直到获取到锁为止。在获取到锁之前，它不会执行 code2。
+//如果你希望在获取不到锁的时候直接执行 code2，可以使用 tryLock() 方法，它会尝试获取锁，如果获取不到不会阻塞当前线程，而是返回一个布尔值表示是否成功获取到锁。例如：
+//
+//RLock lock = redissonClient.getLock("yourLockName");
+//if (lock.tryLock()) {
+//try {
+//// 执行需要加锁的代码
+//code2;
+//} finally {
+//lock.unlock();
+//}
+//} else {
+//// 无法获取锁时执行的代码
+//code2;
+//}
+
+
+//2024-06-13T15:52:36.115+08:00  INFO 37268 --- [nio-8081-exec-4] c.i.j.controller.WarehouseController     : 或许没有这个key啊
+//2024-06-13T15:52:36.120+08:00  INFO 37268 --- [nio-8081-exec-4] c.i.j.controller.WarehouseController     : 开始sleep
+//2024-06-13T15:52:44.621+08:00  INFO 37268 --- [nio-8081-exec-5] c.i.j.controller.WarehouseController     : 或许没有这个key啊
+//2024-06-13T15:53:16.126+08:00  INFO 37268 --- [nio-8081-exec-4] c.i.j.controller.WarehouseController     : 结束sleep
+//[nio-8081-exec-5]  线程编号5：在执行
