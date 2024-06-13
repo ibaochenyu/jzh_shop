@@ -210,11 +210,11 @@ public class WarehouseController {
         int b=4;
 
         //加下来列车是拿列车id来锁//而我是拿工厂id来锁
-        String factoryID_trueFactoryID_count_key = String.format(FACTORYID_STYLERID_COUNT, wantFactoryIdDetail.get(0));
+        String factoryID_trueFactoryID_count_key = String.format(WAREHOUSE_INFO_FACTORYID, wantFactoryIdDetail.get(0));
         //以前是MultiGet（返回List<Object>），现在是用entries拿全部（返回Map<Object, Object>）
         Map<Object, Object> maper2=stringRedisTemplate.opsForHash().entries(factoryID_trueFactoryID_count_key);
         if (MapUtil.isEmpty(maper2)) {
-            RLock lock=redissonClient.getLock(LOCK_FACTORYID_STYLERID_COUNT);
+            RLock lock=redissonClient.getLock(LOCK_WAREHOUSE_INFO_FACTORYID);
             lock.lock();
             try{
                 maper2=stringRedisTemplate.opsForHash().entries(factoryID_trueFactoryID_count_key);

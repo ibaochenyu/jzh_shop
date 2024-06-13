@@ -9,7 +9,9 @@ import cn.ibaochenyu.jzh_shop.dao.mapper.WarehouseMapper;
 import cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO;
 import cn.ibaochenyu.jzh_shop.service.WarehouseService;
 import cn.ibaochenyu.jzh_shop.webGlobal.JZHcustomException;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -50,6 +52,8 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
     private final StringRedisTemplateProxy distributedCache;
 
     private final RedissonClient redissonClient;
+
+    private final StringRedisTemplateProxy stringRedisTemplateProxy;
     @Override
     public void mySave(WarehouseDO aDO) {
         warehouseMapper.insert(aDO);
@@ -105,7 +109,7 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public TicketPurchaseRespDTO locateStylerFromWarehouse(StylerDTO stylerDTO) {//imp关键函数
+    public TicketPurchaseRespDTO locateStylerFromWarehouse(StylerDTO requestStylerDTO) {//imp关键函数
 //        BasicDO a=new BasicDO();
 //        a.setDate(new Date());
 //        basicMapper.insert(a);
@@ -120,9 +124,9 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 //        //orderItemMapper.insert(tempDO);
 
         ////
-        Long truthFactoryId = stylerDTO.getTruthFactoryId();
-        Long truthStylerId = stylerDTO.getTruthStylerId();
-        int stockCount = stylerDTO.getUserWantCount();
+        Long truthFactoryId = requestStylerDTO.getTruthFactoryId();
+        Long truthStylerId = requestStylerDTO.getTruthStylerId();
+        int stockCount = requestStylerDTO.getUserWantCount();
 
         // 构建查询条件
         //QueryWrapper<WarehouseDO> queryWrapper = new QueryWrapper<>();
@@ -132,7 +136,54 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
                 .eq(WarehouseDO::getTruthStylerId, truthStylerId);
 
         // 查找WarehouseDO记录
-        WarehouseDO warehouseDO = warehouseMapper.selectOne(queryWrapper);
+        StringRedisTemplate stringRedisTemplate=(StringRedisTemplate) stringRedisTemplateProxy.getInstance();
+        Boolean ifHas=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+ String.valueOf(requestStylerDTO.getTruthFactoryId()) );
+        Map<String,String> maper2=new HashMap<>();
+        if(!ifHas){
+            RLock lock=redissonClient.getLock(LOCK_WAREHOUSE_INFO_FACTORYID+String.valueOf(requestStylerDTO.getTruthFactoryId()));
+            lock.lock();
+            try{
+                Boolean hasTwoKey=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+ String.valueOf(requestStylerDTO.getTruthFactoryId()) );
+                if(!hasTwoKey){
+
+                    LambdaQueryWrapper lqb=Wrappers.lambdaQuery(WarehouseDO.class)
+                                    .eq(WarehouseDO::getTruthFactoryId,requestStylerDTO.getTruthFactoryId());
+                    List<WarehouseDO> lister= warehouseMapper.selectList(lqb);
+
+                    for(WarehouseDO aDO:lister){
+                        //maper2.put(aDO.getTruthFactoryId(), aDO.getStockCount());
+
+                        maper2.put(String.valueOf(aDO.getTruthStylerId()) , JSON.toJSONString( aDO));
+                    }
+                    //全放是putAll，不是put
+                    stringRedisTemplate.opsForHash().putAll(WAREHOUSE_INFO_FACTORYID+ String.valueOf(requestStylerDTO.getTruthFactoryId()),maper2);
+                    //.expire和 persist
+                    stringRedisTemplate.opsForHash().getOperations().persist(WAREHOUSE_INFO_FACTORYID+ String.valueOf(requestStylerDTO.getTruthFactoryId()));
+
+                }
+
+
+            }finally{
+                lock.unlock();
+            }
+
+
+        }
+        //String cnt= (String)stringRedisTemplate.opsForHash().get(WAREHOUSE_INFO_FACTORYID+ String.valueOf(requestStylerDTO.getTruthFactoryId()),requestStylerDTO.getTruthStylerId());
+
+        Map<Object, Object> maper3=stringRedisTemplate.opsForHash().entries(WAREHOUSE_INFO_FACTORYID+ String.valueOf(requestStylerDTO.getTruthFactoryId()));
+//        WarehouseDO warehouseDO=new WarehouseDO();
+
+        String str= (String)stringRedisTemplate.opsForHash().get(WAREHOUSE_INFO_FACTORYID+ String.valueOf(requestStylerDTO.getTruthFactoryId()) , String.valueOf(requestStylerDTO.getTruthStylerId()) );
+        //fastjson里头的JSON.parseObject
+        WarehouseDO warehouseDO =  JSON.parseObject(str, WarehouseDO.class);
+        warehouseDO.setTruthFactoryId(requestStylerDTO.getTruthFactoryId());
+        warehouseDO.setTruthStylerId(requestStylerDTO.getTruthStylerId());
+
+
+
+
+        //WarehouseDO warehouseDO = warehouseMapper.selectOne(queryWrapper);
 
         int rtUpdateCnt=-1;
         Long changeId=-1L;
@@ -178,6 +229,7 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
         Boolean hasKey=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+factIdStr);
         if(!hasKey){
             RLock lock=redissonClient.getLock(LOCK_WAREHOUSE_INFO_FACTORYID);
+            lock.lock();
             try{
                 Boolean hasTwoKey=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+factIdStr);
                 if(!hasTwoKey){
@@ -214,7 +266,7 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
         });
         //送入jzh:factoyId_trueFactoryId_3，送入style:82003,送入数量101
         Assert.notNull(actual);
-        String actualHashKey="jzh:factoyId_trueFactoryId_"+String.valueOf(factIdStr);//jzh:factoyId_trueFactoryId_3
+        String actualHashKey="jzh:warehouse_info:"+String.valueOf(factIdStr);//jzh:factoyId_trueFactoryId_3
         String stylerKey=String.valueOf(requstStylerDTO.getTruthStylerId());
         String userWantCount=String.valueOf(requstStylerDTO.getUserWantCount()) ;
         Long result =stringRedisTemplate.execute(actual, Lists.newArrayList(actualHashKey, stylerKey), userWantCount);//stringRedisTemplate.execute实际就是执行如redis的脚本
