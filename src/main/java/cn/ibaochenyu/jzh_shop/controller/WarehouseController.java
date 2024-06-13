@@ -12,6 +12,7 @@ import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.WarehouseDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO;
 import cn.ibaochenyu.jzh_shop.service.WarehouseService;
+import cn.ibaochenyu.jzh_shop.util.debugParam;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -81,8 +82,12 @@ public class WarehouseController {
 //实现好了redis加速查询
     //参考public TicketPageQueryRespDTO pageListTicketQueryV1(TicketPageQueryReqDTO requestParam) {
     @PutMapping("locateStylerFromWarehouseWithUserStyleInput")//等价于pageListTicketQueryV1
-    public ServerResponseEntity<Map<Object,Object>> locateStylerFromWarehouseWithUserStyleInput(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
+    public ServerResponseEntity<debugParam<Map<Object,Object>>> locateStylerFromWarehouseWithUserStyleInput(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
 //购票V1，传入BJP代码，翻译成北京，再得到北京南到XXX的时间、地点等信息
+
+        Integer flag1=-1;
+        Integer flag2=-1;
+
         StringRedisTemplate stringRedisTemplate=(StringRedisTemplate)distributedCache.getInstance();//obejct强制转化为StringRedisTemplate
         List<Object> wantFactoryIdDetail=stringRedisTemplate.opsForHash().multiGet(FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING,Lists.newArrayList(requestParamsStylerDTOForUser.getFactoryNameForUser(),"杭州三鑫工业园"));
         long count=wantFactoryIdDetail.stream().filter(Objects::isNull).count();
@@ -110,14 +115,16 @@ public class WarehouseController {
                     wantFactoryIdDetail.add(maper.get(requestParamsStylerDTOForUser.getFactoryNameForUser()));
                     wantFactoryIdDetail.add(maper.get("杭州三鑫工业园"));
                     System.out.println("path1"+wantFactoryIdDetail.toString());
+                    flag1=1;
                 }
             }finally {
                 lock.unlock();
             }
         }
         else{
-            System.out.println("path2");
-            log.info("有这个key");
+            flag1=2;
+            //System.out.println("path2");
+            log.info("key1已经存在");
         }
 
         int a=3;
@@ -149,6 +156,7 @@ public class WarehouseController {
                         maper2.put(String.valueOf(each.getTruthStylerId()),String.valueOf(each.getStockCount()));
                     }
                     stringRedisTemplate.opsForHash().putAll(factoryID_trueFactoryID_count_key,maper2);
+                    flag2=1;
                 }
 
             }
@@ -156,8 +164,15 @@ public class WarehouseController {
                 lock.unlock();;
             }
         }
-
-        return ServerResponseEntity.success(maper2);
+        else{
+            log.info("key2已经存在");
+            flag2=2;
+        }
+        debugParam<Map<Object,Object>> temp = new debugParam<Map<Object,Object>>();
+        temp.setDebug1(String.valueOf(flag1) );
+        temp.setDebug2(String.valueOf(flag2));
+        temp.setOriData(maper2);
+        return ServerResponseEntity.success(temp);
     }
 
 
