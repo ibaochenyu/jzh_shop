@@ -16,6 +16,8 @@ import cn.ibaochenyu.jzh_shop.util.debugParam;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +26,10 @@ import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static cn.ibaochenyu.jzh_shop.RedisKeyConstant.*;
 
@@ -77,6 +81,13 @@ public class WarehouseController {
         warehouseService.locateStylerFromWarehouse(stylerDTO);
         return ServerResponseEntity.success();
     }
+
+
+    private final Cache<String, ReentrantLock> localLockMap = Caffeine.newBuilder()
+            .expireAfterWrite(1, TimeUnit.DAYS) ////我们通过 ConcurrentHashMap 存储每个列车的本地锁，作为申请分布式锁之前的一层性能挡板，隔绝无效流量请求 Redis。但是大家发现没有，这个 ConcurrentHashMap 是只能存储，但是没有任何过期策略。这样会导致一个问题就是应用长时间不发布，越来越多的列车数据存储在容器中，直到内存溢出为止。
+            .build(); ////通过 Caffeine 创建本地安全锁容器，Caffeine 的 expireAfterWrite 方法代表，放入元素过期的时间是什么。比如咱们以下案例中配置的一天过期，代表一个列车的本地公平锁创建一天后失效。
+//Caffeine 缓存是线程安全的，它确保在多线程环境下正确处理并发操作。因此，localLockMap 中的操作（如 put）是原子性的，并且所有线程都会看到一致的缓存状态。
+
 //期望程序启动从60秒到10.568 seconds
 
 //实现好了redis加速查询
@@ -89,23 +100,66 @@ public class WarehouseController {
         Integer flag1=-1;
         Integer flag2=-1;
 
+
+
         StringRedisTemplate stringRedisTemplate=(StringRedisTemplate)distributedCache.getInstance();//obejct强制转化为StringRedisTemplate
         List<Object> wantFactoryIdDetail=stringRedisTemplate.opsForHash().multiGet(FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING,Lists.newArrayList(requestParamsStylerDTOForUser.getFactoryNameForUser(),"杭州三鑫工业园"));
         long count=wantFactoryIdDetail.stream().filter(Objects::isNull).count();
-        if(count>0){//送入“杭州三鑫”，送出这个工厂的id
+
+
+        List<ReentrantLock> localLockList = new ArrayList<>();//ReentrantLock在sync.state里头，0代表不锁，1代表加锁
+        List<RLock> distributedLockList = new ArrayList<>();
+
+
+        //if(count>0){//送入“杭州三鑫”，送出这个工厂的id
+        if(true){//送入“杭州三鑫”，送出这个工厂的id
             log.info("或许没有这个key啊");//RLock.lock (); 是阻塞式等待的，默认加锁时间是30s
+
+
+            //创建本地锁 //虽然 ReentrantLock 不直接支持查看过期时间，但
+            ReentrantLock localLock = localLockMap.getIfPresent(LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING);
+                    //第二个线程，认为localLock是存在的。说明localLockMap是以整个进程池为单位，
+            if (localLock == null) {//当没有本地锁时候，创建一个
+                log.info("localLock==null");
+                synchronized (WarehouseController.class) {
+                    log.info("进入synchronized");
+                    if ((localLock = localLockMap.getIfPresent(LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING)) == null) {//大概：再次确认没有本地锁
+                        localLock = new ReentrantLock(true);//如果没有本地锁，则创建一个
+                        localLockMap.put(LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING, localLock);//本地锁会一天之后过期
+                    }
+                    log.info("开始sleep");//这里ttl从30到20，再回到30
+                    try {//internalLockLeaseTime默认30
+                        Thread.sleep(1000*60);//Watch Dog 机制其实就是一个后台定时任务线程，获取锁成功之后，会将持有锁的线程放入到一个 RedissonLock.EXPIRATION_RENEWAL_MAP里面，然后每隔 10 秒 （internalLockLeaseTime / 3） 检查一下，
+                    } catch (InterruptedException e) {//https://juejin.cn/post/7044833565766320164
+                        throw new RuntimeException(e);
+                    }
+                    log.info("结束sleep");
+                }
+            }
+            localLockList.add(localLock);//我不明白这段逻辑，为什么这里要加两个锁：根据“手摸手之实现v2版本列车购票流程”，让线程先取竞争本地服务的内部锁，再取竞争分布式锁，从而减少redis的压力
+
+
+
+            //创建分布式锁
             RLock lock =redissonClient.getLock(LOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING);
-            lock.lock();
+            distributedLockList.add(lock);
+
+            //为什么组成list，lock就要放到try里头？？
+            //lock.lock();
             try {
+                localLockList.forEach(ReentrantLock::lock);
+                distributedLockList.forEach(RLock::lock);
+
+
                 wantFactoryIdDetail=stringRedisTemplate.opsForHash().multiGet(FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING,Lists.newArrayList(requestParamsStylerDTOForUser.getFactoryNameForUser(),"杭州三鑫工业园"));
                 count=wantFactoryIdDetail.stream().filter(Objects::isNull).count();
-                log.info("开始sleep");//这里ttl从30到20，再回到30
-                try {//internalLockLeaseTime默认30
-                    Thread.sleep(1000*40);//Watch Dog 机制其实就是一个后台定时任务线程，获取锁成功之后，会将持有锁的线程放入到一个 RedissonLock.EXPIRATION_RENEWAL_MAP里面，然后每隔 10 秒 （internalLockLeaseTime / 3） 检查一下，
-                } catch (InterruptedException e) {//https://juejin.cn/post/7044833565766320164
-                    throw new RuntimeException(e);
-                }
-                log.info("结束sleep");
+//                log.info("开始sleep");//这里ttl从30到20，再回到30
+//                try {//internalLockLeaseTime默认30
+//                    Thread.sleep(1000*40);//Watch Dog 机制其实就是一个后台定时任务线程，获取锁成功之后，会将持有锁的线程放入到一个 RedissonLock.EXPIRATION_RENEWAL_MAP里面，然后每隔 10 秒 （internalLockLeaseTime / 3） 检查一下，
+//                } catch (InterruptedException e) {//https://juejin.cn/post/7044833565766320164
+//                    throw new RuntimeException(e);
+//                }
+//                log.info("结束sleep");
                 if(count>0){//再次检验 //wrapper  包装者
                     List<FactoryDO> factoryDOlist= factoryMapper.selectList(Wrappers.emptyWrapper());
                     //Map<String, Long> maper = new HashMap<>(); 这种放不进去啊
@@ -119,7 +173,19 @@ public class WarehouseController {
                     flag1=1;
                 }
             }finally {
-                lock.unlock();
+//                lock.unlock();
+                localLockList.forEach(mlocalLock -> {
+                    try {
+                        mlocalLock.unlock();
+                    } catch (Throwable ignored) {
+                    }
+                });
+                distributedLockList.forEach(distributedLock -> {
+                    try {
+                        distributedLock.unlock();
+                    } catch (Throwable ignored) {
+                    }
+                });
             }
         }
         else{
@@ -182,6 +248,30 @@ public class WarehouseController {
         return ServerResponseEntity.success();
     }
 
+
+    @GetMapping("testSyschronized")
+    public ServerResponseEntity<Void> testSyschronized(){
+        log.info("进入testSyschronized");
+        synchronized (WarehouseController.class) {
+            log.info("开始sleep");
+            try {
+                Thread.sleep(1000*60);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            log.info("结束sleep");
+        }
+        log.info("结束testSyschronized");
+
+        return ServerResponseEntity.success();
+    }
+//2024-06-13T16:55:08.549+08:00  INFO 104888 --- [nio-8081-exec-1] c.i.j.controller.WarehouseController     : 进入testSyschronized
+//2024-06-13T16:55:08.549+08:00  INFO 104888 --- [nio-8081-exec-1] c.i.j.controller.WarehouseController     : 开始sleep
+//2024-06-13T16:55:12.916+08:00  INFO 104888 --- [nio-8081-exec-2] c.i.j.controller.WarehouseController     : 进入testSyschronized
+//2024-06-13T16:56:08.558+08:00  INFO 104888 --- [nio-8081-exec-1] c.i.j.controller.WarehouseController     : 结束sleep
+//2024-06-13T16:56:08.558+08:00  INFO 104888 --- [nio-8081-exec-1] c.i.j.controller.WarehouseController     : 结束testSyschronized
+//2024-06-13T16:56:08.558+08:00  INFO 104888 --- [nio-8081-exec-2] c.i.j.controller.WarehouseController     : 开始sleep
+//    在Java中，synchronized关键字用于同步代码块或方法。它确保同一时刻只有一个线程可以执行被同步的代码
 }
 
 //
@@ -221,3 +311,42 @@ public class WarehouseController {
 //2024-06-13T15:52:44.621+08:00  INFO 37268 --- [nio-8081-exec-5] c.i.j.controller.WarehouseController     : 或许没有这个key啊
 //2024-06-13T15:53:16.126+08:00  INFO 37268 --- [nio-8081-exec-4] c.i.j.controller.WarehouseController     : 结束sleep
 //[nio-8081-exec-5]  线程编号5：在执行
+
+
+//以及内嵌Tomcat容器用于处理HTTP请求的线程池。
+//：Spring Boot内部使用的异步任务执行的线程池（通常指的是通过@Async注解定义的异步任务，或者是直接注入自定义的线程池进行使用）
+
+
+//server.tomcat.max-threads：最大工作线程数，默认200,
+//        server.tomcat.min-spare-threads：最小工作线程数，初始化分配线程数，默认10
+
+//默认设置中，Tomcat的最大线程数是200，最大连接数是10000。支持的并发量是指连接数，200个线程如何处理10000条连接的？
+//        目前Tomcat有三种处理连接的模式，一种是BIO，一个线程只处理一个连接，另一种就是NIO，一个线程处理多个连接。由于HTTP请求不会太耗时，而且多个连接一般不会同时来消息，所以一个线程处理多个连接没有太大问题。
+//        nio-8081-exec-2，所以此时tomcat是NIO模式
+
+//Tomcat创建线程池的时候底层还是利用JDK的ThreadPoolExecutor
+
+
+//Spring Boot在没有自定义线程池配置的情况下，会自动配置一个ThreadPoolTaskExecutor作为默认线程池。根据官方文档和相关资源，以下是默认的线程池参数：
+//
+//核心线程数 (corePoolSize): 8
+//最大线程数 (maxPoolSize): Integer.MAX_VALUE (无限制)
+//队列容量 (queueCapacity): Integer.MAX_VALUE (无限制)
+//空闲线程保留时间 (keepAliveSeconds): 60秒
+//线程池拒绝策略 (RejectedExecutionHandler): AbortPolicy（默认策略，超出线程池容量和队列容量时抛出RejectedExecutionException异常）
+//这些参数可以通过在application.properties或application.yml文件中设置来进行自定义调整。例如：
+//
+//# 核心线程数，默认为8
+//spring.task.execution.pool.core-size
+//# 最大线程数，默认为Integer.MAX_VALUE
+//spring.task.execution.pool.max-size
+//# 任务等待队列容量，默认为Integer.MAX_VALUE
+//spring.task.execution.pool.queue-capacity
+//# 空闲线程等待时间，默认为60s。如果超过这个时间没有任务调度，则线程会被回收
+//spring.task.execution.pool.keep-alive
+//# 是否允许回收空闲的线程，默认为true
+//spring.task.execution.pool.allow-core-thread-timeout
+//# 线程名前缀
+//spring.task.execution.thread-name-prefix=task-
+
+//https://blog.csdn.net/belongtocode/article/details/138764109

@@ -144,6 +144,12 @@
             <version>${fastjson2.version}</version>
         </dependency>
 
+<!--        本地锁用到-->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
 
 
 

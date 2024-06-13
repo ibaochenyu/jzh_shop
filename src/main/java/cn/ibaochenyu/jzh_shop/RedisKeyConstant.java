@@ -1,6 +1,8 @@
 package cn.ibaochenyu.jzh_shop;
 
 public final class RedisKeyConstant {//jzh: 相当于一个文件夹
+
+    public static final String LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING = "jzh:locallock:factoyNameForUser_trueFactoryId_mapping";
     public static final String LOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING = "jzh:lock:factoyNameForUser_trueFactoryId_mapping";
     public static final String FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING = "jzh:factoyNameForUser_trueFactoryId_mapping";
 
