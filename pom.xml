@@ -18,6 +18,7 @@
         <rocketmq-spring-boot-starter.version>2.2.3</rocketmq-spring-boot-starter.version>
         <hutool-all.version>5.8.20</hutool-all.version>
         <redisson.version>3.21.3</redisson.version>
+        <fastjson2.version>2.0.36</fastjson2.version>
     </properties>
     <dependencies>
         <dependency>
@@ -136,6 +137,12 @@
             <version>${redisson.version}</version>
         </dependency>
 
+<!--        ParameterizedTypeImpl-->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
+        </dependency>
 
 
 
