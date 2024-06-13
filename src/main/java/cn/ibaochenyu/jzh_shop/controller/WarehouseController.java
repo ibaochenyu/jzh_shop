@@ -78,10 +78,10 @@ public class WarehouseController {
     }
 //期望程序启动从60秒到10.568 seconds
 
-
+//实现好了redis加速查询
     //参考public TicketPageQueryRespDTO pageListTicketQueryV1(TicketPageQueryReqDTO requestParam) {
-    @PutMapping("locateStylerFromWarehouseWithUserStyleInput")//等价于PurchatTicketV1
-    public ServerResponseEntity<Void> locateStylerFromWarehouseWithUserStyleInput(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
+    @PutMapping("locateStylerFromWarehouseWithUserStyleInput")//等价于pageListTicketQueryV1
+    public ServerResponseEntity<Map<Object,Object>> locateStylerFromWarehouseWithUserStyleInput(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
 //购票V1，传入BJP代码，翻译成北京，再得到北京南到XXX的时间、地点等信息
         StringRedisTemplate stringRedisTemplate=(StringRedisTemplate)distributedCache.getInstance();//obejct强制转化为StringRedisTemplate
         List<Object> wantFactoryIdDetail=stringRedisTemplate.opsForHash().multiGet(FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING,Lists.newArrayList(requestParamsStylerDTOForUser.getFactoryNameForUser(),"杭州三鑫工业园"));
@@ -93,13 +93,13 @@ public class WarehouseController {
             try {
                 wantFactoryIdDetail=stringRedisTemplate.opsForHash().multiGet(FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING,Lists.newArrayList(requestParamsStylerDTOForUser.getFactoryNameForUser(),"杭州三鑫工业园"));
                 count=wantFactoryIdDetail.stream().filter(Objects::isNull).count();
-                log.info("开始sleep");//这里ttl从30到20，再回到30
-                try {//internalLockLeaseTime默认30
-                    Thread.sleep(1000*40);//Watch Dog 机制其实就是一个后台定时任务线程，获取锁成功之后，会将持有锁的线程放入到一个 RedissonLock.EXPIRATION_RENEWAL_MAP里面，然后每隔 10 秒 （internalLockLeaseTime / 3） 检查一下，
-                } catch (InterruptedException e) {//https://juejin.cn/post/7044833565766320164
-                    throw new RuntimeException(e);
-                }
-                log.info("结束sleep");
+//                log.info("开始sleep");//这里ttl从30到20，再回到30
+//                try {//internalLockLeaseTime默认30
+//                    Thread.sleep(1000*40);//Watch Dog 机制其实就是一个后台定时任务线程，获取锁成功之后，会将持有锁的线程放入到一个 RedissonLock.EXPIRATION_RENEWAL_MAP里面，然后每隔 10 秒 （internalLockLeaseTime / 3） 检查一下，
+//                } catch (InterruptedException e) {//https://juejin.cn/post/7044833565766320164
+//                    throw new RuntimeException(e);
+//                }
+//                log.info("结束sleep");
                 if(count>0){//再次检验 //wrapper  包装者
                     List<FactoryDO> factoryDOlist= factoryMapper.selectList(Wrappers.emptyWrapper());
                     //Map<String, Long> maper = new HashMap<>(); 这种放不进去啊
@@ -122,34 +122,42 @@ public class WarehouseController {
 
         int a=3;
         int b=4;
-//        //加下来列车是拿列车id来锁//而我是拿工厂id来锁
-//        String factoryNameUser_trueFactoryID_sthFactory_key = String.format(FACTORYNAMEFORUSER_TRUEFACTORYID, wantFactoryIdDetail.get(0));
-//        Map<Object, Object> maper2=stringRedisTemplate.opsForHash().entries(factoryNameUser_trueFactoryID_sthFactory_key);
-//        if (MapUtil.isEmpty(maper2)) {
-//            RLock lock=redissonClient.getLock(LOCK_FACTORYNAMEFORUSER_TRUEFACTORYID);
-//            lock.lock();
-//            try{
-//                maper2=stringRedisTemplate.opsForHash().entries(factoryNameUser_trueFactoryID_sthFactory_key);
-//                if(MapUtil.isEmpty(maper2)){
-//                    LambdaQueryWrapper<WarehouseDO> queryWrapper= Wrappers.lambdaQuery(WarehouseDO.class)
-//                            .eq(WarehouseDO::getTruthFactoryId,wantFactoryIdDetail.get(0));
-//                    List<WarehouseDO> lister3=warehouseMapper.selectList(queryWrapper);//获取WarehouseDO表中,factoryID和用户请求翻译过来的id一样的信息
-//                    for(WarehouseDO each:lister3 ){
-//                        WarehouseDO warehouseDO=distributedCache.safeGet(WAREHOUSE_INFO+each.getTruthFactoryId()
+
+        //加下来列车是拿列车id来锁//而我是拿工厂id来锁
+        String factoryID_trueFactoryID_count_key = String.format(FACTORYID_STYLERID_COUNT, wantFactoryIdDetail.get(0));
+        //以前是MultiGet（返回List<Object>），现在是用entries拿全部（返回Map<Object, Object>）
+        Map<Object, Object> maper2=stringRedisTemplate.opsForHash().entries(factoryID_trueFactoryID_count_key);
+        if (MapUtil.isEmpty(maper2)) {
+            RLock lock=redissonClient.getLock(LOCK_FACTORYID_STYLERID_COUNT);
+            lock.lock();
+            try{
+                maper2=stringRedisTemplate.opsForHash().entries(factoryID_trueFactoryID_count_key);
+                if(MapUtil.isEmpty(maper2)){
+                    LambdaQueryWrapper<WarehouseDO> queryWrapper= Wrappers.lambdaQuery(WarehouseDO.class)
+                            .eq(WarehouseDO::getTruthFactoryId,wantFactoryIdDetail.get(0));
+                    List<WarehouseDO> lister3=warehouseMapper.selectList(queryWrapper);//获取WarehouseDO表中,factoryID和用户请求翻译过来的id一样的信息
+                    //此处获取后，限定好了WareHouse表中仅仅factory=1的信息。在这些信息中，仅仅
+
+                    for(WarehouseDO each:lister3 ){//对于一个factory，查询不同的style，看看之前有没有查询过
+
+                        //由于不像铁路一样查询其他表，所以在这里distributedCache.safeGet不用
+//                        WarehouseDO warehouseDO=distributedCache.safeGet(WAREHOUSE_INFO+each.getTruthFactoryId()+each.getTruthStylerId()
 //                                ,WarehouseDO.class,
 //                                ()->warehouseMapper.selectById(each.getId()),
 //                                ADVANCE_TICKET_DAY,
 //                                TimeUnit.SECONDS);
-//                    }
-//                    stringRedisTemplate.opsForHash().put();
-//
-//                }
-//            }
-//            finally {
-//                lock.unlock();;
-//            }
-//        }
-        return ServerResponseEntity.success();
+                        maper2.put(String.valueOf(each.getTruthStylerId()),String.valueOf(each.getStockCount()));
+                    }
+                    stringRedisTemplate.opsForHash().putAll(factoryID_trueFactoryID_count_key,maper2);
+                }
+
+            }
+            finally {
+                lock.unlock();;
+            }
+        }
+
+        return ServerResponseEntity.success(maper2);
     }
 
 

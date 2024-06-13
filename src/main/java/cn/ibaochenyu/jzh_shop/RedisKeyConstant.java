@@ -4,8 +4,8 @@ public final class RedisKeyConstant {//jzh: 相当于一个文件夹
     public static final String LOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING = "jzh:lock:factoyNameForUser_trueFactoryId_mapping";
     public static final String FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING = "jzh:factoyNameForUser_trueFactoryId_mapping";
 
-    public static final String LOCK_FACTORYNAMEFORUSER_TRUEFACTORYID= "jzh:lock:factoyNameForUser_trueFactoryId";
-    public static final String FACTORYNAMEFORUSER_TRUEFACTORYID= "jzh:factoyNameForUser_trueFactoryId_%s";
+    public static final String LOCK_FACTORYID_STYLERID_COUNT = "jzh:lock:factoyNameForUser_trueFactoryId";
+    public static final String FACTORYID_STYLERID_COUNT = "jzh:factoyId_trueFactoryId_%s";
 
 
 
