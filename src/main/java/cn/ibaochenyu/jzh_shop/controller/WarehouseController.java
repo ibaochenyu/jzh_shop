@@ -1,6 +1,8 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
+import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.map.MapUtil;
+import cn.ibaochenyu.jzh_shop.Assert;
 import cn.ibaochenyu.jzh_shop.StringRedisTemplateProxy;
 import cn.ibaochenyu.jzh_shop.dao.entity.FactoryDO;
 import cn.ibaochenyu.jzh_shop.dao.mapper.FactoryMapper;
@@ -23,10 +25,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -107,36 +111,36 @@ public class WarehouseController {
         long count=wantFactoryIdDetail.stream().filter(Objects::isNull).count();
 
 
-        List<ReentrantLock> localLockList = new ArrayList<>();//ReentrantLock在sync.state里头，0代表不锁，1代表加锁
+//        List<ReentrantLock> localLockList = new ArrayList<>();//ReentrantLock在sync.state里头，0代表不锁，1代表加锁
         List<RLock> distributedLockList = new ArrayList<>();
 
 
-        //if(count>0){//送入“杭州三鑫”，送出这个工厂的id
-        if(true){//送入“杭州三鑫”，送出这个工厂的id
+        if(count>0){//送入“杭州三鑫”，送出这个工厂的id
+        //if(true){//送入“杭州三鑫”，送出这个工厂的id
             log.info("或许没有这个key啊");//RLock.lock (); 是阻塞式等待的，默认加锁时间是30s
 
 
             //创建本地锁 //虽然 ReentrantLock 不直接支持查看过期时间，但
-            ReentrantLock localLock = localLockMap.getIfPresent(LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING);
-                    //第二个线程，认为localLock是存在的。说明localLockMap是以整个进程池为单位，
-            if (localLock == null) {//当没有本地锁时候，创建一个
-                log.info("localLock==null");
-                synchronized (WarehouseController.class) {
-                    log.info("进入synchronized");
-                    if ((localLock = localLockMap.getIfPresent(LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING)) == null) {//大概：再次确认没有本地锁
-                        localLock = new ReentrantLock(true);//如果没有本地锁，则创建一个
-                        localLockMap.put(LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING, localLock);//本地锁会一天之后过期
-                    }
-                    log.info("开始sleep");//这里ttl从30到20，再回到30
-                    try {//internalLockLeaseTime默认30
-                        Thread.sleep(1000*60);//Watch Dog 机制其实就是一个后台定时任务线程，获取锁成功之后，会将持有锁的线程放入到一个 RedissonLock.EXPIRATION_RENEWAL_MAP里面，然后每隔 10 秒 （internalLockLeaseTime / 3） 检查一下，
-                    } catch (InterruptedException e) {//https://juejin.cn/post/7044833565766320164
-                        throw new RuntimeException(e);
-                    }
-                    log.info("结束sleep");
-                }
-            }
-            localLockList.add(localLock);//我不明白这段逻辑，为什么这里要加两个锁：根据“手摸手之实现v2版本列车购票流程”，让线程先取竞争本地服务的内部锁，再取竞争分布式锁，从而减少redis的压力
+//            ReentrantLock localLock = localLockMap.getIfPresent(LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING);
+//                    //第二个线程，认为localLock是存在的。说明localLockMap是以整个进程池为单位，
+//            if (localLock == null) {//当没有本地锁时候，创建一个
+//                log.info("localLock==null");
+//                synchronized (WarehouseController.class) {
+//                    log.info("进入synchronized");
+//                    if ((localLock = localLockMap.getIfPresent(LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING)) == null) {//大概：再次确认没有本地锁
+//                        localLock = new ReentrantLock(true);//如果没有本地锁，则创建一个
+//                        localLockMap.put(LOCALLOCK_FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING, localLock);//本地锁会一天之后过期
+//                    }
+//                    log.info("开始sleep");//这里ttl从30到20，再回到30
+//                    try {//internalLockLeaseTime默认30
+//                        Thread.sleep(1000*60);//Watch Dog 机制其实就是一个后台定时任务线程，获取锁成功之后，会将持有锁的线程放入到一个 RedissonLock.EXPIRATION_RENEWAL_MAP里面，然后每隔 10 秒 （internalLockLeaseTime / 3） 检查一下，
+//                    } catch (InterruptedException e) {//https://juejin.cn/post/7044833565766320164
+//                        throw new RuntimeException(e);
+//                    }
+//                    log.info("结束sleep");
+//                }
+//            }
+//            localLockList.add(localLock);//我不明白这段逻辑，为什么这里要加两个锁：根据“手摸手之实现v2版本列车购票流程”，让线程先取竞争本地服务的内部锁，再取竞争分布式锁，从而减少redis的压力
 
 
 
@@ -147,7 +151,7 @@ public class WarehouseController {
             //为什么组成list，lock就要放到try里头？？
             //lock.lock();
             try {
-                localLockList.forEach(ReentrantLock::lock);
+//                localLockList.forEach(ReentrantLock::lock);
                 distributedLockList.forEach(RLock::lock);
 
 
@@ -174,12 +178,14 @@ public class WarehouseController {
                 }
             }finally {
 //                lock.unlock();
-                localLockList.forEach(mlocalLock -> {
-                    try {
-                        mlocalLock.unlock();
-                    } catch (Throwable ignored) {
-                    }
-                });
+
+//                localLockList.forEach(mlocalLock -> {
+//                    try {
+//                        mlocalLock.unlock();
+//                    } catch (Throwable ignored) {
+//                    }
+//                });
+
                 distributedLockList.forEach(distributedLock -> {
                     try {
                         distributedLock.unlock();
@@ -215,12 +221,13 @@ public class WarehouseController {
 
                     for(WarehouseDO each:lister3 ){//对于一个factory，查询不同的style，看看之前有没有查询过
 
+                        //由于它是查page，所以缓存很可能没有，因此这里存factoryID来
                         //由于不像铁路一样查询其他表，所以在这里distributedCache.safeGet不用
-//                        WarehouseDO warehouseDO=distributedCache.safeGet(WAREHOUSE_INFO+each.getTruthFactoryId()+each.getTruthStylerId()
-//                                ,WarehouseDO.class,
-//                                ()->warehouseMapper.selectById(each.getId()),
-//                                ADVANCE_TICKET_DAY,
-//                                TimeUnit.SECONDS);
+                        WarehouseDO warehouseDO=distributedCache.safeGet(WAREHOUSE_INFO_FACTORYID +each.getTruthFactoryId()
+                                ,WarehouseDO.class,
+                                ()->warehouseMapper.selectById(each.getId()),
+                                ADVANCE_TICKET_DAY,
+                                TimeUnit.DAYS);
                         maper2.put(String.valueOf(each.getTruthStylerId()),String.valueOf(each.getStockCount()));
                     }
                     stringRedisTemplate.opsForHash().putAll(factoryID_trueFactoryID_count_key,maper2);
@@ -244,9 +251,76 @@ public class WarehouseController {
     }
 
     @PutMapping("executePurchaseWarehouse")
-    public ServerResponseEntity<Void> executePurchaseWarehouse(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
+    public ServerResponseEntity<Void> executePurchaseWarehouse(@RequestBody StylerDTO requstStylerDTO){
+
+        String factIdStr=String.valueOf(requstStylerDTO.getTruthFactoryId());
+        //Long =
+        StringRedisTemplate stringRedisTemplate=(StringRedisTemplate)distributedCache.getInstance();
+        //不是stringRedisTemplate.get判断有没有，而是stringRedisTemplate.hashKey
+        Boolean hasKey=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+factIdStr);
+        if(!hasKey){
+            RLock lock=redissonClient.getLock(LOCK_WAREHOUSE_INFO_FACTORYID);
+            try{
+                Boolean hasTwoKey=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+factIdStr);
+                if(!hasTwoKey){
+                    //先筛选getTruthFactoryId
+                    LambdaQueryWrapper<WarehouseDO> queryWrapper= Wrappers.lambdaQuery(WarehouseDO.class)
+                            .eq(WarehouseDO::getTruthFactoryId,requstStylerDTO.getTruthFactoryId());
+                    List<WarehouseDO> lister3=warehouseMapper.selectList(queryWrapper);
+                    Map<Object,Object> maper2=new HashMap<>();
+
+                    //获取该factory下所有styler
+                    for(WarehouseDO each:lister3 ){
+                        WarehouseDO warehouseDO=distributedCache.safeGet(WAREHOUSE_INFO_FACTORYID +each.getTruthFactoryId()
+                                ,WarehouseDO.class,
+                                ()->warehouseMapper.selectById(each.getId()),
+                                ADVANCE_TICKET_DAY,
+                                TimeUnit.DAYS);
+                        maper2.put(String.valueOf(each.getTruthStylerId()),String.valueOf(each.getStockCount()));
+                    }
+                    stringRedisTemplate.opsForHash().putAll(WAREHOUSE_INFO_FACTORYID+factIdStr,maper2);
+                }
+
+            }finally{
+                lock.unlock();
+            }
+
+
+        }
+        String LUA_TEST="lua/test.lua";
+        DefaultRedisScript<Long> actual = Singleton.get(LUA_TEST, () -> {
+            DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+            redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(LUA_TEST)));
+            redisScript.setResultType(Long.class);
+            return redisScript;
+        });
+        //送入jzh:factoyId_trueFactoryId_3，送入style:82003,送入数量101
+        Assert.notNull(actual);
+        String actualHashKey="jzh:factoyId_trueFactoryId_"+String.valueOf(factIdStr);//jzh:factoyId_trueFactoryId_3
+        String stylerKey=String.valueOf(requstStylerDTO.getTruthStylerId());
+        String userWantCount=String.valueOf(requstStylerDTO.getUserWantCount()) ;
+        Long result =stringRedisTemplate.execute(actual, Lists.newArrayList(actualHashKey, stylerKey), userWantCount);//stringRedisTemplate.execute实际就是执行如redis的脚本
+        //Long result=(Long)  (ArrayList<Object>)resultArray.get(4);
+
+        Object rt= (result != null && Objects.equals(result, 0L));//这里key传入两个对象 //actualHashKey：index12306-ticket-service:ticket_availability_token_bucket:1    还有  luaScriptKey：北京南_杭州东
+//result结果是一个Arrayrlist，restlt.get(0)
+//仿写：takeTokenFromBucket
+
+        int a=2;
+        int b=3;
+
+
         return ServerResponseEntity.success();
     }
+
+    @PutMapping("takeTokenFromBucket")
+    public ServerResponseEntity<Void> takeTokenFromBucket(@RequestBody StylerDTO requestStylerDTO){
+
+
+
+        return ServerResponseEntity.success();
+    }
+
 
 
     @GetMapping("testSyschronized")

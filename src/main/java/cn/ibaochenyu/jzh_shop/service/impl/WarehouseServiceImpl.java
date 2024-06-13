@@ -96,7 +96,7 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
         ////
         Long truthFactoryId = stylerDTO.getTruthFactoryId();
         Long truthStylerId = stylerDTO.getTruthStylerId();
-        int stockCount = stylerDTO.getStockCount();
+        int stockCount = stylerDTO.getUserWantCount();
 
         // 构建查询条件
         //QueryWrapper<WarehouseDO> queryWrapper = new QueryWrapper<>();

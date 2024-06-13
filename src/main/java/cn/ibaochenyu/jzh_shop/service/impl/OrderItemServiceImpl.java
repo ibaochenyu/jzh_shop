@@ -27,7 +27,7 @@ public class OrderItemServiceImpl implements OrderItemService {
         OrderItemDO tempDO = OrderItemDO.builder()
                 .truthStylerId(stylerDTO.getTruthStylerId())
                 .truthFactoryId(stylerDTO.getTruthFactoryId())
-                .productCount(stylerDTO.getStockCount())
+                .productCount(stylerDTO.getUserWantCount())
                         .build();
         orderItemMapper.insert(tempDO);
 
