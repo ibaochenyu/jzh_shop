@@ -1,7 +1,9 @@
 package cn.ibaochenyu.jzh_shop.service.impl;
 
+import cn.hutool.core.lang.Singleton;
+import cn.ibaochenyu.jzh_shop.StringRedisTemplateProxy;
+import cn.ibaochenyu.jzh_shop.TicketPurchaseRespDTO;
 import cn.ibaochenyu.jzh_shop.util.PageParam;
-import cn.ibaochenyu.jzh_shop.dao.entity.*;
 import cn.ibaochenyu.jzh_shop.dao.mapper.BasicMapper;
 import cn.ibaochenyu.jzh_shop.dao.mapper.WarehouseMapper;
 import cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO;
@@ -11,19 +13,43 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+
+import cn.ibaochenyu.jzh_shop.Assert;
+import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
+import cn.ibaochenyu.jzh_shop.dao.entity.WarehouseDO;
+import org.redisson.api.RedissonClient;
+import org.springframework.core.io.ClassPathResource;
+
+import java.util.concurrent.TimeUnit;
+
+import static cn.ibaochenyu.jzh_shop.RedisKeyConstant.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor//Required(需要->必须的)-Args-Constructor
 public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, WarehouseDO> implements WarehouseService {
     private final WarehouseMapper warehouseMapper;
     private final BasicMapper basicMapper;
+
+    private final StringRedisTemplateProxy distributedCache;
+
+    private final RedissonClient redissonClient;
     @Override
     public void mySave(WarehouseDO aDO) {
         warehouseMapper.insert(aDO);
@@ -79,7 +105,7 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void locateStylerFromWarehouse(StylerDTO stylerDTO) {//imp关键函数
+    public TicketPurchaseRespDTO locateStylerFromWarehouse(StylerDTO stylerDTO) {//imp关键函数
 //        BasicDO a=new BasicDO();
 //        a.setDate(new Date());
 //        basicMapper.insert(a);
@@ -108,11 +134,18 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
         // 查找WarehouseDO记录
         WarehouseDO warehouseDO = warehouseMapper.selectOne(queryWrapper);
 
+        int rtUpdateCnt=-1;
+        Long changeId=-1L;
         if (warehouseDO != null) {
             // 存在记录，更新stockCount
             if(warehouseDO.getStockCount() - stockCount>=0) {
                 warehouseDO.setStockCount(warehouseDO.getStockCount() - stockCount);
-                warehouseMapper.updateById(warehouseDO);
+                rtUpdateCnt=warehouseMapper.updateById(warehouseDO);
+                changeId=warehouseDO.getId();
+                TicketPurchaseRespDTO temp=new TicketPurchaseRespDTO();
+                temp.setRtUpdateCnt(rtUpdateCnt);
+                temp.setChangeId(changeId);
+                return temp;
                 //假设此处减少了库存就是已经落库了。我需要解耦其他步骤
             }
             else{
@@ -133,4 +166,73 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 
     }
 
+
+    @Override
+    public boolean takeTokenFromBucket(StylerDTO requstStylerDTO){
+
+
+        String factIdStr=String.valueOf(requstStylerDTO.getTruthFactoryId());
+        //Long =
+        StringRedisTemplate stringRedisTemplate=(StringRedisTemplate)distributedCache.getInstance();
+        //不是stringRedisTemplate.get判断有没有，而是stringRedisTemplate.hashKey
+        Boolean hasKey=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+factIdStr);
+        if(!hasKey){
+            RLock lock=redissonClient.getLock(LOCK_WAREHOUSE_INFO_FACTORYID);
+            try{
+                Boolean hasTwoKey=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+factIdStr);
+                if(!hasTwoKey){
+                    //先筛选getTruthFactoryId
+                    LambdaQueryWrapper<WarehouseDO> queryWrapper= Wrappers.lambdaQuery(WarehouseDO.class)
+                            .eq(WarehouseDO::getTruthFactoryId,requstStylerDTO.getTruthFactoryId());
+                    List<WarehouseDO> lister3=warehouseMapper.selectList(queryWrapper);
+                    Map<Object,Object> maper2=new HashMap<>();
+
+                    //获取该factory下所有styler
+                    for(WarehouseDO each:lister3 ){
+                        WarehouseDO warehouseDO=distributedCache.safeGet(WAREHOUSE_INFO_FACTORYID +each.getTruthFactoryId()
+                                ,WarehouseDO.class,
+                                ()->warehouseMapper.selectById(each.getId()),
+                                ADVANCE_TICKET_DAY,
+                                TimeUnit.DAYS);
+                        maper2.put(String.valueOf(each.getTruthStylerId()),String.valueOf(each.getStockCount()));
+                    }
+                    stringRedisTemplate.opsForHash().putAll(WAREHOUSE_INFO_FACTORYID+factIdStr,maper2);
+                }
+
+            }finally{
+                lock.unlock();
+            }
+
+
+        }
+        String LUA_TEST="lua/test.lua";
+        DefaultRedisScript<Long> actual = Singleton.get(LUA_TEST, () -> {
+            DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+            redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(LUA_TEST)));
+            redisScript.setResultType(Long.class);
+            return redisScript;
+        });
+        //送入jzh:factoyId_trueFactoryId_3，送入style:82003,送入数量101
+        Assert.notNull(actual);
+        String actualHashKey="jzh:factoyId_trueFactoryId_"+String.valueOf(factIdStr);//jzh:factoyId_trueFactoryId_3
+        String stylerKey=String.valueOf(requstStylerDTO.getTruthStylerId());
+        String userWantCount=String.valueOf(requstStylerDTO.getUserWantCount()) ;
+        Long result =stringRedisTemplate.execute(actual, Lists.newArrayList(actualHashKey, stylerKey), userWantCount);//stringRedisTemplate.execute实际就是执行如redis的脚本
+        //Long result=(Long)  (ArrayList<Object>)resultArray.get(4);
+
+        Boolean rt= (result != null && Objects.equals(result, 0L));//这里key传入两个对象 //actualHashKey：index12306-ticket-service:ticket_availability_token_bucket:1    还有  luaScriptKey：北京南_杭州东
+//result结果是一个Arrayrlist，restlt.get(0)
+//仿写：takeTokenFromBucket
+
+        int a=2;
+        int b=3;
+
+        return rt;
+    }
+
+    @Override
+    public TicketPurchaseRespDTO executePurchaseTickets(StylerDTO stylerDTO){
+        TicketPurchaseRespDTO rt=locateStylerFromWarehouse(stylerDTO);
+        return rt;
+    }
 }

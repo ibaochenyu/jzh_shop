@@ -18,7 +18,7 @@ local stylerKey = KEYS[2]
 local actualInnerHashKey = stylerKey --也就是82001，子key，key2
 local userWantCount=ARGV[1]
 logit(userWantCount)
-userWantCount=(userWantCount)
+userWantCount=tonumber(userWantCount)
 --tonumber tostring
 local ticketSeatAvailabilityTokenValue = tonumber(redis.call('hget', KEYS[1], stylerKey)) --hget:获取哈希表字段值
 -- print("ticketSeatAvailabilityTokenValue:")
@@ -31,10 +31,10 @@ local ticketSeatAvailabilityTokenValue = tonumber(redis.call('hget', KEYS[1], st
 
 if ticketSeatAvailabilityTokenValue < userWantCount  then  --如果实际票《能给的，
     return 1--不能分配
-    logit(1)
+    --logit(1)
 else
     return 0--正常能分配
-    logit(0)
+    --logit(0)
 end
 
 return logtable

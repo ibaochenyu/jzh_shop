@@ -18,4 +18,9 @@ public final class RedisKeyConstant {//jzh: 相当于一个文件夹
     public static final String LOCK_WAREHOUSE_INFO_FACTORYID = "jzh:lock:warehouse_info:";
 
     public static final int ADVANCE_TICKET_DAY = 15;
+
+    public static final String CASE_WELCOME_HOME="xxxx";
+
+    public static final String LOCK_PURCHASE_TICKETS_V2="lock:purchase_tickets_%d_%d";
 }
+

@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.map.MapUtil;
 import cn.ibaochenyu.jzh_shop.Assert;
 import cn.ibaochenyu.jzh_shop.StringRedisTemplateProxy;
+import cn.ibaochenyu.jzh_shop.TicketPurchaseRespDTO;
 import cn.ibaochenyu.jzh_shop.dao.entity.FactoryDO;
 import cn.ibaochenyu.jzh_shop.dao.mapper.FactoryMapper;
 import cn.ibaochenyu.jzh_shop.dao.mapper.WarehouseMapper;
@@ -15,6 +16,7 @@ import cn.ibaochenyu.jzh_shop.dao.entity.WarehouseDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO;
 import cn.ibaochenyu.jzh_shop.service.WarehouseService;
 import cn.ibaochenyu.jzh_shop.util.debugParam;
+import cn.ibaochenyu.jzh_shop.webGlobal.JZHcustomException;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -50,6 +53,8 @@ public class WarehouseController {
     private final FactoryMapper factoryMapper;
 
     private final WarehouseMapper warehouseMapper;
+
+    private final ConfigurableEnvironment environment;
 
 
     @PostMapping("saveWarehouse")
@@ -250,75 +255,63 @@ public class WarehouseController {
         return ServerResponseEntity.success(temp);
     }
 
-    @PutMapping("executePurchaseWarehouse")
-    public ServerResponseEntity<Void> executePurchaseWarehouse(@RequestBody StylerDTO requstStylerDTO){
-
-        String factIdStr=String.valueOf(requstStylerDTO.getTruthFactoryId());
-        //Long =
-        StringRedisTemplate stringRedisTemplate=(StringRedisTemplate)distributedCache.getInstance();
-        //不是stringRedisTemplate.get判断有没有，而是stringRedisTemplate.hashKey
-        Boolean hasKey=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+factIdStr);
-        if(!hasKey){
-            RLock lock=redissonClient.getLock(LOCK_WAREHOUSE_INFO_FACTORYID);
-            try{
-                Boolean hasTwoKey=stringRedisTemplate.hasKey(WAREHOUSE_INFO_FACTORYID+factIdStr);
-                if(!hasTwoKey){
-                    //先筛选getTruthFactoryId
-                    LambdaQueryWrapper<WarehouseDO> queryWrapper= Wrappers.lambdaQuery(WarehouseDO.class)
-                            .eq(WarehouseDO::getTruthFactoryId,requstStylerDTO.getTruthFactoryId());
-                    List<WarehouseDO> lister3=warehouseMapper.selectList(queryWrapper);
-                    Map<Object,Object> maper2=new HashMap<>();
-
-                    //获取该factory下所有styler
-                    for(WarehouseDO each:lister3 ){
-                        WarehouseDO warehouseDO=distributedCache.safeGet(WAREHOUSE_INFO_FACTORYID +each.getTruthFactoryId()
-                                ,WarehouseDO.class,
-                                ()->warehouseMapper.selectById(each.getId()),
-                                ADVANCE_TICKET_DAY,
-                                TimeUnit.DAYS);
-                        maper2.put(String.valueOf(each.getTruthStylerId()),String.valueOf(each.getStockCount()));
-                    }
-                    stringRedisTemplate.opsForHash().putAll(WAREHOUSE_INFO_FACTORYID+factIdStr,maper2);
-                }
-
-            }finally{
-                lock.unlock();
-            }
+    @GetMapping("takeTokenFromBucket")//{"truthFactoryId":3,"truthStylerId":82003,"userWantCount":80}
+    public Boolean takeTokenFromBucket(@RequestBody StylerDTO requstStylerDTO){
 
 
-        }
-        String LUA_TEST="lua/test.lua";
-        DefaultRedisScript<Long> actual = Singleton.get(LUA_TEST, () -> {
-            DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
-            redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(LUA_TEST)));
-            redisScript.setResultType(Long.class);
-            return redisScript;
-        });
-        //送入jzh:factoyId_trueFactoryId_3，送入style:82003,送入数量101
-        Assert.notNull(actual);
-        String actualHashKey="jzh:factoyId_trueFactoryId_"+String.valueOf(factIdStr);//jzh:factoyId_trueFactoryId_3
-        String stylerKey=String.valueOf(requstStylerDTO.getTruthStylerId());
-        String userWantCount=String.valueOf(requstStylerDTO.getUserWantCount()) ;
-        Long result =stringRedisTemplate.execute(actual, Lists.newArrayList(actualHashKey, stylerKey), userWantCount);//stringRedisTemplate.execute实际就是执行如redis的脚本
-        //Long result=(Long)  (ArrayList<Object>)resultArray.get(4);
-
-        Object rt= (result != null && Objects.equals(result, 0L));//这里key传入两个对象 //actualHashKey：index12306-ticket-service:ticket_availability_token_bucket:1    还有  luaScriptKey：北京南_杭州东
-//result结果是一个Arrayrlist，restlt.get(0)
-//仿写：takeTokenFromBucket
-
-        int a=2;
-        int b=3;
+        Boolean rt=warehouseService.takeTokenFromBucket(requstStylerDTO);
+        return rt;
 
 
-        return ServerResponseEntity.success();
+        //return ServerResponseEntity.success();
     }
 
-    @PutMapping("takeTokenFromBucket")
-    public ServerResponseEntity<Void> takeTokenFromBucket(@RequestBody StylerDTO requestStylerDTO){
+    @PutMapping("purchaseTicketsV2")
+    public ServerResponseEntity<TicketPurchaseRespDTO> purchaseTicketsV2(@RequestBody StylerDTO requestStylerDTO){
+        boolean tokenResult =  warehouseService.takeTokenFromBucket(requestStylerDTO);
+        if (!tokenResult) {
+            throw new JZHcustomException("列车站点已无余票");
+        }
+
+        List<ReentrantLock> localLockList = new ArrayList<>();//ReentrantLock是一个可重入的互斥锁，又被称为“独占锁”。
+        List<RLock> distributedLockList = new ArrayList<>();
+        TicketPurchaseRespDTO rt=new TicketPurchaseRespDTO();
+
+        String lockKey = environment.resolvePlaceholders(String.format(LOCK_PURCHASE_TICKETS_V2, requestStylerDTO.getTruthFactoryId(), requestStylerDTO.getTruthStylerId()));//index12306-ticket-service:lock:purchase_tickets_2_1
+        ReentrantLock localLock = localLockMap.getIfPresent(lockKey);//ReentrantLock是一个可重入的互斥锁，又被称为“独占锁”。ReentrantLock锁在同一个时间点只能被一个线程锁持有
+        if (localLock == null) {//当没有本地锁时候，创建一个
+            synchronized (WarehouseController.class) {
+                if ((localLock = localLockMap.getIfPresent(lockKey)) == null) {//大概：再次确认没有本地锁
+                    localLock = new ReentrantLock(true);//如果没有本地锁，则创建一个
+                    localLockMap.put(lockKey, localLock);//本地锁会一天之后过期
+                }
+            }
+        }
+        localLockList.add(localLock);
+        RLock distributedLock = redissonClient.getFairLock(lockKey);
+        distributedLockList.add(distributedLock);
+        try {
+            //这里有问题的，会死锁。不过如果你是一个种类传进来，就没事了
+            localLockList.forEach(ReentrantLock::lock);
+            distributedLockList.forEach(RLock::lock);
+            rt=warehouseService.executePurchaseTickets(requestStylerDTO);
+        } finally {
+            localLockList.forEach(mlocalLock -> {
+                try {
+                    mlocalLock.unlock();
+                } catch (Throwable ignored) {
+                }
+            });
+            distributedLockList.forEach(mdistributedLock -> {
+                try {
+                    mdistributedLock.unlock();
+                } catch (Throwable ignored) {
+                }
+            });
+        }
 
 
-
-        return ServerResponseEntity.success();
+        return ServerResponseEntity.success(rt);
     }
 
 
