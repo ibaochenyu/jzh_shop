@@ -122,9 +122,10 @@ import static cn.ibaochenyu.jzh_shop.RedisKeyConstant.WAREHOUSE_INFO_FACTORYID;
             log.info("将{}数量转为{}",oldCount,newCount);
             //stringRedisTemplate.opsForHash().increment(hashCacheKey, stylerId, newCount);
             WarehouseDO aDo=new WarehouseDO( Long.valueOf(Ider),Long.valueOf(factoryId),Long.valueOf(stylerId),newCount.intValue());
-            //stringRedisTemplate.opsForHash().put(hashCacheKey, stylerId, newCount);
-            stringRedisTemplate.opsForHash().put(hashCacheKey, stylerId, JSON.toJSONString(aDo));
-        }
+            //stringRedisTemplate.opsForHash().put(hashCacheKey, stylerId, JSON.toJSONString(aDo));
+            long newCountint=1L;
+            stringRedisTemplate.opsForHash().increment(hashCacheKey, stylerId,  newCountint);
+        }//redisTemplate.opsForHash().increment，对应redis的hincrby
 
 
 

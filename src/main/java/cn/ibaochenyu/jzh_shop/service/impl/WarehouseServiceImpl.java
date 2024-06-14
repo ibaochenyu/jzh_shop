@@ -124,16 +124,7 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 //        //orderItemMapper.insert(tempDO);
 
         ////
-        Long truthFactoryId = requestStylerDTO.getTruthFactoryId();
-        Long truthStylerId = requestStylerDTO.getTruthStylerId();
-        int stockCount = requestStylerDTO.getUserWantCount();
 
-        // 构建查询条件
-        //QueryWrapper<WarehouseDO> queryWrapper = new QueryWrapper<>();
-        LambdaQueryWrapper<WarehouseDO> queryWrapper = Wrappers.lambdaQuery(WarehouseDO.class);
-
-        queryWrapper.eq(WarehouseDO::getTruthFactoryId, truthFactoryId)
-                .eq(WarehouseDO::getTruthStylerId, truthStylerId);
 
         // 查找WarehouseDO记录
         StringRedisTemplate stringRedisTemplate=(StringRedisTemplate) stringRedisTemplateProxy.getInstance();
@@ -153,7 +144,8 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
                     for(WarehouseDO aDO:lister){
                         //maper2.put(aDO.getTruthFactoryId(), aDO.getStockCount());
 
-                        maper2.put(String.valueOf(aDO.getTruthStylerId()) , JSON.toJSONString( aDO));
+                        //maper2.put(String.valueOf(aDO.getTruthStylerId()) , JSON.toJSONString( aDO));
+                        maper2.put(String.valueOf(aDO.getTruthStylerId()) ,  String.valueOf(aDO.getStockCount()));
                     }
                     //全放是putAll，不是put
                     stringRedisTemplate.opsForHash().putAll(WAREHOUSE_INFO_FACTORYID+ String.valueOf(requestStylerDTO.getTruthFactoryId()),maper2);
@@ -176,20 +168,40 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 
         String str= (String)stringRedisTemplate.opsForHash().get(WAREHOUSE_INFO_FACTORYID+ String.valueOf(requestStylerDTO.getTruthFactoryId()) , String.valueOf(requestStylerDTO.getTruthStylerId()) );
         //fastjson里头的JSON.parseObject
-        WarehouseDO warehouseDO =  JSON.parseObject(str, WarehouseDO.class);
-        warehouseDO.setTruthFactoryId(requestStylerDTO.getTruthFactoryId());
-        warehouseDO.setTruthStylerId(requestStylerDTO.getTruthStylerId());
+
+//        WarehouseDO warehouseDO =  JSON.parseObject(str, WarehouseDO.class);
+//        warehouseDO.setTruthFactoryId(requestStylerDTO.getTruthFactoryId());
+//        warehouseDO.setTruthStylerId(requestStylerDTO.getTruthStylerId());
+        String takeCountFromRedis=str;
 
 
 
 
         //WarehouseDO warehouseDO = warehouseMapper.selectOne(queryWrapper);
 
+
+
+        int stockCount = requestStylerDTO.getUserWantCount();
+
+        WarehouseDO warehouseDO = new WarehouseDO();
+        warehouseDO.setTruthStylerId(requestStylerDTO.getTruthStylerId());
+        warehouseDO.setTruthFactoryId(requestStylerDTO.getTruthFactoryId());
+        warehouseDO.setStockCount(requestStylerDTO.getUserWantCount());
+
+
+        // 构建查询条件
+        //QueryWrapper<WarehouseDO> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<WarehouseDO> queryWrapper = Wrappers.lambdaQuery(WarehouseDO.class);
+
+        queryWrapper.eq(WarehouseDO::getTruthFactoryId, requestStylerDTO.getTruthFactoryId())
+                .eq(WarehouseDO::getTruthStylerId, requestStylerDTO.getTruthStylerId());
+
         int rtUpdateCnt=-1;
         Long changeId=-1L;
-        if (warehouseDO != null) {
+        if (takeCountFromRedis != null) {
             // 存在记录，更新stockCount
-            if(warehouseDO.getStockCount() - stockCount>=0) {
+            //铁路是先锁锁的状态，并没有对数据库的库存直接减去么？？？
+            if( Integer.valueOf(takeCountFromRedis).intValue()  - stockCount>=0) {
                 warehouseDO.setStockCount(warehouseDO.getStockCount() - stockCount);
                 rtUpdateCnt=warehouseMapper.updateById(warehouseDO);
                 changeId=warehouseDO.getId();
@@ -199,6 +211,16 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
                 return temp;
                 //假设此处减少了库存就是已经落库了。我需要解耦其他步骤
             }
+//            if(warehouseDO.getStockCount() - stockCount>=0) {
+//                warehouseDO.setStockCount(warehouseDO.getStockCount() - stockCount);
+//                rtUpdateCnt=warehouseMapper.updateById(warehouseDO);
+//                changeId=warehouseDO.getId();
+//                TicketPurchaseRespDTO temp=new TicketPurchaseRespDTO();
+//                temp.setRtUpdateCnt(rtUpdateCnt);
+//                temp.setChangeId(changeId);
+//                return temp;
+//                //假设此处减少了库存就是已经落库了。我需要解耦其他步骤
+//            }
             else{
                 log.error("！！！！错误：库存不够");
                 //参考:throw new ServiceException("支付单创建失败");
