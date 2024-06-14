@@ -16,7 +16,10 @@
  */
 package cn.ibaochenyu.jzh_shop;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +29,10 @@ import java.util.Map;
  *
  *
  */
-@Data//无法理解这里。是谁赋予这个类的对象的值呢。我根本找不到
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CanalBinlogEvent {
 
     /**

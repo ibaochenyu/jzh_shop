@@ -15,12 +15,12 @@ public class OrderRocketMQConstant {
     public static final String TICKET_DELAY_CLOSE_CG_KEY = "jzh1_delay-close-order_cg";
 
 
-    public static final String CANAL_COMMON_SYNC_TOPIC_KEY = "index12306_canal_ticket-service_common-sync_topic";
+    public static final String CANAL_COMMON_SYNC_TOPIC_KEY = "jzh_index12306_canal_ticket-service_common-sync_topic";
 
     /**
      * Canal 监听数据库余票变更业务消费者组 Key
      */
-    public static final String CANAL_COMMON_SYNC_CG_KEY = "index12306_canal_ticket-service_common-sync_cg";
+    public static final String CANAL_COMMON_SYNC_CG_KEY = "jzh_index12306_canal_ticket-service_common-sync_cg";
 
 
 }
