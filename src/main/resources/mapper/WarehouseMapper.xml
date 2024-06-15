@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.ibaochenyu.jzh_shop.dao.mapper.WarehouseMapper">
+<!--    虽然没有尝试过，传入多个参数怎么做，不过问题不大-->
+    <update id="updateWareHouseItsCount_UseStylerDTO" parameterType="cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO">
+        update t_warehouse
+        set stock_count= stock_count- #{userWantCount}
+        where truth_factory_id = #{truthFactoryId}
+        and truth_styler_id=#{truthStylerId}
+        and stock_count- #{userWantCount} > 0
+    </update>
+</mapper>
+
+
+
+
+
+<!--        update t_warehouse-->
+<!--        set stock_count= stock_count- 2-->
+<!--        where truth_factory_id = 3-->
+<!--        and truth_styler_id= 82003-->
+<!--        and stock_count- 2 > 0-->

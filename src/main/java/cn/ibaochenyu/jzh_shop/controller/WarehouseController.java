@@ -287,9 +287,9 @@ public class WarehouseController {
                 }
             }
         }
-        localLockList.add(localLock);
-        RLock distributedLock = redissonClient.getFairLock(lockKey);
-        distributedLockList.add(distributedLock);
+        localLockList.add(localLock);//Redis和Redisson总的来说，Redis是一个独立的数据库系统，而Redisson是一个用于 Java 开发的 Redis 客户端库，它提供了更高级的功能和抽象
+        RLock distributedLock = redissonClient.getFairLock(lockKey);//Redis 官方推荐的客户端:Redission。   Redisson 就是为分布式提供 各种不同锁以及多样化的技术支持,
+        distributedLockList.add(distributedLock);//铁路是purchase_tickets_triainID_seatId
         try {
             //这里有问题的，会死锁。不过如果你是一个种类传进来，就没事了
             localLockList.forEach(ReentrantLock::lock);

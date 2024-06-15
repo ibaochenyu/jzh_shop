@@ -5,6 +5,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
+#    MyBatis的update语句的返回值改为从匹配数改为受影响的记录数，向mysql连接添加useAffectedRows=true一个参数即可。
+    #但我这里update似乎不用配，因为我限制了a-b>0
     url: jdbc:mysql://127.0.0.1:3306/jzh_shop?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
     hikari:
       connection-test-query: select 1
@@ -24,8 +26,15 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #调试输出的sql
     #map-underscore-to-camel-case: false #如果java还是下划线。mybatis这里默认是true，会把mysql下划线转为java的驼峰命名法
 
+
+#legion需要修改什么ip
+#spring：
+  #rocketMQ修改为hass的
+  #canal：修改为legion的客观ip
+  #F:\canal.deployer-1.1.6\conf\canal.properties  修改为rocketeMQ的hass地址
+
 rocketmq:
-  name-server: 10.169.5.191:9876
+  name-server: 10.169.2.29:9876
   producer:
     group: index12306_aggregation-service_common-message-execute_pg
     #group: jzh-message-execute_pg
@@ -36,8 +45,8 @@ rocketmq:
 
 
 canal:
-  #server: 10.169.5.191:11111  #你canal的地址
-  server: 10.151.222.37:11111  #你canal的地址 #2406XX 这里启动本地的canal，不要hasee的
+  #server: 10.169.2.29:11111  #haee的canal的地址
+  server: 10.151.222.37:11111  #log'i'o'n的cannal地址
   destination: jzh_index12306_canal_ticket-service_common-sync_topic
 
 #自定义

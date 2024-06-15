@@ -28,13 +28,19 @@ local ticketSeatAvailabilityTokenValue = tonumber(redis.call('hget', KEYS[1], st
 
 -- logit(ticketSeatAvailabilityTokenValue)
 
-
+local temp
 if ticketSeatAvailabilityTokenValue < userWantCount  then  --如果实际票《能给的，
     return 1--不能分配
     --logit(1)
 else
-    return 0--正常能分配
+    temp=0
+    --return 0--正常能分配
     --logit(0)
 end
 
-return logtable
+--千万不要去把计算的值给数据库
+--而是直接--cnt就性
+redis.call('hincrby', KEYS[1], stylerKey, -userWantCount)
+return 0
+
+--return logtable
