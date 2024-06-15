@@ -8,9 +8,12 @@ import java.io.IOException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 
-
+@Component
+@Order(1)//数字越小越优先
 //@WebFilter(filterName = "requestFilter", urlPatterns = {"/*"})
 public class RequestFilter implements Filter {
 
@@ -46,7 +49,7 @@ public class RequestFilter implements Filter {
 //        filterChain.doFilter(request, response);
     }
 
-//@Override//这个函数大部分看懂了
+//////
 //public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 //    HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 //    int a=3;;

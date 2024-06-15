@@ -1,6 +1,7 @@
 package cn.ibaochenyu.jzh_shop.webGlobal;
 
 import jakarta.servlet.http.HttpServletRequestWrapper;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import jakarta.servlet.Filter;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
+@Order(2)
 public class TokenValidateFilter implements Filter {
 
     private List<String> blackPathPre;
@@ -40,6 +42,7 @@ public class TokenValidateFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestPath = httpRequest.getRequestURI();
 
+
         //if (isPathInBlackPreList(requestPath, blackPathPre)) {
         if (true) {
             String token = httpRequest.getHeader("Authorization");
@@ -61,14 +64,17 @@ public class TokenValidateFilter implements Filter {
                     if (UserConstant.REAL_NAME_KEY.equals(name)) {
                         return URLEncoder.encode(userInfo.getRealName(), StandardCharsets.UTF_8);
                     }
-                    if (UserConstant.USER_TOKEN_KEY.equals(name) && Objects.equals(requestPath, DELETION_PATH)) {
+//                    if (UserConstant.USER_TOKEN_KEY.equals(name) && Objects.equals(requestPath, DELETION_PATH)) {
+//                        return token;
+//                    }
+                    if (UserConstant.USER_TOKEN_KEY.equals(name) ) {
                         return token;
                     }
                     return super.getHeader(name);
                 }
             };
-
             chain.doFilter(requestWrapper, response);
+
         } else {
             chain.doFilter(request, response);
         }

@@ -19,44 +19,35 @@ import static cn.ibaochenyu.jzh_shop.webGlobal.UserConstant.*;
 @Slf4j
 public final class JWTUtil {//JWT是一种用于安全地传输信息的开放标准，可以用数字签名验证和信任
 
-    private static final long EXPIRATION = 86400L;
+    private static final long EXPIRATION = 86400L;//24小时过期
     public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String ISS = "index12306";
+    public static final String ISS = "jzhIndex";
     public static final String SECRET = "SecretKey039245678901232039487623456783092349288901402967890140939827";
 
-    /**
-     * 生成用户 Token
-     *
-     * @param userInfo 用户信息
-     * @return 用户访问 Token
-     */
-    public static String generateAccessToken(UserInfoDTO userInfo) {//什么时候调用么？？
-        Map<String, Object> customerUserMap = new HashMap<>();
-        customerUserMap.put(USER_ID_KEY, userInfo.getUserId());
-        customerUserMap.put(USER_NAME_KEY, userInfo.getUsername());
-        customerUserMap.put(REAL_NAME_KEY, userInfo.getRealName());
-        String jwtToken = Jwts.builder()
-                .signWith(SignatureAlgorithm.HS512, SECRET)
-                .setIssuedAt(new Date())
-                .setIssuer(ISS)
-                .setSubject(JSON.toJSONString(customerUserMap))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION * 1000))
-                .compact();
-        return TOKEN_PREFIX + jwtToken;
-    }
 
-    /**
-     * 解析用户 Token
-     *
-     * @param jwtToken 用户访问 Token
-     * @return 用户信息
-     */
-    public static UserInfoDTO parseJwtToken(String jwtToken) {// 这个函数完全看懂 。输入token，经过JWT解析，输出UserInfoDTO
+//    public static String generateAccessToken(UserInfoDTO userInfo) {//什么时候调用么？？
+//        Map<String, Object> customerUserMap = new HashMap<>();
+//        customerUserMap.put(USER_ID_KEY, userInfo.getUserId());
+//        customerUserMap.put(USER_NAME_KEY, userInfo.getUsername());
+//        customerUserMap.put(REAL_NAME_KEY, userInfo.getRealName());
+//        String jwtToken = Jwts.builder()
+//                .signWith(SignatureAlgorithm.HS512, SECRET)
+//                .setIssuedAt(new Date())
+//                .setIssuer(ISS)
+//                .setSubject(JSON.toJSONString(customerUserMap))
+//                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION * 1000))
+//                .compact();
+//        return TOKEN_PREFIX + jwtToken;
+//    }
+
+
+     //解析用户 Token
+    public static UserInfoDTO parseJwtToken(String jwtToken) {// 输入token，经过JWT解析，输出UserInfoDTO
         if (StringUtils.hasText(jwtToken)) {//hasText    如果字符串里面的值为null， ""， "   "，那么返回值为false；否则为true
             String actualJwtToken = jwtToken.replace(TOKEN_PREFIX, "");
             try {
                 Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(actualJwtToken).getBody();
-                Date expiration = claims.getExpiration();//get-Expiration n.到期，
+                Date expiration = claims.getExpiration();//get-Expiration n.到期，     claims里头有个exp字段，例如值exp -> {Integer@17021} 1718517847，现在将它翻译成时间
                 if (expiration.after(new Date())) {
                     String subject = claims.getSubject();//获得sub字段，
                     return JSON.parseObject(subject, UserInfoDTO.class);
