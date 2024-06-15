@@ -154,7 +154,6 @@ public class WarehouseController {
 //                localLockList.forEach(ReentrantLock::lock);
                 distributedLockList.forEach(RLock::lock);
 
-
                 wantFactoryIdDetail=stringRedisTemplate.opsForHash().multiGet(FACTORYNAMEFORUSER_TRUEFACTORYID_MAPPING,Lists.newArrayList(requestParamsStylerDTOForUser.getFactoryNameForUser(),"杭州三鑫工业园"));
                 count=wantFactoryIdDetail.stream().filter(Objects::isNull).count();
 //                log.info("开始sleep");//这里ttl从30到20，再回到30
