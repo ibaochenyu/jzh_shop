@@ -1,29 +1,22 @@
 package cn.ibaochenyu.jzh_shop.webGlobal;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserInfoDTO {
-    /**
-     * 用户 ID
-     */
-    private String userId;
+public class UserLoginReqDTO {
 
     /**
      * 用户名
      */
-    private String username;
+    private String userName;
+
 
     /**
-     * 真实姓名
+     * 密码
      */
-    private String realName;
-
-    private String token;
+    private String passWord;
 }

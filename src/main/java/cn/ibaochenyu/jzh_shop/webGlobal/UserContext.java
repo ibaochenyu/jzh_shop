@@ -2,13 +2,11 @@ package cn.ibaochenyu.jzh_shop.webGlobal;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
 
-import java.util.Optional;
-
 public final class UserContext {
-    private static final ThreadLocal<UserInfoDTO> USER_THREAD_LOCAL = new TransmittableThreadLocal<>();
+    private static final ThreadLocal<UserInfoDTOshow> USER_THREAD_LOCAL = new TransmittableThreadLocal<>();
 
 
-    public static void setUser(UserInfoDTO user) {//ok
+    public static void setUser(UserInfoDTOshow user) {//ok
         USER_THREAD_LOCAL.set(user);
     }
 

@@ -32,13 +32,13 @@ public class UserTransmitFilter implements Filter {
                 realName = URLDecoder.decode(realName, UTF_8);
             }
             String token = httpServletRequest.getHeader(UserConstant.USER_TOKEN_KEY);
-            UserInfoDTO userInfoDTO = UserInfoDTO.builder()
+            UserInfoDTOshow userInfoDTOshow = UserInfoDTOshow.builder()
                     .userId(userId)
-                    .username(userName)
+                    .userName(userName)
                     .realName(realName)
                     .token(token)
                     .build();
-            UserContext.setUser(userInfoDTO);//这个UserContext相当于全局变量。但是我不明白为啥能被其他的地方引用？？？？
+            UserContext.setUser(userInfoDTOshow);//这个UserContext相当于全局变量。但是我不明白为啥能被其他的地方引用？？？？
         }
         try {
             filterChain.doFilter(servletRequest, servletResponse);

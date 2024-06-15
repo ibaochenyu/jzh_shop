@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @Order(2)
@@ -46,7 +45,7 @@ public class TokenValidateFilter implements Filter {
         //if (isPathInBlackPreList(requestPath, blackPathPre)) {
         if (true) {
             String token = httpRequest.getHeader("Authorization");
-            UserInfoDTO userInfo = JWTUtil.parseJwtToken(token);
+            UserInfoDTOshow userInfo = JWTUtil.parseJwtToken(token);
             if (!validateToken(userInfo)) {
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);//状态码 401 Unauthorized（未授权）是一种客户端错误
                 return;
@@ -59,7 +58,7 @@ public class TokenValidateFilter implements Filter {
                         return userInfo.getUserId();
                     }
                     if (UserConstant.USER_NAME_KEY.equals(name)) {
-                        return userInfo.getUsername();
+                        return userInfo.getUserName();
                     }
                     if (UserConstant.REAL_NAME_KEY.equals(name)) {
                         return URLEncoder.encode(userInfo.getRealName(), StandardCharsets.UTF_8);
@@ -92,7 +91,7 @@ public class TokenValidateFilter implements Filter {
         return blackPathPre.stream().anyMatch(requestPath::startsWith);
     }
 
-    private boolean validateToken(UserInfoDTO userInfo) {
+    private boolean validateToken(UserInfoDTOshow userInfo) {
         return userInfo != null;
     }
 }
