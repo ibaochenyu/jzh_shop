@@ -23,6 +23,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -30,6 +31,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -271,6 +274,15 @@ public class WarehouseController {
         List<ReentrantLock> localLockList = new ArrayList<>();//ReentrantLock是一个可重入的互斥锁，又被称为“独占锁”。
         List<RLock> distributedLockList = new ArrayList<>();
         TicketPurchaseRespDTO rt=new TicketPurchaseRespDTO();
+
+//        ThreadPoolExecutor selectSeatThreadPoolExecutor = new ThreadPoolExecutor(
+//                24,  // 核心线程数
+//                36,  // 最大线程数
+//                20L, // keepAliveTime
+//                TimeUnit.SECONDS,  // keepAliveTime 时间单位
+//                new SynchronousQueue<>(),
+//                new ThreadPoolExecutor.CallerRunsPolicy()
+//        );
 
         String lockKey = environment.resolvePlaceholders(String.format(LOCK_PURCHASE_TICKETS_V2, requestStylerDTO.getTruthFactoryId(), requestStylerDTO.getTruthStylerId()));//index12306-ticket-service:lock:purchase_tickets_2_1
         ReentrantLock localLock = localLockMap.getIfPresent(lockKey);//ReentrantLock是一个可重入的互斥锁，又被称为“独占锁”。ReentrantLock锁在同一个时间点只能被一个线程锁持有

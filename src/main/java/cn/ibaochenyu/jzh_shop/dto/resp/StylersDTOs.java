@@ -13,7 +13,8 @@ import java.util.List;
 @Builder
 public class StylersDTOs {
 
+    private Long truthFactoryId;
 
-    private List<StylerDTO> listStylerDTOs;
+    private List<PartStyleOrderDTO> listPartStyle;
 
 }

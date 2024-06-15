@@ -74,7 +74,17 @@
 //                    .setHeader("TAGS", localTag)
 //                    .build();
 //            //////
-//
+//////顺序消费的关键：生产者有序放，消费者有序拉
+//////生产者有序拉：实现MessageQueueSelector并重写select选择相同的队列
+////rocketMQTemplate.syncSend(topic, message, new MessageQueueSelector() {
+////@Override
+////public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
+////        // 根据业务逻辑选择合适的队列
+////        return mqs.get(0); // 例如，简单地选择第一个队列
+////        }
+////        });
+//////
+//            //方法1：防止消息丢失的第一步--生产阶段--同步发送    //方法2：重试
 //            sendResult = rocketMQTemplate.syncSend(
 //                    destinationStr,//？？？
 //                    tempMB,
