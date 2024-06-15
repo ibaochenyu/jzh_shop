@@ -1,8 +1,6 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
-import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.map.MapUtil;
-import cn.ibaochenyu.jzh_shop.Assert;
 import cn.ibaochenyu.jzh_shop.StringRedisTemplateProxy;
 import cn.ibaochenyu.jzh_shop.TicketPurchaseRespDTO;
 import cn.ibaochenyu.jzh_shop.dao.entity.FactoryDO;
@@ -15,7 +13,7 @@ import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.WarehouseDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO;
 import cn.ibaochenyu.jzh_shop.service.WarehouseService;
-import cn.ibaochenyu.jzh_shop.util.debugParam;
+import cn.ibaochenyu.jzh_shop.util.DebugParam;
 import cn.ibaochenyu.jzh_shop.webGlobal.JZHcustomException;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -28,10 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -103,7 +98,7 @@ public class WarehouseController {
     //输入StylerDTOForUser,也就是factorName,stylerid,count
     //返回该factory下，不同stylerid的count
     @GetMapping("pageListTicketQueryV1")//等价于pageListTicketQueryV1
-    public ServerResponseEntity<debugParam<Map<Object,Object>>> pageListTicketQueryV1(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
+    public ServerResponseEntity<DebugParam<Map<Object,Object>>> pageListTicketQueryV1(@RequestBody StylerDTOForUser requestParamsStylerDTOForUser){
 //购票V1，传入BJP代码，翻译成北京，再得到北京南到XXX的时间、地点等信息
 
         Integer flag1=-1;
@@ -248,7 +243,7 @@ public class WarehouseController {
             log.info("key2已经存在");
             flag2=2;
         }
-        debugParam<Map<Object,Object>> temp = new debugParam<Map<Object,Object>>();
+        DebugParam<Map<Object,Object>> temp = new DebugParam<Map<Object,Object>>();
         temp.setDebug1(String.valueOf(flag1) );
         temp.setDebug2(String.valueOf(flag2));
         temp.setOriData(maper2);
@@ -267,7 +262,8 @@ public class WarehouseController {
     }
 
     @PutMapping("purchaseTicketsV2")
-    public ServerResponseEntity<TicketPurchaseRespDTO> purchaseTicketsV2(@RequestBody StylerDTO requestStylerDTO){
+    public ServerResponseEntity<DebugParam<TicketPurchaseRespDTO>> purchaseTicketsV2(@RequestBody StylerDTO requestStylerDTO){
+        DebugParam<TicketPurchaseRespDTO> temp=new DebugParam<>();
         boolean tokenResult =  warehouseService.takeTokenFromBucket(requestStylerDTO);
         if (!tokenResult) {
             throw new JZHcustomException("列车站点已无余票");
@@ -288,13 +284,17 @@ public class WarehouseController {
             }
         }
         localLockList.add(localLock);//Redis和Redisson总的来说，Redis是一个独立的数据库系统，而Redisson是一个用于 Java 开发的 Redis 客户端库，它提供了更高级的功能和抽象
+        long start = System.currentTimeMillis();
         RLock distributedLock = redissonClient.getFairLock(lockKey);//Redis 官方推荐的客户端:Redission。   Redisson 就是为分布式提供 各种不同锁以及多样化的技术支持,
         distributedLockList.add(distributedLock);//铁路是purchase_tickets_triainID_seatId
         try {
             //这里有问题的，会死锁。不过如果你是一个种类传进来，就没事了
             localLockList.forEach(ReentrantLock::lock);
             distributedLockList.forEach(RLock::lock);
+
             rt=warehouseService.executePurchaseTickets(requestStylerDTO);
+
+
         } finally {
             localLockList.forEach(mlocalLock -> {
                 try {
@@ -308,10 +308,13 @@ public class WarehouseController {
                 } catch (Throwable ignored) {
                 }
             });
+            long end = System.currentTimeMillis();
+            temp.setDebug1("执行时间"+String.valueOf(end-start) );
         }
 
+        temp.setOriData(rt);
 
-        return ServerResponseEntity.success(rt);
+        return ServerResponseEntity.success(temp);
     }
 
 

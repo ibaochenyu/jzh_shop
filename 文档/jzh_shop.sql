@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 13/06/2024 22:54:39
+ Date: 15/06/2024 13:51:19
 */
 
 SET NAMES utf8mb4;
@@ -29,14 +29,14 @@ CREATE TABLE `t_basic`  (
   `home_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'homeAddress',
   `date` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1800434853942845442 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1800434853942845441 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_basic
 -- ----------------------------
 INSERT INTO `t_basic` VALUES (1, 3, '黄小鑫', 1, '黄小鑫的家', '2024-06-06 19:00:40');
-INSERT INTO `t_basic` VALUES (2, 60, '严小玲', 1, '严小玲的家', '2024-06-22 19:00:43');
-INSERT INTO `t_basic` VALUES (1800434784585834498, 669, NULL, 0, NULL, '2024-06-11 15:47:57');
+INSERT INTO `t_basic` VALUES (2, 61, '严小玲25', 1, '严小玲的家', '2024-06-22 19:00:43');
+INSERT INTO `t_basic` VALUES (1800434784585834498, 671, NULL, 0, NULL, '2024-06-11 15:47:57');
 INSERT INTO `t_basic` VALUES (1800434853942845441, 0, NULL, 0, NULL, '2024-06-11 15:48:08');
 
 -- ----------------------------
@@ -268,7 +268,7 @@ CREATE TABLE `t_produce`  (
   `truth_worker_id` bigint NULL DEFAULT NULL,
   `produce_count` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1800403307856801795 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1800403307856801794 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_produce
@@ -468,7 +468,7 @@ INSERT INTO `t_warehouse` VALUES (1800398985274298369, 2, 82002, 45);
 INSERT INTO `t_warehouse` VALUES (1800398985274298370, 2, 82003, 56);
 INSERT INTO `t_warehouse` VALUES (1800398985274298371, 3, 82001, 32);
 INSERT INTO `t_warehouse` VALUES (1800398985274298372, 3, 82002, 88);
-INSERT INTO `t_warehouse` VALUES (1800398985274298373, 3, 82003, 1721);
+INSERT INTO `t_warehouse` VALUES (1800398985274298373, 3, 82003, 185999);
 INSERT INTO `t_warehouse` VALUES (1800398985274298374, 4, 82001, 11);
 
 -- ----------------------------
