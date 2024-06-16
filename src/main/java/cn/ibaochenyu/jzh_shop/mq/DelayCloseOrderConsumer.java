@@ -42,7 +42,9 @@ public final class DelayCloseOrderConsumer implements RocketMQListener<MessageWr
 //                        }
 //                        return ConsumeOrderlyStatus.SUCCESS;
 //                }
-
+        //对于铁路，是不用顺序消费的
+        //因为令牌大闸，隔绝了所有的无效流量，并且令牌大闸里的令牌数量和列车座位数量是一一对应的，可以保证绝对不会超卖。
+        //不管车辆余票的缓存早一点扣减和晚一点扣减，最终结果是一致的就行
 
         @Override
         public void onMessage(MessageWrapper<MyCustomEvent> delayCloseOrderEventMessageWrapper){

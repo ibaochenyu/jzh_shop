@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -58,6 +59,48 @@ public class SysLogAspect {
 //
 //# 返回切入点的 Signature      [['signәtʃә]n. 签字, 识别标志, 调号]
 //        Signature getSignature();
+
+
+
+        //Method 类属于 Java 标准反射 API，位于 java.lang.reflect 包下。主要用于在运行时获取和操作类的方法，支持动态调用。
+        //用于获取方法的详细信息，如方法名称、返回类型、参数类型等。
+
+        //MethodSignature(Signature ['signәtʃә]n. 签字, 识别标志)
+        //MethodSignature 属于 Spring AOP 框架，位于 org.aspectj.lang.reflect 包下。主要用于 Spring AOP 中，用于在切面中获取被代理方法的签名信息，方便切面进行条件匹配、日志记录等操作。
+        //通过 JoinPoint 对象获取 MethodSignature 对象。用于获取切点方法的详细信息，如方法名称、返回类型、参数类型等。
+
+        //Signature和MethodSignature
+        // Signature 用于描述任何程序元素（方法、构造函数或字段），而 MethodSignature 则专门用于描述方法。
+
+
+        //【核心】
+        //Class
+        //
+
+        //一般常用：
+        //获取Class  joinPoint.getTarget().getClass()
+        //获取Class名  joinPoint.getTarget().getClass().getName
+        //
+        //获取Signature   joinPoint.getSignature()
+        //获取方法名    joinPoint.getSignature().getName()
+
+
+        //铁路：
+        //获取Class          joinPoint.getTarget().getClass()
+        //获得Class名        joinPoint.getTarget().getClass().getName
+        //获得整个声明的方法  c=joinPoint.getTarget().getClass().getDeclaredMethod(a,b)
+        //获得注释内容       c.getAnnotation(IdempotentX.class)
+
+        //获取MethodSignature    joinPoint.getSignature()
+        //获取方法名              a=joinPoint.getSignature().getName()
+        //获取方法的种类          b=joinPoint.getSignature().getMethod().getParameterTypes()
+
+
+
+//("exampleMethod", String.class, int.class);
+
+
+
 
 
         //请求的方法名
