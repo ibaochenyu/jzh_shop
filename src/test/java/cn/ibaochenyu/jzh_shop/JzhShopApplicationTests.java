@@ -5,6 +5,7 @@ import cn.ibaochenyu.jzh_shop.dto.resp.BasicQueryRespDTO;
 import cn.ibaochenyu.jzh_shop.testStrategy.DiscountStrategy;
 import cn.ibaochenyu.jzh_shop.testStrategy.DiscountStrategyFactory;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.mysql.cj.jdbc.MysqlDataSource;
 import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -13,8 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Constructor;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 import com.github.dozermapper.core.Mapper;
+
+import javax.sql.DataSource;
 
 
 @SpringBootTest
@@ -91,5 +98,39 @@ class JzhShopApplicationTests {
         DiscountStrategy discountStrategy= DiscountStrategyFactory.chooseStrategy("1");
         Double discount=discountStrategy.discount(10D);
         System.out.println("优惠后金额："+discount);//9.5
+    }
+
+    @Test
+    void 测试jdbc() throws SQLException {//可能扔出SQLException
+        //关键字：DataSource
+        //Connection      ---sql--->
+        //PreparedStatement ,executeQuery,executeUpdate
+        //ResultSet
+
+        DataSource dataSource=new MysqlDataSource();
+        ((MysqlDataSource)dataSource).setUrl("jdbc:mysql://127.0.0.1:3306/jzh_shop?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8");
+        ((MysqlDataSource)dataSource).setUser("root");
+        ((MysqlDataSource)dataSource).setPassword("root");
+
+        Connection connection=dataSource.getConnection();
+        String sql="select * from t_basic";
+        PreparedStatement preparedStatement=connection.prepareStatement(sql);
+
+        ResultSet resultSet=preparedStatement.executeQuery();
+        while(resultSet.next()){
+            String name=resultSet.getString("name");
+            Integer sex=resultSet.getInt("sex");
+            System.out.println("name="+name+";age="+String.valueOf(sex) );
+        }
+
+//        name=黄小鑫;age=1
+//        name=严小玲26;age=1
+//        name=null;age=0
+//        name=null;age=0
+
+
+
+
+
     }
 }
