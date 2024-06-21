@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Constructor;
@@ -83,8 +84,10 @@ class JzhShopApplicationTests {
     }
 //////
 
+    @Autowired
+    private DiscountStrategyFactory discountStrategyFactory;//
     @Test
-    void 测试策略工厂() {
+    void 测试策略工厂() {//有点bug。会出现：java.lang.NullPointerException: Cannot invoke "cn.ibaochenyu.jzh_shop.testStrategy.DiscountStrategy.discount(java.lang.Double)" because "discountStrategy" is null
         DiscountStrategy discountStrategy= DiscountStrategyFactory.chooseStrategy("1");
         Double discount=discountStrategy.discount(10D);
         System.out.println("优惠后金额："+discount);//9.5
