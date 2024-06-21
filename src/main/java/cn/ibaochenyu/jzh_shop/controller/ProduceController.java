@@ -1,5 +1,6 @@
 package cn.ibaochenyu.jzh_shop.controller;
 
+import cn.ibaochenyu.jzh_shop.annotation.SysLogMyAnnotation;
 import cn.ibaochenyu.jzh_shop.webGlobal.JZHcustomException;
 import cn.ibaochenyu.jzh_shop.util.PageParam;
 import cn.ibaochenyu.jzh_shop.myResponse.ResponseEnum;
@@ -56,7 +57,7 @@ public class ProduceController {
 
 
 
-    //    @SysLogMyAnnotation(mvalue="请求searchPageResult")
+    @SysLogMyAnnotation(mvalue="请求searchPageResult")
     @RequestMapping("/searchPageResult") //传入在前端的文本要写2020-05-07
 //public ServerResponseEntity<List<ProduceQueryRespDTO>> getOneProduceRtResult(@RequestParam(name="produce_date", defaultValue = "2020-05-07") @DateTimeFormat(pattern="yyyy-MM-dd") Date produce_date,
 //                                                                       @RequestParam(name="truth_styler_id", defaultValue = "82002") int truth_styler_id,

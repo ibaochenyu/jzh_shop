@@ -405,7 +405,7 @@ public class WarehouseController {
 //        目前Tomcat有三种处理连接的模式，一种是BIO，一个线程只处理一个连接，另一种就是NIO，一个线程处理多个连接。由于HTTP请求不会太耗时，而且多个连接一般不会同时来消息，所以一个线程处理多个连接没有太大问题。
 //        nio-8081-exec-2，所以此时tomcat是NIO模式
 
-//Tomcat创建线程池的时候底层还是利用JDK的ThreadPoolExecutor
+//Tomcat创建线程池的时候底层还是利用JDK的 ThreadPoolExecutor
 
 
 //Spring Boot在没有自定义线程池配置的情况下，会自动配置一个ThreadPoolTaskExecutor作为默认线程池。根据官方文档和相关资源，以下是默认的线程池参数：

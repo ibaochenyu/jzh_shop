@@ -3,11 +3,14 @@ package cn.ibaochenyu.jzh_shop;
 import cn.ibaochenyu.jzh_shop.dao.entity.BasicDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.BasicQueryRespDTO;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 import com.github.dozermapper.core.Mapper;
+
+
 @SpringBootTest
 class JzhShopApplicationTests {
 
@@ -29,8 +32,15 @@ class JzhShopApplicationTests {
         BasicQueryRespDTO temp=Optional.ofNullable(source)
                 .map(each -> BEAN_MAPPER_BUILDER.map(each, clazz))
                 .orElse(null);
-
         int a=2;
+    }
+
+
+
+    @Test
+    void 断言_测试(){
+        int result=1+2;
+        Assert.assertEquals(3,result);
 
     }
 

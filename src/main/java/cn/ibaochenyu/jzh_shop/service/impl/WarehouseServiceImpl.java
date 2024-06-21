@@ -1,5 +1,6 @@
 package cn.ibaochenyu.jzh_shop.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Singleton;
 import cn.ibaochenyu.jzh_shop.StringRedisTemplateProxy;
 import cn.ibaochenyu.jzh_shop.TicketPurchaseRespDTO;
@@ -31,7 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 
 
-import cn.ibaochenyu.jzh_shop.Assert;
+import cn.ibaochenyu.jzh_shop.AssertMine;
 import cn.ibaochenyu.jzh_shop.dao.entity.ProduceDO;
 import cn.ibaochenyu.jzh_shop.dao.entity.WarehouseDO;
 import org.redisson.api.RedissonClient;
@@ -304,7 +305,7 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 
 
         //送入jzh:factoyId_trueFactoryId_3，送入style:82003,送入数量101
-        Assert.notNull(actual);
+        AssertMine.notNull(actual);
         String actualHashKey="jzh:warehouse_info:"+String.valueOf(factIdStr);//jzh:factoyId_trueFactoryId_3
         String stylerKey=String.valueOf(requstStylerDTO.getTruthStylerId());
         String userWantCount=String.valueOf(requstStylerDTO.getUserWantCount()) ;

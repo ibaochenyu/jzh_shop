@@ -46,33 +46,36 @@ public class TokenValidateFilter implements Filter {
         if (true) {
             String token = httpRequest.getHeader("Authorization");
             UserInfoDTOshow userInfo = JWTUtil.parseJwtToken(token);
-            if (!validateToken(userInfo)) {
+            //if (!validateToken(userInfo)) {
+            if (false) {
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);//状态码 401 Unauthorized（未授权）是一种客户端错误
                 return;
             }
 
-            HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(httpRequest) {
-                @Override
-                public String getHeader(String name) {
-                    if (UserConstant.USER_ID_KEY.equals(name)) {
-                        return userInfo.getUserId();
-                    }
-                    if (UserConstant.USER_NAME_KEY.equals(name)) {
-                        return userInfo.getUserName();
-                    }
-                    if (UserConstant.REAL_NAME_KEY.equals(name)) {
-                        return URLEncoder.encode(userInfo.getRealName(), StandardCharsets.UTF_8);
-                    }
-//                    if (UserConstant.USER_TOKEN_KEY.equals(name) && Objects.equals(requestPath, DELETION_PATH)) {
+//            HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(httpRequest) {
+//                @Override
+//                public String getHeader(String name) {
+//                    if (UserConstant.USER_ID_KEY.equals(name)) {
+//                        return userInfo.getUserId();
+//                    }
+//                    if (UserConstant.USER_NAME_KEY.equals(name)) {
+//                        return userInfo.getUserName();
+//                    }
+//                    if (UserConstant.REAL_NAME_KEY.equals(name)) {
+//                        return URLEncoder.encode(userInfo.getRealName(), StandardCharsets.UTF_8);
+//                    }
+////                    if (UserConstant.USER_TOKEN_KEY.equals(name) && Objects.equals(requestPath, DELETION_PATH)) {
+////                        return token;
+////                    }
+//                    if (UserConstant.USER_TOKEN_KEY.equals(name) ) {
 //                        return token;
 //                    }
-                    if (UserConstant.USER_TOKEN_KEY.equals(name) ) {
-                        return token;
-                    }
-                    return super.getHeader(name);
-                }
-            };
-            chain.doFilter(requestWrapper, response);
+//                    return super.getHeader(name);
+//                }
+//            };
+//            chain.doFilter(requestWrapper, response);
+
+            chain.doFilter(request, response);
 
         } else {
             chain.doFilter(request, response);
