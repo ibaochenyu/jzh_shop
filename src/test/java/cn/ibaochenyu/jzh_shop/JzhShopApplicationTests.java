@@ -3,10 +3,13 @@ package cn.ibaochenyu.jzh_shop;
 import cn.ibaochenyu.jzh_shop.dao.entity.BasicDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.BasicQueryRespDTO;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import lombok.SneakyThrows;
 import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.lang.reflect.Constructor;
 import java.util.Optional;
 import com.github.dozermapper.core.Mapper;
 
@@ -43,5 +46,41 @@ class JzhShopApplicationTests {
         Assert.assertEquals(3,result);
 
     }
+
+////////////
+//    https://blog.csdn.net/winterking3/article/details/123913150
+    @Test
+    void testAssertThrows() {
+        Assertions.assertThrows(ArithmeticException.class, () -> errorMethod());
+    }
+
+    private void errorMethod() {
+        int a = 1/0;
+    }
+
+    @SneakyThrows
+    @Test
+    void 实例化五种方法() {
+        //new最常见的，省略
+
+        //第二种
+        BasicDO do2 = BasicDO.class.newInstance();
+        do2.setHomeAddress("123");
+
+        //第三种
+        Constructor<BasicDO> constructor3=BasicDO.class.getConstructor();
+        BasicDO do3=constructor3.newInstance();
+        do3.setHomeAddress("123");
+
+        //第四种Clone
+        //实现Cloneable并重写clone()
+
+
+        //第五种
+        //反序列化
+
+
+    }
+//////
 
 }
