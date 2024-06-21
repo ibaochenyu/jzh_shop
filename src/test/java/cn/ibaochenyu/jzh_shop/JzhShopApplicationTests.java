@@ -2,6 +2,8 @@ package cn.ibaochenyu.jzh_shop;
 
 import cn.ibaochenyu.jzh_shop.dao.entity.BasicDO;
 import cn.ibaochenyu.jzh_shop.dto.resp.BasicQueryRespDTO;
+import cn.ibaochenyu.jzh_shop.testStrategy.DiscountStrategy;
+import cn.ibaochenyu.jzh_shop.testStrategy.DiscountStrategyFactory;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import lombok.SneakyThrows;
 import org.junit.Assert;
@@ -78,9 +80,13 @@ class JzhShopApplicationTests {
 
         //第五种
         //反序列化
-
-
     }
 //////
 
+    @Test
+    void 测试策略工厂() {
+        DiscountStrategy discountStrategy= DiscountStrategyFactory.chooseStrategy("1");
+        Double discount=discountStrategy.discount(10D);
+        System.out.println("优惠后金额："+discount);//9.5
+    }
 }
