@@ -15,18 +15,23 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
 @Order(2)
 public class TokenValidateFilter implements Filter {
 
-    private List<String> blackPathPre;
+    private List<String> blackPathPre;;
+
 
     public static final String DELETION_PATH = "/api/user-service/deletion";
 
-    public TokenValidateFilter(List<String> blackPathPre) {
-        this.blackPathPre = blackPathPre;
+    //public TokenValidateFilter(List<String> blackPathPre) {
+    public TokenValidateFilter() {
+        this.blackPathPre = new ArrayList<>(Arrays.asList("/wareHouseHandle/purchaseTicketsV2", "/hhhhhhhTest"));
+        //this.blackPathPre = blackPathPre;
     }
 
     @Override
@@ -42,12 +47,12 @@ public class TokenValidateFilter implements Filter {
         String requestPath = httpRequest.getRequestURI();
 
 
-        //if (isPathInBlackPreList(requestPath, blackPathPre)) {
-        if (true) {
+        if (isPathInBlackPreList(requestPath, blackPathPre)) {//处于黑名单的需要判定token是否有效
+        //if (true) {
             String token = httpRequest.getHeader("Authorization");
             UserInfoDTOshow userInfo = JWTUtil.parseJwtToken(token);
-            //if (!validateToken(userInfo)) {
-            if (false) {
+            if (!validateToken(userInfo)) {
+            //if (false) {
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);//状态码 401 Unauthorized（未授权）是一种客户端错误
                 return;
             }
@@ -75,6 +80,7 @@ public class TokenValidateFilter implements Filter {
 //            };
 //            chain.doFilter(requestWrapper, response);
 
+//此处缺乏header的赋值啊
             chain.doFilter(request, response);
 
         } else {
@@ -98,3 +104,8 @@ public class TokenValidateFilter implements Filter {
         return userInfo != null;
     }
 }
+
+//        cookie 存储在客户端： cookie 是服务器发送到用户浏览器并保存在本地的一小块数据，它会在浏览器下次向同一服务器再发起请求时被携带并发送到服务器上。
+//        session存储在服务器端，sessionId会被存储到客户端的cookie 中【SessionID 是连接 Cookie 和 Session 的一道桥梁，大部分系统也是根据此原理来验证用户登录状态。】
+//        token 只存储在浏览器中，服务端却没有存储，这样的话我随便搞个 token 传给 server 也行？server 会有一套校验机制，校验这个 token 是否合法。
+//        Token是一种无状态认证形式，客户端拥有一个令牌，通常是一串字符串，用于认证向服务器的请求。Token不要求服务器跟踪用户的状态】

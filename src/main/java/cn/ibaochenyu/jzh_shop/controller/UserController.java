@@ -11,9 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
@@ -22,14 +20,15 @@ import cn.ibaochenyu.jzh_shop.webGlobal.JWTUtil;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/userHandle")
 public class UserController
 {
     private final UserMapper userMapper;
 
-    @GetMapping
-    public ServerResponseEntity<UserInfoDTOshow> login(UserLoginReqDTO requestUserLoginReqDTO){
+    @PostMapping("login")// 用post比较好 //务必加@RequestBody，否则json{}传参传不进来
+    public ServerResponseEntity<UserInfoDTOshow> login(@RequestBody UserLoginReqDTO requestUserLoginReqDTO){
         String userName = requestUserLoginReqDTO.getUserName();
-        String passWord = requestUserLoginReqDTO.getUserName();
+        String passWord = requestUserLoginReqDTO.getPassWord();
         LambdaQueryWrapper<UserDO> lqw= Wrappers.lambdaQuery(UserDO.class)
                 .eq(UserDO::getUserName,userName)
                 .eq(UserDO::getPassword,passWord);
@@ -59,3 +58,18 @@ public class UserController
     }
 
 }
+
+
+//{
+//        "code": "00000",
+//        "msg": null,
+//        "data": {
+//        "userId": "1",
+//        "userName": "xiaoming",
+//        "realName": "小明",
+//        "token": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3MTkyODczOTIsImlzcyI6Imp6aEluZGV4Iiwic3ViIjoie1wicmVhbE5hbWVcIjpcIuWwj-aYjlwiLFwidXNlcklkXCI6XCIxXCIsXCJ1c2VybmFtZVwiOlwieGlhb21pbmdcIn0iLCJleHAiOjE3MTkzNzM3OTN9.eNSu1pL93_8qjVlbhiBch1rHV5vQQVPmVzdRaRwH-L5zwKjWPIcQq_qWei3CCvIVTXT85f40YxIS-NOHlyQA4Q"
+//        },
+//        "version": "jzh-Shop.v230424",
+//        "success": true,
+//        "fail": false
+//        }

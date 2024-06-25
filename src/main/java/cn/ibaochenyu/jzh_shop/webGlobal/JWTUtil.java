@@ -47,7 +47,7 @@ public final class JWTUtil {//JWT是一种用于安全地传输信息的开放�
 
 
     //总结：解密是需要密钥、并对解密的内容看看是否已经过期
-     //解析用户 Token
+     //解析用户 Token     //一旦足够久过期的token传来，解析时候会出现io.jsonwebtoken.ExpiredJwtException，直接返回一个空对象
     public static UserInfoDTOshow parseJwtToken(String jwtToken) {// 输入token，经过JWT解析，输出UserInfoDTO
         if (StringUtils.hasText(jwtToken)) {//hasText    如果字符串里面的值为null， ""， "   "，那么返回值为false；否则为true
             String actualJwtToken = jwtToken.replace(TOKEN_PREFIX, "");
