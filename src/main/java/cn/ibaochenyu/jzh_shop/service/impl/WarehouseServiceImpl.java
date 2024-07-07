@@ -53,6 +53,8 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
     private final RedissonClient redissonClient;
 
     private final StringRedisTemplateProxy stringRedisTemplateProxy;
+
+    private final OrderMainServiceImpl orderMainService;
     @Override
     public void mySave(WarehouseDO aDO) {
         warehouseMapper.insert(aDO);
@@ -215,6 +217,9 @@ public class WarehouseServiceImpl extends ServiceImpl<WarehouseMapper, Warehouse
 //                changeId=warehouseDO.getId();
 
                 int maybeUpdateCnt=warehouseMapper.updateWareHouseItsCount_UseStylerDTO(requestStylerDTO);
+
+
+                orderMainService.saveStylerToOrderMain(requestStylerDTO);//requestStylerDTO和stylerDTO都是StylerDTO类型，所以直接扔
 
                 TicketPurchaseRespDTO temp=new TicketPurchaseRespDTO();
                 //temp.setRtUpdateCnt(rtUpdateCnt);

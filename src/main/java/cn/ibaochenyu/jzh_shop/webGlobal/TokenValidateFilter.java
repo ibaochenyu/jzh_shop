@@ -39,6 +39,11 @@ public class TokenValidateFilter implements Filter {
         // 初始化逻辑，如果有需要的话
     }
 
+//    ServletRequest【普通implements Filter后】
+//
+//    HttpServletRequest【ServletRequest强制转换可得】：tomcat接口，提供了处理HTTP请求的各种属性和方法，例如获取请求参数、获取请求头信息、获取客户端IP地址等。
+//
+//    ServerHttpRequest【extends AbstractGatewayFilterFactory】：Spring接口，基于HttpServletRequest接口。并提供了更加强大的处理HTTP请求的能力。它支持将HTTP请求转换为其他类型的请求，例如将HTTP请求转换为RESTful请求或WebSocket请求。
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {

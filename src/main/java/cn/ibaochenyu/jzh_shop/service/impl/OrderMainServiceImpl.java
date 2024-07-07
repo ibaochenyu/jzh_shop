@@ -7,6 +7,7 @@ import cn.ibaochenyu.jzh_shop.dao.entity.OrderMainDO;
 import cn.ibaochenyu.jzh_shop.dao.mapper.OrderMainMapper;
 import cn.ibaochenyu.jzh_shop.dto.resp.StylerDTO;
 import cn.ibaochenyu.jzh_shop.service.OrderMainService;
+import cn.ibaochenyu.jzh_shop.webGlobal.UserContext;
 import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +34,17 @@ public class OrderMainServiceImpl implements OrderMainService {
     @Transactional(rollbackFor = Exception.class)
     public void saveStylerToOrderMain(StylerDTO stylerDTO) {
 
+        String nowUserId=UserContext.getUserId();
         //表的状态：1：生产出来并进入商城，2：订单锁定状态  3：订单支付完成
         //服务请求的工厂id，样式id，个数，扔到OrderItem表
         OrderMainDO tempDO = OrderMainDO.builder()
-                .truthUserId(1145146L)
+                //.truthUserId(1145146L)
+                .truthUserId(Long.valueOf(nowUserId))
                 .orderStatus(1)
                 .build();
+
+
+
         orderMainMapper.insert(tempDO);
         log.info("插入的id可能是"+tempDO.getId());
         //参考OrderDO orderDO = OrderDO.builder().orderSn(orderSn)

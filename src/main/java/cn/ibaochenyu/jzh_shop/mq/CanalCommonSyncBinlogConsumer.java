@@ -28,11 +28,12 @@ import static cn.ibaochenyu.jzh_shop.RedisKeyConstant.WAREHOUSE_INFO_FACTORYID;
 @RequiredArgsConstructor
 @RocketMQMessageListener(///看到message详情没有topic显示
         topic = OrderRocketMQConstant.CANAL_COMMON_SYNC_TOPIC_KEY,
-//        selectorExpression = OrderRocketMQConstant.ORDER_DELAY_CLOSE_TAG_KEY,
+//        selectorExpression =
+//        OrderRocketMQConstant.ORDER_DELAY_CLOSE_TAG_KEY,
         consumerGroup = OrderRocketMQConstant.CANAL_COMMON_SYNC_CG_KEY //我估摸这个consumer group写啥，控制台就显示啥了
 )
 //public final class CanalCommonSyncBinlogConsumer implements RocketMQListener<CanalBinlogEvent> {
-    public final class CanalCommonSyncBinlogConsumer implements RocketMQListener<CanalBinlogEvent> {
+public final class CanalCommonSyncBinlogConsumer implements RocketMQListener<CanalBinlogEvent> {
 
 
     @Value("${ticket.availability.cache-update.type:}")

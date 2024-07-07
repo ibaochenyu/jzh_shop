@@ -32,6 +32,8 @@ class JzhShopApplicationTests {
     static {
         BEAN_MAPPER_BUILDER = DozerBeanMapperBuilder.buildDefault();
     }
+
+    //用途：测试如何使用dozer进行对象转换
     @Test
     void 利用dozer进行对象转换() {
         BasicDO source = new BasicDO();
@@ -50,6 +52,7 @@ class JzhShopApplicationTests {
 
 
 
+    //用途：测试断言的使用
     @Test
     void 断言_测试(){
         int result=1+2;
@@ -58,7 +61,8 @@ class JzhShopApplicationTests {
     }
 
 ////////////
-//    https://blog.csdn.net/winterking3/article/details/123913150
+    //用途：测试扔出Exception
+    //https://blog.csdn.net/winterking3/article/details/123913150
     @Test
     void testAssertThrows() {
         Assertions.assertThrows(ArithmeticException.class, () -> errorMethod());
@@ -68,6 +72,8 @@ class JzhShopApplicationTests {
         int a = 1/0;
     }
 
+
+    //用途：测试一个类的实例化的五种方法
     @SneakyThrows
     @Test
     void 实例化五种方法() {
@@ -91,6 +97,7 @@ class JzhShopApplicationTests {
     }
 //////
 
+    //用途：测试具体策略工厂设计模式如何使用
     @Autowired
     private DiscountStrategyFactory discountStrategyFactory;//
     @Test
@@ -100,6 +107,9 @@ class JzhShopApplicationTests {
         System.out.println("优惠后金额："+discount);//9.5
     }
 
+
+
+    //用途：测试常规jdbc如何使用
     @Test
     void 测试jdbc() throws SQLException {//可能扔出SQLException
         //关键字：DataSource
@@ -127,10 +137,5 @@ class JzhShopApplicationTests {
 //        name=严小玲26;age=1
 //        name=null;age=0
 //        name=null;age=0
-
-
-
-
-
     }
 }
